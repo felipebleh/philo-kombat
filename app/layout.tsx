@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "./story-mode.css";
+import { ModeLauncher } from "./mode-launcher";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Starter Project",
-  description: "A clean starting point for building your site.",
+  title: "Philo Kombat — Uma batalha de ideias",
+  description: "Jogo de luta filosófico desenvolvido pelo Prof. Felipe Camargo.",
   other: {
     "codex-preview": "development",
   },
@@ -30,11 +32,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        <ModeLauncher />
       </body>
     </html>
   );
