@@ -1,0 +1,59 @@
+/* Show Augustine's full figure at the same arena scale and ground line as Felipe. */
+.fighter-agostinho {
+  bottom: 5%;
+  width: clamp(225px, 28vw, 420px);
+  height: 100%;
+}
+
+.fighter-agostinho .fighter-sprite.agostinho-sheet {
+  bottom: -3%;
+  height: 78%;
+  aspect-ratio: 2 / 3;
+  background-image: url("/game/agostinho-fullbody-hq.webp");
+  background-size: contain;
+  background-position: center bottom !important;
+  animation: none !important;
+  transform-origin: 50% 100%;
+}
+
+/* All actions now use full-size artwork instead of enlarged 209px sheet cells. */
+.fighter-agostinho.attack-punch .fighter-sprite.agostinho-sheet {
+  background-image: url("/game/agostinho-punch-hq-v2.webp");
+}
+.fighter-agostinho.attack-kick .fighter-sprite.agostinho-sheet {
+  background-image: url("/game/agostinho-kick-hq-v2.webp");
+}
+.fighter-agostinho.attack-combo .fighter-sprite.agostinho-sheet {
+  animation: augustine-hq-combo 900ms steps(1, end) both !important;
+}
+.fighter-agostinho:is(.special-illumination,.special-city-of-god,.victory) .fighter-sprite.agostinho-sheet {
+  background-image: url("/game/agostinho-cast-hq-v2.webp");
+}
+@keyframes augustine-hq-combo {
+  0%,38% { background-image: url("/game/agostinho-punch-hq-v2.webp"); }
+  39%,82% { background-image: url("/game/agostinho-kick-hq-v2.webp"); }
+  83%,100% { background-image: url("/game/agostinho-punch-hq-v2.webp"); }
+}
+.fighter-agostinho:is(.advance,.retreat) { animation: none; transition: left 640ms linear; }
+.agostinho-walk-canvas { display: none; position: absolute; inset: 0; width: 100%; height: 100%; }
+.fighter-agostinho:is(.advance,.retreat) .agostinho-walk-canvas[data-ready="true"] { display: block; }
+.fighter-agostinho:is(.advance,.retreat) .fighter-sprite.agostinho-sheet:has(.agostinho-walk-canvas[data-ready="true"]) { background-image: none; }
+.fighter-agostinho:is(.guard,.guard-hit) .fighter-sprite.agostinho-sheet { filter: drop-shadow(0 0 12px #eac46d80); }
+.fighter-agostinho.hit .fighter-sprite.agostinho-sheet { filter: brightness(1.2); }
+.fighter-agostinho.knocked-out .fighter-sprite.agostinho-sheet {
+  transform: translateX(-50%) rotate(-78deg) translateY(10%);
+}
+.fighter-enemy.fighter-agostinho.knocked-out .fighter-sprite.agostinho-sheet {
+  transform: translateX(-50%) scaleX(-1) rotate(-78deg) translateY(10%);
+}
+
+.showcase-agostinho .selected-fighter-art img {
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+.story-scene.story-encounter-agostinho .story-opponent {
+  bottom: 0;
+  height: 86%;
+}

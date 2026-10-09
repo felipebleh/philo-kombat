@@ -1,0 +1,108 @@
+/* Felipe's textures share a fixed canvas and a common floor anchor. */
+.battle-frame.arena-felipe-classroom {
+  background:linear-gradient(180deg,rgba(13,34,46,.02),rgba(12,35,44,.08)),url("/game/arena-felipe-classroom.webp") center/cover no-repeat;
+}
+.battle-frame.arena-felipe-classroom :is(.dialogue-overlay,.post-fight-overlay,.result-overlay,.round-result-overlay) {
+  background:linear-gradient(90deg,rgba(12,30,38,.9),rgba(19,42,52,.48),rgba(12,30,38,.88)),url("/game/arena-felipe-classroom.webp") center/cover no-repeat;
+}
+.battle-frame.arena-felipe-classroom :is(.temple-banner,.torch,.bird) { display:none; }
+.battle-frame.arena-felipe-classroom .arena-vignette { opacity:.4; }
+.battle-frame.arena-felipe-classroom .dust { background:rgba(255,235,192,.12); }
+.fighter-felipe {
+  bottom:2.8%; width:clamp(225px,28vw,420px); height:82%;
+  --felipe-lunge:7%; --felipe-recoil:-3%;
+}
+.fighter-enemy.fighter-felipe { --felipe-lunge:-7%; --felipe-recoil:3%; }
+.fighter-felipe .fighter-sprite.felipe-sheet {
+  inset:auto auto 0 50%; width:auto; height:100%; aspect-ratio:75/64;
+  background:none!important; animation:none!important;
+  transform:translateX(-50%); transform-origin:50% 100%;
+}
+.fighter-enemy.fighter-felipe .fighter-sprite.felipe-sheet { transform:translateX(-50%) scaleX(-1); }
+.felipe-canvas { display:block; width:100%; height:100%; object-fit:contain; object-position:center bottom; pointer-events:none; }
+.fighter-felipe .fighter-aura { background:radial-gradient(ellipse at 50% 75%,rgba(240,192,76,.18),transparent 65%); }
+.fighter-felipe:is(.advance,.retreat) { animation:none; transition:left 640ms linear; }
+/* Match the trimmed idle canvas: source bounds (87,59)–(973,1463). */
+.felipe-walk-canvas { display:none; position:absolute; left:48.994%; bottom:-3.738%; width:auto; height:100.578%; aspect-ratio:2/3; transform:translateX(-50%); }
+.fighter-felipe:is(.advance,.retreat) .felipe-walk-canvas[data-ready="true"] { display:block; }
+.fighter-felipe:is(.advance,.retreat) .fighter-sprite:has(.felipe-walk-canvas[data-ready="true"]) > .felipe-canvas { visibility:hidden; }
+.fighter-felipe.attack-punch { animation:felipe-lunge 560ms ease-out; }
+.fighter-felipe.attack-kick { animation:felipe-lunge 680ms ease-out; }
+.fighter-felipe.attack-combo { animation:felipe-combo-weight 1000ms ease-out; }
+.fighter-felipe.hit { animation:felipe-recoil 440ms ease-out; }
+.fighter-felipe.knocked-out { animation:none; transform:translateX(-50%); }
+.fighter-felipe.knocked-out .fighter-sprite { filter:saturate(.7); }
+.fighter-felipe:is(.guard,.guard-hit,.special-thinker,.special-doubt,.victory) { animation:none; }
+.fighter-felipe.guard-hit .felipe-canvas { filter:brightness(1.15); }
+@keyframes felipe-lunge {
+  0%,100% { transform:translateX(-50%); }
+  40%,56% { transform:translateX(calc(-50% + var(--felipe-lunge))); }
+}
+@keyframes felipe-combo-weight {
+  0%,100% { transform:translateX(-50%); }
+  20% { transform:translateX(calc(-50% + var(--felipe-lunge))); }
+  35% { transform:translateX(-50%); }
+  48%,65% { transform:translateX(calc(-50% + var(--felipe-lunge) * 1.4)); }
+}
+@keyframes felipe-recoil {
+  0%,100% { transform:translateX(-50%); }
+  25% { transform:translateX(calc(-50% + var(--felipe-recoil))); }
+}
+
+.select-overlay.select-felipe {
+  background:linear-gradient(90deg,rgba(18,25,23,.87),rgba(25,44,35,.3),rgba(18,25,23,.82)),url("/game/felipe-school-exterior.webp") center/cover;
+}
+.showcase-felipe .selected-fighter-art .felipe-canvas { position:absolute; inset:0; object-fit:contain; }
+.showcase-felipe .fighter-biography { border-left-color:#e4c26b; }
+.portrait-felipe .felipe-thumbnail { position:absolute; inset:0; object-fit:cover; }
+.dialogue-felipe .felipe-canvas, .ending-felipe .felipe-canvas { width:100%; height:100%; object-fit:contain; }
+.dialogue-felipe.dialogue-flip-art .felipe-canvas { transform:scaleX(-1); }
+.ending-felipe.is-loser .felipe-canvas { filter:grayscale(.8) brightness(.7); transform:scaleX(-1); }
+
+.felipe-effect { position:absolute; inset:0; z-index:14; pointer-events:none; }
+.felipe-question, .felipe-question-impact {
+  position:absolute; top:26%; color:#fff2ac; font:bold clamp(100px,17vw,235px)/1 Georgia,serif;
+  text-shadow:0 0 8px #ffdf57,0 0 24px #d99422; transform:translateX(-50%);
+}
+.felipe-question { left:var(--felipe-origin); animation:felipe-question-travel 1450ms linear both; }
+.felipe-question-impact { left:var(--felipe-target); animation:felipe-question-burst 1450ms ease-out both; }
+@keyframes felipe-question-travel {
+  0%,18% { left:var(--felipe-origin); opacity:0; transform:translateX(-50%) scale(.25); }
+  25% { left:var(--felipe-origin); opacity:1; transform:translateX(-50%) scale(.7); }
+  81% { left:var(--felipe-target); opacity:1; transform:translateX(-50%) scale(1); }
+  87%,100% { left:var(--felipe-target); opacity:0; transform:translateX(-50%) scale(1.1); }
+}
+@keyframes felipe-question-burst {
+  0%,80% { opacity:0; transform:translateX(-50%) scale(.8); }
+  82% { opacity:1; transform:translateX(-50%) scale(1); }
+  100% { opacity:0; transform:translateX(-50%) scale(1.35); }
+}
+.felipe-owl {
+  position:absolute; left:var(--felipe-origin); top:var(--owl-altitude);
+  width:clamp(80px,14vw,185px); aspect-ratio:4/3;
+  animation:felipe-owl-attack 1500ms var(--owl-delay) ease-in-out both;
+}
+.felipe-owl canvas {
+  display:block; width:100%; height:100%; transform:scaleX(var(--felipe-facing));
+  filter:drop-shadow(0 3px 5px #0007); animation:felipe-owl-wingbeat 190ms ease-in-out infinite alternate;
+}
+.felipe-owl.owl-1 { margin-left:-2%; }
+.felipe-owl.owl-2 { margin-left:2%; }
+.felipe-owl.owl-3 { margin-left:-4%; }
+.felipe-owl.owl-4 { margin-left:3%; }
+@keyframes felipe-owl-attack {
+  0%,12% { left:var(--felipe-origin); top:var(--owl-altitude); opacity:0; transform:translateX(-50%); }
+  22% { opacity:1; top:calc(var(--owl-altitude) - 10%); }
+  56% { left:var(--felipe-target); top:20%; opacity:1; transform:translateX(-50%) rotate(calc(16deg * var(--felipe-facing))); }
+  67%,82% { left:var(--felipe-target); top:41%; transform:translateX(-50%) rotate(calc(26deg * var(--felipe-facing))); }
+  74%,90% { left:var(--felipe-target); top:31%; transform:translateX(-50%) rotate(calc(-12deg * var(--felipe-facing))); opacity:1; }
+  100% { left:var(--felipe-target); top:10%; transform:translateX(-50%); opacity:0; }
+}
+@keyframes felipe-owl-wingbeat {
+  from { transform:scaleX(var(--felipe-facing)) scaleY(.90); }
+  to { transform:scaleX(var(--felipe-facing)) scaleY(1.04); }
+}
+@media (prefers-reduced-motion:reduce) {
+  .felipe-owl canvas { animation:none; }
+  .fighter-felipe:is(.attack-punch,.attack-kick,.attack-combo) { animation:none; }
+}

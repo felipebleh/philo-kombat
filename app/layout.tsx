@@ -1,6 +1,25 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "./kierkegaard.css";
+import "./beauvoir.css";
+import "./foucault.css";
+import "./arendt.css";
+import "./wittgenstein.css";
+import "./angela-davis.css";
+import "./paulo-freire.css";
+import "./fanon.css";
+import "./krenak.css";
+import "./turing.css";
+import "./deleuze.css";
+import "./superintelligence.css";
+import "./felipe.css";
+import "./plato.css";
+import "./aristotle.css";
+import "./augustine.css";
+import "./marx.css";
+import "./descartes.css";
+import "./versus-selection.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,8 +32,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Starter Project",
-  description: "A clean starting point for building your site.",
+  title: "Philo Kombat — Uma batalha de ideias",
+  description:
+    "Jogo educacional de luta em que filósofos transformam conceitos em golpes.",
   other: {
     "codex-preview": "development",
   },
@@ -30,7 +50,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

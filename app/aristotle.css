@@ -1,0 +1,26 @@
+/* Aristotle's source frames have empty space below the feet: align them with Felipe. */
+.fighter-aristotle {
+  bottom: 3%;
+  width: clamp(225px, 28vw, 420px);
+  height: 100%;
+}
+
+.fighter-aristotle .fighter-sprite.aristotle-sheet {
+  bottom: -16%;
+  height: 104%;
+}
+
+/* Use the full-size illustration while idle; animated moves retain their own frames. */
+.fighter-aristotle.idle .fighter-sprite.aristotle-sheet {
+  bottom: -3.5%;
+  height: 100%;
+  background-image: url("/game/aristoteles-hq.webp");
+  background-size: auto 84%;
+  background-position: center bottom;
+  animation: none;
+}
+
+/* Hold each combo pose so neighboring cells never appear between frames. */
+.fighter-aristotle.attack-combo .fighter-sprite.aristotle-sheet {
+  animation-timing-function: steps(1, end);
+}

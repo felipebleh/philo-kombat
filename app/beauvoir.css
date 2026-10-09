@@ -1,0 +1,259 @@
+/* Simone de Beauvoir · 4.1 — HQ cutouts, articulated motion and target-bound specials. */
+.battle-frame.arena-paris-beauvoir {
+  background:
+    linear-gradient(180deg, rgba(8,16,34,.02) 42%, rgba(10,12,25,.30)),
+    url("/game/arena-paris-beauvoir.webp?v=4.1") center 58% / cover no-repeat;
+}
+.battle-frame.arena-paris-beauvoir .dialogue-overlay,
+.battle-frame.arena-paris-beauvoir .post-fight-overlay,
+.battle-frame.arena-paris-beauvoir .result-overlay,
+.battle-frame.arena-paris-beauvoir .round-result-overlay {
+  background:
+    linear-gradient(90deg, rgba(8,16,38,.94), rgba(48,25,37,.28) 50%, rgba(23,8,24,.91)),
+    url("/game/arena-paris-beauvoir.webp?v=4.1") center 58% / cover no-repeat;
+}
+.battle-frame.arena-paris-beauvoir .temple-banner,
+.battle-frame.arena-paris-beauvoir .torch { opacity: 0; }
+.battle-frame.arena-paris-beauvoir .dust { background: rgba(226,196,156,.28); }
+
+.fighter-beauvoir {
+  bottom: 2.8%;
+  width: clamp(225px, 28vw, 420px);
+  height: 82%;
+  --beauvoir-lunge: 18%;
+  --beauvoir-sweep: 23%;
+  --beauvoir-recoil: -4%;
+}
+.fighter-enemy.fighter-beauvoir {
+  --beauvoir-lunge: -18%;
+  --beauvoir-sweep: -23%;
+  --beauvoir-recoil: 4%;
+}
+.fighter-beauvoir .fighter-aura {
+  background: radial-gradient(circle, rgba(113,151,202,.27), rgba(132,45,75,.17) 48%, transparent 73%);
+}
+.beauvoir-sheet,
+.fighter-beauvoir .beauvoir-sheet {
+  inset: auto auto 0 50%;
+  width: auto;
+  height: 100%;
+  aspect-ratio: 4 / 3;
+  background: url("/game/beauvoir-guard-frame.webp?v=4.1") 50% 100% / contain no-repeat;
+  image-rendering: auto;
+  transform-origin: 50% 100%;
+  animation: none;
+}
+.fighter-player.fighter-beauvoir .fighter-sprite { transform: translateX(-50%); }
+.fighter-enemy.fighter-beauvoir .fighter-sprite { transform: translateX(-50%) scaleX(-1); }
+.fighter-player.fighter-beauvoir.idle .fighter-sprite { animation: beauvoir-idle-player 2.75s ease-in-out infinite !important; }
+.fighter-enemy.fighter-beauvoir.idle .fighter-sprite { animation: beauvoir-idle-enemy 2.75s ease-in-out infinite !important; }
+.fighter-beauvoir:is(.guard,.guard-hit,.jump,.hit,.victory,.knocked-out,.special-beauvoir-other,.special-becoming) .fighter-sprite {
+  background-image: url("/game/beauvoir-guard-frame.webp?v=4.1");
+  background-size: contain;
+  background-position: 50% 100% !important;
+  animation: none !important;
+}
+.fighter-beauvoir.advance,
+.fighter-beauvoir.retreat { animation: none; transition: left 660ms linear; }
+.fighter-beauvoir:is(.advance,.retreat) .fighter-sprite {
+  background-position: 50% 100%;
+  animation: none !important;
+}
+.beauvoir-walk-canvas { display: none; width: 100%; height: 100%; }
+.fighter-beauvoir:is(.advance,.retreat) .beauvoir-walk-canvas[data-ready="true"] { display: block; }
+.fighter-beauvoir:is(.advance,.retreat) .fighter-sprite:has(.beauvoir-walk-canvas[data-ready="true"]) { background-image: none; }
+
+.fighter-beauvoir:is(.attack-punch,.attack-kick,.attack-combo) .fighter-sprite {
+  background-size: contain;
+  background-position: 50% 100% !important;
+  animation: none !important;
+}
+.fighter-beauvoir.attack-punch .fighter-sprite { background-image: url("/game/beauvoir-punch-hq.webp?v=4.1"); }
+.fighter-beauvoir.attack-kick .fighter-sprite { background-image: url("/game/beauvoir-kick-hq.webp?v=4.1"); }
+.fighter-beauvoir.attack-combo .fighter-sprite {
+  animation: beauvoir-combo-poses 940ms steps(1,end) both !important;
+}
+.fighter-beauvoir.attack-punch { animation: beauvoir-jab 520ms cubic-bezier(.12,.76,.2,1); }
+.fighter-beauvoir.attack-kick { animation: beauvoir-kick 650ms cubic-bezier(.12,.72,.2,1); }
+.fighter-beauvoir.attack-combo { animation: beauvoir-combo 940ms cubic-bezier(.12,.74,.2,1); }
+.fighter-beauvoir.special-beauvoir-other { animation: beauvoir-channel 1450ms ease-out; }
+.fighter-beauvoir.hit .fighter-sprite { filter: brightness(1.34) saturate(.72); }
+.fighter-beauvoir.knocked-out .fighter-sprite { transform: translateX(-50%) rotate(-75deg) translateY(10%); }
+.fighter-enemy.fighter-beauvoir.knocked-out .fighter-sprite { transform: translateX(-50%) scaleX(-1) rotate(-75deg) translateY(10%); }
+.fighter-beauvoir:is(.attack-punch,.attack-kick,.attack-combo)::after {
+  content: "";
+  position: absolute;
+  z-index: 8;
+  right: -3%;
+  top: 33%;
+  width: 24%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 6%, #e9d4bd 13%, rgba(120,150,205,.72) 31%, rgba(144,46,81,.36) 51%, transparent 70%);
+  animation: beauvoir-contact 520ms ease-out both;
+  pointer-events: none;
+}
+.fighter-enemy.fighter-beauvoir:is(.attack-punch,.attack-kick,.attack-combo)::after { right: auto; left: -3%; }
+.fighter-beauvoir.attack-kick::after { top: 48%; width: 29%; animation-duration: 650ms; }
+.fighter-beauvoir.attack-combo::after { top: 37%; width: 31%; animation-duration: 940ms; }
+
+.select-overlay.select-beauvoir {
+  background:
+    linear-gradient(90deg, rgba(8,16,39,.94), rgba(56,31,41,.24) 50%, rgba(31,10,28,.91)),
+    url("/game/arena-paris-beauvoir.webp?v=4.1") center 58% / cover no-repeat;
+}
+.showcase-beauvoir::after { background: linear-gradient(90deg, rgba(72,109,164,.25), rgba(135,38,70,.18)); }
+.showcase-beauvoir .fighter-biography { border-left-color: #d5b484; }
+.portrait-beauvoir img,
+.ending-beauvoir img { object-fit: contain; object-position: 50% 100%; }
+.dialogue-beauvoir { height: 108%; bottom: -18%; }
+.dialogue-beauvoir > span { color: #e5caa3; }
+
+.effect-beauvoir-other .special-colorwash {
+  background: radial-gradient(circle at var(--beauvoir-target) 46%, rgba(211,221,238,.25), rgba(31,40,73,.63) 48%, rgba(18,6,22,.92));
+  animation: beauvoir-colorwash 1500ms ease-out;
+}
+.effect-beauvoir-becoming .special-colorwash {
+  background: radial-gradient(ellipse at 50% 34%, rgba(243,216,170,.25), rgba(86,25,49,.63) 51%, rgba(8,14,34,.91));
+  animation: beauvoir-colorwash 1900ms ease-out;
+}
+.beauvoir-effect { position: absolute; inset: 0; z-index: 32; pointer-events: none; }
+.beauvoir-effect > b {
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  transform: translateX(-50%);
+  color: #f3e5ce;
+  font: bold clamp(18px,2.8vw,42px) Georgia,serif;
+  letter-spacing: .12em;
+  white-space: nowrap;
+  text-shadow: 0 0 23px #7d6ca2, 0 3px 6px #000;
+  animation: beauvoir-title 1500ms ease-out both;
+}
+.beauvoir-mirror-cage {
+  position: absolute;
+  left: var(--beauvoir-target);
+  top: 49%;
+  width: 29%;
+  height: 64%;
+  transform: translate(-50%,-50%);
+  animation: beauvoir-cage 1500ms ease-in-out both;
+}
+.beauvoir-mirror {
+  position: absolute;
+  inset: 8% 22%;
+  border: 5px solid rgba(226,229,237,.88);
+  background: linear-gradient(120deg, rgba(232,237,244,.13), rgba(103,126,167,.35), rgba(255,255,255,.06));
+  box-shadow: inset 0 0 24px rgba(210,222,241,.30), 0 0 17px rgba(160,179,211,.42);
+}
+.beauvoir-mirror::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: 9%; bottom: 9%;
+  border-left: 2px solid rgba(248,245,233,.72);
+  transform: rotate(17deg);
+  box-shadow: 18px 52px 0 -1px rgba(248,245,233,.5), -23px 95px 0 -1px rgba(248,245,233,.5);
+}
+.mirror-two { transform: translateX(-36%) rotate(-8deg); opacity: .68; }
+.mirror-three { transform: translateX(36%) rotate(8deg); opacity: .68; }
+.beauvoir-mirror-cage i {
+  position: absolute;
+  left: 50%;
+  padding: 3px 9px;
+  color: #f2e6da;
+  background: rgba(93,20,47,.86);
+  border: 1px solid rgba(245,213,184,.58);
+  font: bold clamp(8px,1vw,14px) var(--font-geist-mono),monospace;
+  letter-spacing: .1em;
+  transform: translateX(-50%) rotate(-4deg);
+}
+.beauvoir-mirror-cage i:nth-of-type(1) { top: 22%; }
+.beauvoir-mirror-cage i:nth-of-type(2) { top: 48%; transform: translateX(-50%) rotate(5deg); }
+.beauvoir-mirror-cage i:nth-of-type(3) { top: 71%; }
+.beauvoir-pages {
+  position: absolute;
+  left: var(--beauvoir-target); top: 48%;
+  width: 7%; aspect-ratio: .72;
+  background: repeating-linear-gradient(180deg,#eee3cc 0 9%,#b9a88d 10% 11%);
+  box-shadow: 0 0 18px rgba(232,216,183,.56);
+  animation: beauvoir-page-orbit 1500ms ease-in-out both;
+}
+.page-two { animation-delay: 80ms; filter: hue-rotate(18deg); }
+.beauvoir-other-impact,
+.beauvoir-becoming-impact {
+  position: absolute;
+  left: var(--beauvoir-target); top: 52%;
+  width: 14%; aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle,#fff 0 6%,#dce7f4 15%,rgba(146,75,119,.78) 38%,transparent 70%);
+  animation: beauvoir-impact 1500ms ease-out both;
+}
+
+/* One Beauvoir remains visible while Tornar-se crosses the arena. */
+.effect-beauvoir-becoming .fighter-beauvoir { visibility: hidden; }
+.beauvoir-imposed-roles {
+  position: absolute; left: var(--beauvoir-origin); bottom: 19%;
+  width: 22%; height: 56%; transform: translateX(-50%);
+  animation: beauvoir-break-roles 1900ms ease-out both;
+}
+.beauvoir-imposed-roles i {
+  position: absolute; left: 8%; right: 8%; height: 10%;
+  display: grid; place-items: center;
+  color: #2d1421; background: #d8c3a2;
+  border: 2px solid #6f3048;
+  font: bold clamp(8px,1vw,14px) var(--font-geist-mono),monospace;
+  letter-spacing: .08em;
+}
+.beauvoir-imposed-roles i:nth-child(1) { top: 18%; transform: rotate(8deg); }
+.beauvoir-imposed-roles i:nth-child(2) { top: 43%; transform: rotate(-7deg); }
+.beauvoir-imposed-roles i:nth-child(3) { top: 67%; transform: rotate(5deg); }
+.beauvoir-freedom-path {
+  position: absolute; left: var(--beauvoir-path-left); bottom: 8%;
+  width: var(--beauvoir-path-width);
+  height: 44%; transform-origin: 0 100%;
+  border-bottom: 3px solid rgba(230,199,145,.55);
+  filter: drop-shadow(0 0 13px #d8b27a);
+  animation: beauvoir-path 1900ms ease-out both;
+}
+.beauvoir-becoming-actor {
+  position: absolute; left: var(--beauvoir-origin); bottom: 2.8%;
+  height: 82%; width: auto; aspect-ratio: 4 / 3;
+  transform: translateX(-50%);
+  animation: beauvoir-travel 1900ms linear both;
+}
+.beauvoir-becoming-actor > span {
+  display: block; width: 100%; height: 100%;
+  background: url("/game/beauvoir-guard-frame.webp?v=4.1") center bottom / contain no-repeat;
+  transform: scaleX(var(--beauvoir-facing));
+  filter: drop-shadow(0 0 15px rgba(238,200,140,.46));
+  animation: beauvoir-becoming-poses 1900ms steps(1,end) both;
+}
+.beauvoir-becoming-impact {
+  top: auto; bottom: 3%; width: 25%; aspect-ratio: 2;
+  background: radial-gradient(ellipse,#fff7d7 0 8%,rgba(235,186,101,.88) 21%,rgba(119,81,149,.58) 43%,transparent 71%);
+  animation-duration: 1900ms;
+}
+.beauvoir-becoming > b { color: #ffe9bd; animation-duration: 1900ms; }
+
+@keyframes beauvoir-idle-player { 0%,100%{transform:translateX(-50%)} 50%{transform:translateX(-50%) translateY(-.35%) rotate(-.12deg)} }
+@keyframes beauvoir-idle-enemy { 0%,100%{transform:translateX(-50%) scaleX(-1)} 50%{transform:translateX(-50%) scaleX(-1) translateY(-.35%) rotate(-.12deg)} }
+@keyframes beauvoir-jab { 0%,100%{transform:translateX(-50%)} 22%{transform:translateX(-50%) translateX(var(--beauvoir-recoil))} 58%{transform:translateX(-50%) translateX(var(--beauvoir-lunge)) rotate(-2deg)} }
+@keyframes beauvoir-kick { 0%,100%{transform:translateX(-50%)} 24%{transform:translateX(-50%) translateX(var(--beauvoir-recoil))} 62%{transform:translateX(-50%) translateX(var(--beauvoir-sweep)) rotate(-3deg)} }
+@keyframes beauvoir-combo { 0%,100%{transform:translateX(-50%)} 19%,48%{transform:translateX(-50%) translateX(var(--beauvoir-lunge)) rotate(-2deg)} 68%{transform:translateX(-50%) translateX(var(--beauvoir-sweep)) rotate(3deg)} }
+@keyframes beauvoir-combo-poses { 0%,18%,90%,100%{background-image:url("/game/beauvoir-guard-frame.webp?v=4.1")} 19%,39%{background-image:url("/game/beauvoir-punch-hq.webp?v=4.1")} 40%,62%{background-image:url("/game/beauvoir-kick-hq.webp?v=4.1")} 63%,89%{background-image:url("/game/beauvoir-combo-hq.webp?v=4.1")} }
+@keyframes beauvoir-channel { 0%,100%{filter:brightness(1)} 68%{filter:brightness(1.18) drop-shadow(0 0 22px #6e75aa)} }
+@keyframes beauvoir-contact { 0%,32%{opacity:0;transform:scale(.2)} 45%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(2.8)} }
+@keyframes beauvoir-colorwash { 0%,100%{opacity:0} 17%,89%{opacity:1} }
+@keyframes beauvoir-title { 0%,23%,100%{opacity:0;transform:translateX(-50%) translateY(14px)} 42%,88%{opacity:1;transform:translateX(-50%) translateY(0)} }
+@keyframes beauvoir-cage { 0%{opacity:0;transform:translate(-50%,-50%) scale(.22)} 24%,73%{opacity:1;transform:translate(-50%,-50%) scale(1)} 79%{opacity:1;transform:translate(-50%,-50%) scale(.94) rotate(3deg)} 100%{opacity:0;transform:translate(-50%,-50%) scale(1.45) rotate(13deg)} }
+@keyframes beauvoir-page-orbit { 0%{opacity:0;transform:translate(-50%,-50%) rotate(0) translateX(0) scale(.3)} 22%,72%{opacity:1} 78%{transform:translate(-50%,-50%) rotate(300deg) translateX(16vw) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) rotate(500deg) translateX(26vw) scale(.4)} }
+@keyframes beauvoir-impact { 0%,76%{opacity:0;transform:translate(-50%,-50%) scale(.14)} 79%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(4.2)} }
+@keyframes beauvoir-break-roles { 0%,15%{opacity:0;transform:translateX(-50%) scale(.6)} 25%,36%{opacity:1;transform:translateX(-50%) scale(1)} 44%{opacity:1;transform:translateX(-50%) scale(1.2) rotate(11deg)} 57%,100%{opacity:0;transform:translateX(-50%) scale(2.2) rotate(28deg)} }
+@keyframes beauvoir-path { 0%,31%,100%{opacity:0;transform:scaleX(0)} 42%,83%{opacity:1;transform:scaleX(1)} 92%{opacity:0} }
+@keyframes beauvoir-travel { 0%,18%{left:var(--beauvoir-origin);bottom:2.8%} 42%{left:var(--beauvoir-landing);bottom:5%} 57%{left:var(--beauvoir-landing);bottom:12%} 78%,86%{left:var(--beauvoir-landing);bottom:2.8%} 100%{left:var(--beauvoir-origin);bottom:2.8%} }
+@keyframes beauvoir-becoming-poses { 0%,20%,88%,100%{background-image:url("/game/beauvoir-guard-frame.webp?v=4.1")} 21%,40%{background-image:url("/game/beauvoir-punch-hq.webp?v=4.1")} 41%,62%{background-image:url("/game/beauvoir-combo-hq.webp?v=4.1")} 63%,87%{background-image:url("/game/beauvoir-kick-hq.webp?v=4.1")} }
+
+@media (max-width: 760px) {
+  .fighter-beauvoir { width: clamp(210px,42vw,330px); height: 78%; }
+  .beauvoir-becoming-actor { height: 78%; }
+  .beauvoir-effect > b { letter-spacing: .05em; max-width: 92%; text-align: center; }
+}

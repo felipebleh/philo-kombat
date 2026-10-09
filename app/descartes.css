@@ -1,0 +1,158 @@
+/* Match Felipe's arena footprint; render idle and movement from the same HQ portrait. */
+.fighter-descartes {
+  bottom: 2.8%;
+  width: clamp(225px, 28vw, 420px);
+  height: 82%;
+}
+
+.fighter-descartes .fighter-sprite.descartes-sheet {
+  bottom: 0;
+  height: 100%;
+  aspect-ratio: 1 / 2;
+  background-image: url("/game/descartes-fullbody-hq.webp?v=2.9.5");
+  background-position: center bottom;
+  background-size: contain;
+  transform-origin: 50% 100%;
+}
+
+.fighter-descartes:is(.idle,.advance,.retreat,.guard,.guard-hit,.jump,.hit,.victory,.knocked-out,.special-evil-genius,.special-cogito) .fighter-sprite.descartes-sheet {
+  animation: none;
+}
+
+.fighter-descartes:is(.victory,.knocked-out) .fighter-sprite.descartes-sheet {
+  background-position: center bottom !important;
+}
+
+.fighter-descartes:is(.advance,.retreat) {
+  animation: descartes-combat-shuffle 580ms ease-in-out infinite;
+  transition: left 580ms linear;
+}
+
+@keyframes descartes-combat-shuffle {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-1.5%); }
+}
+
+.fighter-descartes:is(.advance,.retreat) .fighter-sprite.descartes-sheet {
+  background-image: none;
+}
+
+/* Compact shuffles keep both fists ready and alternate the leading foot. */
+.fighter-descartes:is(.advance,.retreat) .fighter-sprite.descartes-sheet::before,
+.fighter-descartes:is(.advance,.retreat) .fighter-sprite.descartes-sheet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-position: center bottom;
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+.fighter-descartes:is(.advance,.retreat) .fighter-sprite.descartes-sheet::before {
+  background-image: url("/game/descartes-footwork-a-hq.webp?v=5.4");
+  animation: descartes-footwork-a 580ms steps(1, end) infinite;
+}
+
+.fighter-descartes:is(.advance,.retreat) .fighter-sprite.descartes-sheet::after {
+  background-image: url("/game/descartes-footwork-b-hq.webp?v=5.4");
+  animation: descartes-footwork-b 580ms steps(1, end) infinite;
+}
+
+@keyframes descartes-footwork-a {
+  0%, 49.9% { opacity: 1; transform: translate(-4%, -2.8%); }
+  50%, 100% { opacity: 0; transform: translate(-4%, -2.8%); }
+}
+
+@keyframes descartes-footwork-b {
+  0%, 49.9% { opacity: 0; transform: translate(-7%, -5%); }
+  50%, 100% { opacity: 1; transform: translate(-7%, -5%); }
+}
+
+/* A thinking pose and a forward barrier appear for the existing guard action. */
+.fighter-descartes:is(.guard,.guard-hit) .fighter-sprite.descartes-sheet {
+  background-image: url("/game/descartes-think-guard-hq.webp?v=5.4");
+  background-position: center bottom !important;
+  background-size: contain;
+  animation: none !important;
+}
+
+.fighter-descartes:is(.guard,.guard-hit)::before {
+  z-index: 10;
+  top: 18%;
+  right: -8%;
+  width: 31%;
+  height: 68%;
+  aspect-ratio: auto;
+  border: 3px solid rgba(168, 235, 255, .86);
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at center, rgba(219, 249, 255, .16) 0 35%, rgba(76, 156, 230, .27) 54%, transparent 76%),
+    repeating-linear-gradient(145deg, transparent 0 13px, rgba(193, 239, 255, .09) 14px 15px, transparent 16px 27px);
+  box-shadow: inset 0 0 20px rgba(190, 242, 255, .6), 0 0 20px rgba(106, 198, 255, .9), 0 0 42px rgba(88, 146, 240, .48);
+  animation: descartes-thought-barrier 580ms ease-out infinite alternate;
+  pointer-events: none;
+}
+
+.fighter-enemy.fighter-descartes:is(.guard,.guard-hit)::before {
+  right: auto;
+  left: -8%;
+}
+
+.fighter-descartes.guard-hit::before {
+  border-color: #fff1b1;
+  box-shadow: inset 0 0 26px #fff, 0 0 28px #ffe69b, 0 0 48px rgba(255, 205, 100, .7);
+}
+
+@keyframes descartes-thought-barrier {
+  from { opacity: .68; transform: scale(.9); }
+  to { opacity: 1; transform: scale(1.04); }
+}
+
+/* Discrete HQ poses preserve Descartes's face and proportions through each hit. */
+.fighter-descartes:is(.attack-punch,.attack-kick,.attack-combo) .fighter-sprite.descartes-sheet {
+  background-position: center bottom;
+  background-size: contain;
+}
+
+.fighter-descartes:is(.attack-kick,.attack-combo) .fighter-sprite.descartes-sheet {
+  aspect-ratio: 1078 / 1459;
+}
+
+.fighter-descartes.attack-punch .fighter-sprite.descartes-sheet {
+  background-image: url("/game/descartes-punch-hq.webp?v=5.2");
+  animation: none;
+}
+
+.fighter-descartes.attack-kick .fighter-sprite.descartes-sheet {
+  background-image: url("/game/descartes-kick-hq.webp?v=5.2");
+  animation: none;
+}
+
+.fighter-descartes.attack-combo .fighter-sprite.descartes-sheet {
+  background-image: none;
+  animation: none;
+}
+
+.fighter-descartes.attack-combo .fighter-sprite.descartes-sheet::before,
+.fighter-descartes.attack-combo .fighter-sprite.descartes-sheet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-position: center bottom;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.fighter-descartes.attack-combo .fighter-sprite.descartes-sheet::before {
+  background-image: url("/game/descartes-punch-hq.webp?v=5.2");
+  animation: descartes-combo-punch 780ms steps(1, end) both;
+}
+
+.fighter-descartes.attack-combo .fighter-sprite.descartes-sheet::after {
+  background-image: url("/game/descartes-kick-hq.webp?v=5.2");
+  animation: descartes-combo-kick 780ms steps(1, end) both;
+}
+
+@keyframes descartes-combo-punch { 0%, 46% { opacity: 1; } 47%, 100% { opacity: 0; } }
+@keyframes descartes-combo-kick { 0%, 46% { opacity: 0; } 47%, 100% { opacity: 1; } }

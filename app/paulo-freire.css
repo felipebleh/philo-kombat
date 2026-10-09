@@ -1,0 +1,173 @@
+/* Paulo Freire — Nordeste, escola popular e movimento em resolução nativa. */
+.battle-frame.arena-paulo-freire {
+  background:
+    linear-gradient(180deg,rgba(246,207,120,.03),rgba(50,28,14,.17)),
+    url("/game/arena-paulo-freire.webp?v=4.6") center 58% / cover no-repeat;
+}
+.battle-frame.arena-paulo-freire .dialogue-overlay,
+.battle-frame.arena-paulo-freire .post-fight-overlay,
+.battle-frame.arena-paulo-freire .result-overlay,
+.battle-frame.arena-paulo-freire .round-result-overlay {
+  background:
+    linear-gradient(90deg,rgba(20,14,9,.94),rgba(64,67,37,.54),rgba(18,12,8,.92)),
+    url("/game/arena-paulo-freire.webp?v=4.6") center 58% / cover no-repeat;
+}
+.battle-frame.arena-paulo-freire .temple-banner,
+.battle-frame.arena-paulo-freire .torch,
+.battle-frame.arena-paulo-freire .bird { opacity:0; }
+.battle-frame.arena-paulo-freire .dust { background:rgba(239,190,95,.17); filter:blur(5px); }
+
+.fighter-paulo-freire {
+  bottom:2.8%;
+  width:clamp(225px,28vw,420px);
+  height:82%;
+  --paulo-lunge:18%;
+  --paulo-sweep:23%;
+  --paulo-recoil:-4%;
+}
+.fighter-enemy.fighter-paulo-freire {
+  --paulo-lunge:-18%;
+  --paulo-sweep:-23%;
+  --paulo-recoil:4%;
+}
+.fighter-paulo-freire .fighter-aura {
+  background:radial-gradient(ellipse at 50% 72%,rgba(211,158,61,.38),rgba(48,103,70,.14) 48%,transparent 70%);
+}
+.paulo-freire-sheet,
+.fighter-paulo-freire .paulo-freire-sheet {
+  inset:auto auto 0 50%;
+  width:auto;
+  height:100%;
+  aspect-ratio:175 / 192;
+  background:url("/game/paulo-freire-fullbody-hq.webp?v=4.6") 50% 100% / contain no-repeat;
+  image-rendering:auto;
+  transform-origin:50% 100%;
+  animation:none;
+  will-change:transform,filter;
+}
+.fighter-player.fighter-paulo-freire .fighter-sprite { transform:translateX(-50%); }
+.fighter-enemy.fighter-paulo-freire .fighter-sprite { transform:translateX(-50%) scaleX(-1); }
+.fighter-player.fighter-paulo-freire.idle .fighter-sprite { animation:paulo-idle-player 2.3s ease-in-out infinite !important; }
+.fighter-enemy.fighter-paulo-freire.idle .fighter-sprite { animation:paulo-idle-enemy 2.3s ease-in-out infinite !important; }
+.fighter-paulo-freire:is(.guard,.guard-hit,.jump,.hit,.knocked-out,.special-banking-education,.special-liberating-education) .fighter-sprite {
+  background-image:url("/game/paulo-freire-fullbody-hq.webp?v=4.6");
+  background-position:50% 100%;
+  background-size:contain;
+}
+.fighter-paulo-freire.victory .fighter-sprite {
+  background-image:url("/game/paulo-freire-victory-hq.webp?v=4.6");
+  background-position:50% 100%;
+  background-size:contain;
+  animation:paulo-victory 920ms cubic-bezier(.2,.75,.2,1) both !important;
+}
+.fighter-paulo-freire.advance,
+.fighter-paulo-freire.retreat { animation:none; transition:left 780ms cubic-bezier(.35,.05,.65,.95); }
+.fighter-paulo-freire:is(.advance,.retreat) .fighter-sprite {
+  animation:none !important;
+  background-position:50% 100%;
+  background-size:contain;
+}
+.paulo-freire-walk-canvas { display:none; width:100%; height:100%; transform-origin:50% 100%; }
+.fighter-paulo-freire:is(.advance,.retreat) .paulo-freire-walk-canvas[data-ready="true"] { display:block; }
+.fighter-paulo-freire:is(.advance,.retreat) .fighter-sprite:has(.paulo-freire-walk-canvas[data-ready="true"]) { background-image:none; }
+.fighter-paulo-freire:is(.advance,.retreat) .paulo-freire-walk-canvas[data-ready="true"] { animation:paulo-walk-weight 780ms ease-in-out both; }
+
+.fighter-paulo-freire:is(.attack-punch,.attack-kick,.attack-combo) .fighter-sprite {
+  background-position:50% 100%;
+  background-size:contain;
+  background-repeat:no-repeat;
+}
+.fighter-paulo-freire.attack-punch .fighter-sprite { background-image:url("/game/paulo-freire-punch-hq.webp?v=4.6"); }
+.fighter-paulo-freire.attack-kick .fighter-sprite { background-image:url("/game/paulo-freire-kick-hq.webp?v=4.6"); }
+.fighter-paulo-freire.attack-combo .fighter-sprite { animation:paulo-combo-poses 940ms steps(1,end) both !important; }
+.fighter-paulo-freire.attack-punch { animation:paulo-jab 520ms cubic-bezier(.12,.76,.2,1); }
+.fighter-paulo-freire.attack-kick { animation:paulo-kick 650ms cubic-bezier(.12,.72,.2,1); }
+.fighter-paulo-freire.attack-combo { animation:paulo-combo 940ms cubic-bezier(.12,.74,.2,1); }
+.fighter-paulo-freire.special-banking-education { animation:paulo-channel 1450ms ease-out; }
+.fighter-paulo-freire.special-liberating-education { animation:paulo-book-throw 1850ms ease-out; }
+.fighter-paulo-freire.hit .fighter-sprite { filter:brightness(1.2) saturate(.72); }
+.fighter-paulo-freire.knocked-out .fighter-sprite { transform:translateX(-50%) rotate(-75deg) translateY(10%); }
+.fighter-enemy.fighter-paulo-freire.knocked-out .fighter-sprite { transform:translateX(-50%) scaleX(-1) rotate(-75deg) translateY(10%); }
+.fighter-paulo-freire:is(.attack-punch,.attack-kick,.attack-combo)::after {
+  content:""; position:absolute; z-index:7; right:-3%; top:39%; width:27%; aspect-ratio:1; border-radius:50%;
+  background:radial-gradient(circle,#fff 0 8%,rgba(240,196,92,.9) 13%,rgba(35,105,70,.3) 41%,transparent 70%);
+  animation:paulo-contact 520ms ease-out both;
+}
+.fighter-enemy.fighter-paulo-freire:is(.attack-punch,.attack-kick,.attack-combo)::after { right:auto; left:-3%; }
+.fighter-paulo-freire.attack-kick::after { top:49%; width:29%; animation-duration:650ms; }
+.fighter-paulo-freire.attack-combo::after { top:40%; width:31%; animation-duration:940ms; }
+
+.select-overlay.select-paulo-freire {
+  background:
+    linear-gradient(90deg,rgba(20,14,9,.96),rgba(69,79,43,.61),rgba(18,12,8,.93)),
+    url("/game/arena-paulo-freire.webp?v=4.6") center 58% / cover no-repeat;
+}
+.showcase-paulo-freire::after { background:linear-gradient(90deg,rgba(194,135,43,.29),rgba(20,31,21,.15)); }
+.showcase-paulo-freire .fighter-biography { border-left-color:#d7a54e; }
+.portrait-paulo-freire img,
+.ending-paulo-freire img { object-fit:contain; object-position:50% 100%; }
+.dialogue-paulo-freire { height:108%; bottom:-18%; }
+.dialogue-paulo-freire > span { color:#ffedbd; }
+
+.effect-paulo-banking .special-colorwash {
+  background:radial-gradient(circle at 50% 52%,rgba(245,203,94,.42),rgba(68,92,51,.33) 37%,rgba(13,10,7,.87) 78%);
+  animation:paulo-colorwash 1500ms ease-out;
+}
+.effect-paulo-liberating-book .special-colorwash {
+  background:radial-gradient(circle at 50% 52%,rgba(255,231,158,.48),rgba(37,111,77,.38) 38%,rgba(10,9,7,.88) 79%);
+  animation:paulo-colorwash 1900ms ease-out;
+}
+.paulo-effect { position:absolute; inset:0; z-index:32; pointer-events:none; overflow:hidden; }
+.paulo-effect > b {
+  position:absolute; z-index:18; left:50%; top:17%; transform:translateX(-50%);
+  color:#ffe6a8; font-family:var(--font-display),Georgia,serif; font-size:clamp(1.02rem,2.2vw,2.15rem);
+  letter-spacing:.1em; text-align:center; text-shadow:0 2px 0 #152018,0 0 18px rgba(220,171,65,.82);
+  white-space:nowrap; animation:paulo-title 1500ms ease-out both;
+}
+.paulo-money-rain {
+  position:absolute; z-index:10; left:var(--paulo-target); top:17%; width:clamp(150px,20vw,300px); height:56%;
+  transform:translateX(-50%); overflow:visible;
+}
+.paulo-money-rain i {
+  position:absolute; top:-18%; color:#f6cf62; font-family:Georgia,serif; font-size:clamp(2.4rem,5vw,5rem); font-style:normal; font-weight:900;
+  text-shadow:0 3px 0 #364b28,0 0 13px rgba(255,222,118,.82); opacity:0;
+  animation:paulo-money-fall 1500ms cubic-bezier(.22,.68,.28,1) both;
+}
+.paulo-money-rain i:nth-child(1){left:4%;animation-delay:0ms}.paulo-money-rain i:nth-child(2){left:28%;animation-delay:100ms}.paulo-money-rain i:nth-child(3){left:55%;animation-delay:35ms}.paulo-money-rain i:nth-child(4){left:78%;animation-delay:150ms}.paulo-money-rain i:nth-child(5){left:17%;animation-delay:230ms}.paulo-money-rain i:nth-child(6){left:66%;animation-delay:275ms}
+.paulo-banking-impact,.paulo-book-impact {
+  position:absolute; z-index:13; left:var(--paulo-target); top:55%; width:clamp(78px,11vw,160px); aspect-ratio:1; border-radius:50%;
+  background:radial-gradient(circle,#fff 0 7%,#ffe596 13%,rgba(47,130,86,.7) 34%,transparent 71%);
+  animation:paulo-impact 1500ms ease-out both;
+}
+.paulo-flying-book {
+  position:absolute; z-index:12; left:var(--paulo-origin); top:44%; width:clamp(170px,22vw,340px); height:auto;
+  object-fit:contain; opacity:0; filter:drop-shadow(0 11px 9px rgba(0,0,0,.78)) drop-shadow(0 0 11px rgba(246,202,95,.5));
+  animation:paulo-book-flight 1900ms cubic-bezier(.12,.72,.18,1) both;
+}
+.paulo-flying-book.enemy-book { animation-name:paulo-book-flight-enemy; }
+.paulo-book-impact { top:51%; animation-duration:1900ms; }
+.paulo-liberating-book > b { animation-duration:1900ms; }
+
+@keyframes paulo-idle-player { 0%,100%{transform:translateX(-50%) translateY(0)} 28%{transform:translateX(-50%) translateY(-.3%) rotate(-.12deg)} 55%{transform:translateX(-50%) translateY(-.68%) rotate(.08deg)} 80%{transform:translateX(-50%) translateY(-.25%) rotate(.13deg)} }
+@keyframes paulo-idle-enemy { 0%,100%{transform:translateX(-50%) scaleX(-1) translateY(0)} 28%{transform:translateX(-50%) scaleX(-1) translateY(-.3%) rotate(-.12deg)} 55%{transform:translateX(-50%) scaleX(-1) translateY(-.68%) rotate(.08deg)} 80%{transform:translateX(-50%) scaleX(-1) translateY(-.25%) rotate(.13deg)} }
+@keyframes paulo-walk-weight { 0%,50%,100%{transform:translateY(0) rotate(0)} 25%{transform:translateY(-.34%) rotate(-.17deg)} 75%{transform:translateY(-.34%) rotate(.17deg)} }
+@keyframes paulo-jab { 0%,100%{transform:translateX(-50%)} 22%{transform:translateX(-50%) translateX(var(--paulo-recoil))} 58%{transform:translateX(-50%) translateX(var(--paulo-lunge)) rotate(-2deg)} }
+@keyframes paulo-kick { 0%,100%{transform:translateX(-50%)} 24%{transform:translateX(-50%) translateX(var(--paulo-recoil))} 62%{transform:translateX(-50%) translateX(var(--paulo-sweep)) rotate(-3deg)} }
+@keyframes paulo-combo { 0%,100%{transform:translateX(-50%)} 19%,48%{transform:translateX(-50%) translateX(var(--paulo-lunge)) rotate(-2deg)} 68%{transform:translateX(-50%) translateX(var(--paulo-sweep)) rotate(3deg)} }
+@keyframes paulo-combo-poses { 0%,18%,90%,100%{background-image:url("/game/paulo-freire-fullbody-hq.webp?v=4.6")} 19%,39%{background-image:url("/game/paulo-freire-punch-hq.webp?v=4.6")} 40%,62%{background-image:url("/game/paulo-freire-kick-hq.webp?v=4.6")} 63%,89%{background-image:url("/game/paulo-freire-combo-hq.webp?v=4.6")} }
+@keyframes paulo-channel { 0%,100%{filter:brightness(1)} 68%{filter:brightness(1.18) drop-shadow(0 0 22px #d3a248)} }
+@keyframes paulo-book-throw { 0%,100%{filter:brightness(1)} 38%{filter:brightness(.96)} 64%{filter:brightness(1.2) drop-shadow(0 0 21px #78b592)} }
+@keyframes paulo-victory { 0%{opacity:.72;transform:translateX(-50%) translateY(3%)} 62%,100%{opacity:1;transform:translateX(-50%) translateY(0);filter:drop-shadow(0 0 20px rgba(218,165,71,.43))} }
+@keyframes paulo-contact { 0%,32%{opacity:0;transform:scale(.2)} 45%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(2.8)} }
+@keyframes paulo-colorwash { 0%,100%{opacity:0} 17%,91%{opacity:1} }
+@keyframes paulo-title { 0%,22%,100%{opacity:0;transform:translateX(-50%) translateY(14px)} 40%,90%{opacity:1;transform:translateX(-50%) translateY(0)} }
+@keyframes paulo-money-fall { 0%,12%{opacity:0;transform:translateY(-12%) rotate(-12deg) scale(.65)} 30%{opacity:1} 76%{opacity:1;transform:translateY(470%) rotate(18deg) scale(1)} 100%{opacity:0;transform:translateY(540%) rotate(28deg) scale(.82)} }
+@keyframes paulo-impact { 0%,57%{opacity:0;transform:translate(-50%,-50%) scale(.14)} 65%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(4.5)} }
+@keyframes paulo-book-flight { 0%,20%{opacity:0;transform:translateX(-32%) translateY(18%) rotate(-18deg) scale(.62)} 34%{opacity:1} 58%{transform:translateX(var(--paulo-travel-mid)) translateY(-25%) rotate(165deg) scale(.94)} 82%{opacity:1;transform:translateX(var(--paulo-travel)) translateY(0) rotate(330deg) scale(1)} 100%{opacity:0;transform:translateX(var(--paulo-travel)) translateY(4%) rotate(390deg) scale(.9)} }
+@keyframes paulo-book-flight-enemy { 0%,20%{opacity:0;transform:translateX(32%) translateY(18%) scaleX(-1) rotate(-18deg) scale(.62)} 34%{opacity:1} 58%{transform:translateX(var(--paulo-travel-mid)) translateY(-25%) scaleX(-1) rotate(165deg) scale(.94)} 82%{opacity:1;transform:translateX(var(--paulo-travel)) translateY(0) scaleX(-1) rotate(330deg)} 100%{opacity:0;transform:translateX(var(--paulo-travel)) translateY(4%) scaleX(-1) rotate(390deg) scale(.9)} }
+
+@media (max-width:760px) {
+  .fighter-paulo-freire { width:clamp(210px,42vw,330px); height:78%; }
+  .paulo-effect > b { letter-spacing:.04em; max-width:92%; white-space:normal; }
+  .paulo-flying-book { width:clamp(150px,34vw,250px); }
+}

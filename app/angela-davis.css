@@ -1,0 +1,172 @@
+/* Angela Davis — independent HQ poses, articulated stride and Oakland arena. */
+.battle-frame.arena-oakland {
+  background:
+    linear-gradient(180deg,rgba(231,188,103,.06),rgba(20,18,17,.2)),
+    url("/game/arena-angela-davis.webp?v=4.5") center 58% / cover no-repeat;
+}
+.battle-frame.arena-oakland .dialogue-overlay,
+.battle-frame.arena-oakland .post-fight-overlay,
+.battle-frame.arena-oakland .result-overlay,
+.battle-frame.arena-oakland .round-result-overlay {
+  background:
+    linear-gradient(90deg,rgba(16,13,12,.94),rgba(96,46,35,.55),rgba(15,13,12,.92)),
+    url("/game/arena-angela-davis.webp?v=4.5") center 58% / cover no-repeat;
+}
+.battle-frame.arena-oakland .temple-banner,
+.battle-frame.arena-oakland .torch,
+.battle-frame.arena-oakland .bird { opacity: 0; }
+.battle-frame.arena-oakland .dust { background: rgba(235,188,99,.18); filter: blur(5px); }
+
+.fighter-angela-davis {
+  bottom: 2.8%;
+  width: clamp(225px,28vw,420px);
+  height: 82%;
+  --angela-lunge: 18%;
+  --angela-sweep: 23%;
+  --angela-recoil: -4%;
+}
+.fighter-enemy.fighter-angela-davis {
+  --angela-lunge: -18%;
+  --angela-sweep: -23%;
+  --angela-recoil: 4%;
+}
+.fighter-angela-davis .fighter-aura {
+  background: radial-gradient(ellipse at 50% 72%,rgba(195,45,38,.43),rgba(216,151,57,.12) 48%,transparent 70%);
+}
+.angela-davis-sheet,
+.fighter-angela-davis .angela-davis-sheet {
+  inset: auto auto 0 50%;
+  width: auto;
+  height: 100%;
+  aspect-ratio: 175 / 192;
+  background: url("/game/angela-davis-fullbody-hq.webp?v=4.5") 50% 100% / contain no-repeat;
+  image-rendering: auto;
+  transform-origin: 50% 100%;
+  animation: none;
+  will-change: transform,filter;
+}
+.fighter-player.fighter-angela-davis .fighter-sprite { transform: translateX(-50%); }
+.fighter-enemy.fighter-angela-davis .fighter-sprite { transform: translateX(-50%) scaleX(-1); }
+.fighter-player.fighter-angela-davis.idle .fighter-sprite { animation: angela-idle-player 2.25s ease-in-out infinite !important; }
+.fighter-enemy.fighter-angela-davis.idle .fighter-sprite { animation: angela-idle-enemy 2.25s ease-in-out infinite !important; }
+.fighter-angela-davis:is(.guard,.guard-hit,.jump,.hit,.knocked-out,.special-broken-chains,.special-constant-struggle) .fighter-sprite {
+  background-image: url("/game/angela-davis-fullbody-hq.webp?v=4.5");
+  background-position: 50% 100%;
+  background-size: contain;
+}
+.fighter-angela-davis.victory .fighter-sprite {
+  background-image: url("/game/angela-davis-victory-hq.webp?v=4.5");
+  background-position: 50% 100%;
+  background-size: contain;
+  animation: angela-victory 920ms cubic-bezier(.2,.75,.2,1) both !important;
+}
+.fighter-angela-davis.advance,
+.fighter-angela-davis.retreat { animation: none; transition: left 780ms cubic-bezier(.35,.05,.65,.95); }
+.fighter-angela-davis:is(.advance,.retreat) .fighter-sprite {
+  animation: none !important;
+  background-position: 50% 100%;
+  background-size: contain;
+}
+.angela-davis-walk-canvas { display: none; width: 100%; height: 100%; transform-origin: 50% 100%; }
+.fighter-angela-davis:is(.advance,.retreat) .angela-davis-walk-canvas[data-ready="true"] { display: block; }
+.fighter-angela-davis:is(.advance,.retreat) .fighter-sprite:has(.angela-davis-walk-canvas[data-ready="true"]) { background-image: none; }
+.fighter-angela-davis:is(.advance,.retreat) .angela-davis-walk-canvas[data-ready="true"] {
+  animation: angela-walk-weight 780ms ease-in-out both;
+}
+
+.fighter-angela-davis:is(.attack-punch,.attack-kick,.attack-combo) .fighter-sprite {
+  background-position: 50% 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.fighter-angela-davis.attack-punch .fighter-sprite { background-image: url("/game/angela-davis-punch-hq.webp?v=4.5"); }
+.fighter-angela-davis.attack-kick .fighter-sprite { background-image: url("/game/angela-davis-kick-hq.webp?v=4.5"); }
+.fighter-angela-davis.attack-combo .fighter-sprite { animation: angela-combo-poses 940ms steps(1,end) both !important; }
+.fighter-angela-davis.attack-punch { animation: angela-jab 520ms cubic-bezier(.12,.76,.2,1); }
+.fighter-angela-davis.attack-kick { animation: angela-kick 650ms cubic-bezier(.12,.72,.2,1); }
+.fighter-angela-davis.attack-combo { animation: angela-combo 940ms cubic-bezier(.12,.74,.2,1); }
+.fighter-angela-davis.special-broken-chains { animation: angela-channel 1450ms ease-out; }
+.fighter-angela-davis.special-constant-struggle { animation: angela-channel 1850ms ease-out; }
+.fighter-angela-davis.hit .fighter-sprite { filter: brightness(1.2) saturate(.72); }
+.fighter-angela-davis.knocked-out .fighter-sprite { transform: translateX(-50%) rotate(-75deg) translateY(10%); }
+.fighter-enemy.fighter-angela-davis.knocked-out .fighter-sprite { transform: translateX(-50%) scaleX(-1) rotate(-75deg) translateY(10%); }
+.fighter-angela-davis:is(.attack-punch,.attack-kick,.attack-combo)::after {
+  content: ""; position: absolute; z-index: 7; right: -3%; top: 39%; width: 27%; aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle,#fff 0 8%,rgba(247,181,65,.9) 13%,rgba(184,31,31,.3) 41%,transparent 70%);
+  animation: angela-contact 520ms ease-out both;
+}
+.fighter-enemy.fighter-angela-davis:is(.attack-punch,.attack-kick,.attack-combo)::after { right: auto; left: -3%; }
+.fighter-angela-davis.attack-kick::after { top: 49%; width: 29%; animation-duration: 650ms; }
+.fighter-angela-davis.attack-combo::after { top: 40%; width: 31%; animation-duration: 940ms; }
+
+.select-overlay.select-angela-davis {
+  background:
+    linear-gradient(90deg,rgba(16,13,12,.96),rgba(119,48,34,.61),rgba(14,12,11,.93)),
+    url("/game/arena-angela-davis.webp?v=4.5") center 58% / cover no-repeat;
+}
+.showcase-angela-davis::after { background: linear-gradient(90deg,rgba(180,35,35,.3),rgba(16,14,13,.15)); }
+.showcase-angela-davis .fighter-biography { border-left-color: #d59a3c; }
+.portrait-angela-davis img,
+.ending-angela-davis img { object-fit: contain; object-position: 50% 100%; }
+.dialogue-angela-davis { height: 108%; bottom: -18%; }
+.dialogue-angela-davis > span { color: #ffe2a7; }
+
+.effect-angela-davis-chains .special-colorwash {
+  background: radial-gradient(circle at 50% 58%,rgba(255,204,105,.46),rgba(120,28,27,.37) 33%,rgba(10,10,10,.84) 76%);
+  animation: angela-colorwash 1500ms ease-out;
+}
+.effect-angela-davis-struggle .special-colorwash {
+  background: radial-gradient(circle at 50% 52%,rgba(255,217,127,.48),rgba(147,34,28,.35) 38%,rgba(8,8,8,.88) 79%);
+  animation: angela-colorwash 1900ms ease-out;
+}
+.angela-effect { position: absolute; inset: 0; z-index: 32; pointer-events: none; overflow: hidden; }
+.angela-effect > b {
+  position: absolute; z-index: 18; left: 50%; top: 17%; transform: translateX(-50%);
+  color: #ffe5ac; font-family: var(--font-display),Georgia,serif; font-size: clamp(1.02rem,2.2vw,2.15rem);
+  letter-spacing: .1em; text-align: center; text-shadow: 0 2px 0 #210906,0 0 18px rgba(219,126,41,.85);
+  white-space: nowrap; animation: angela-title 1500ms ease-out both;
+}
+.angela-broken-chain {
+  position:absolute; z-index:10; left:var(--angela-target); top:51%; width:clamp(290px,42vw,650px); height:auto;
+  transform:translate(-50%,-50%); object-fit:contain; opacity:0; pointer-events:none;
+  filter:drop-shadow(0 0 11px rgba(255,194,67,.75)) drop-shadow(0 12px 9px rgba(0,0,0,.62));
+  animation:angela-chain-break 1500ms cubic-bezier(.18,.74,.18,1) both;
+}
+.angela-chain-impact,.angela-struggle-impact {
+  position:absolute; z-index:12; left:var(--angela-target); top:55%; width:clamp(76px,11vw,160px); aspect-ratio:1; border-radius:50%;
+  background:radial-gradient(circle,#fff 0 7%,#ffd77e 13%,rgba(190,37,29,.7) 34%,transparent 71%);
+  animation:angela-impact 1500ms ease-out both;
+}
+.angela-panther {
+  position:absolute; z-index:11; left:var(--angela-origin); bottom:8%; width:clamp(235px,31vw,470px); height:auto;
+  object-fit:contain; opacity:0; pointer-events:none;
+  filter:drop-shadow(0 13px 10px rgba(0,0,0,.82)) drop-shadow(0 0 12px rgba(222,139,42,.42));
+  animation:angela-panther-leap 1900ms cubic-bezier(.1,.72,.2,1) both;
+}
+.angela-panther.enemy-panther { animation-name:angela-panther-leap-enemy; }
+.angela-struggle-impact { top:52%; animation-duration:1900ms; }
+.angela-davis-struggle > b { animation-duration:1900ms; }
+
+@keyframes angela-idle-player { 0%,100%{transform:translateX(-50%) translateY(0)} 28%{transform:translateX(-50%) translateY(-.3%) rotate(-.12deg)} 55%{transform:translateX(-50%) translateY(-.7%) rotate(.08deg)} 80%{transform:translateX(-50%) translateY(-.25%) rotate(.14deg)} }
+@keyframes angela-idle-enemy { 0%,100%{transform:translateX(-50%) scaleX(-1) translateY(0)} 28%{transform:translateX(-50%) scaleX(-1) translateY(-.3%) rotate(-.12deg)} 55%{transform:translateX(-50%) scaleX(-1) translateY(-.7%) rotate(.08deg)} 80%{transform:translateX(-50%) scaleX(-1) translateY(-.25%) rotate(.14deg)} }
+@keyframes angela-walk-weight { 0%,50%,100%{transform:translateY(0) rotate(0)} 25%{transform:translateY(-.35%) rotate(-.18deg)} 75%{transform:translateY(-.35%) rotate(.18deg)} }
+@keyframes angela-jab { 0%,100%{transform:translateX(-50%)} 22%{transform:translateX(-50%) translateX(var(--angela-recoil))} 58%{transform:translateX(-50%) translateX(var(--angela-lunge)) rotate(-2deg)} }
+@keyframes angela-kick { 0%,100%{transform:translateX(-50%)} 24%{transform:translateX(-50%) translateX(var(--angela-recoil))} 62%{transform:translateX(-50%) translateX(var(--angela-sweep)) rotate(-3deg)} }
+@keyframes angela-combo { 0%,100%{transform:translateX(-50%)} 19%,48%{transform:translateX(-50%) translateX(var(--angela-lunge)) rotate(-2deg)} 68%{transform:translateX(-50%) translateX(var(--angela-sweep)) rotate(3deg)} }
+@keyframes angela-combo-poses { 0%,18%,90%,100%{background-image:url("/game/angela-davis-fullbody-hq.webp?v=4.5")} 19%,39%{background-image:url("/game/angela-davis-punch-hq.webp?v=4.5")} 40%,62%{background-image:url("/game/angela-davis-kick-hq.webp?v=4.5")} 63%,89%{background-image:url("/game/angela-davis-combo-hq.webp?v=4.5")} }
+@keyframes angela-channel { 0%,100%{filter:brightness(1)} 68%{filter:brightness(1.2) drop-shadow(0 0 22px #ce3228)} }
+@keyframes angela-victory { 0%{opacity:.72;transform:translateX(-50%) translateY(3%)} 62%,100%{opacity:1;transform:translateX(-50%) translateY(0);filter:drop-shadow(0 0 20px rgba(226,154,51,.45))} }
+@keyframes angela-contact { 0%,32%{opacity:0;transform:scale(.2)} 45%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(2.8)} }
+@keyframes angela-colorwash { 0%,100%{opacity:0} 17%,91%{opacity:1} }
+@keyframes angela-title { 0%,22%,100%{opacity:0;transform:translateX(-50%) translateY(14px)} 40%,90%{opacity:1;transform:translateX(-50%) translateY(0)} }
+@keyframes angela-chain-break { 0%,18%{opacity:0;transform:translate(-50%,-72%) scaleX(.72) scaleY(.86)} 34%,55%{opacity:1;transform:translate(-50%,-50%) scaleX(.94) scaleY(1)} 66%{opacity:1;transform:translate(-50%,-50%) scale(1.08)} 100%{opacity:0;transform:translate(-50%,-50%) scale(1.4)} }
+@keyframes angela-impact { 0%,57%{opacity:0;transform:translate(-50%,-50%) scale(.14)} 65%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(4.5)} }
+@keyframes angela-panther-leap { 0%{opacity:0;transform:translateX(-32%) translateY(18%) scale(.72)} 15%{opacity:1} 52%{transform:translateX(var(--angela-travel-mid)) translateY(-34%) scale(1.05)} 84%{opacity:1;transform:translateX(var(--angela-travel)) translateY(-5%) scale(1)} 100%{opacity:0;transform:translateX(var(--angela-travel)) translateY(2%) scale(.94)} }
+@keyframes angela-panther-leap-enemy { 0%{opacity:0;transform:translateX(32%) translateY(18%) scaleX(-1) scale(.72)} 15%{opacity:1} 52%{transform:translateX(var(--angela-travel-mid)) translateY(-34%) scaleX(-1) scale(1.05)} 84%{opacity:1;transform:translateX(var(--angela-travel)) translateY(-5%) scaleX(-1)} 100%{opacity:0;transform:translateX(var(--angela-travel)) translateY(2%) scaleX(-1) scale(.94)} }
+
+@media (max-width:760px) {
+  .fighter-angela-davis { width:clamp(210px,42vw,330px); height:78%; }
+  .angela-effect > b { letter-spacing:.04em; max-width:92%; white-space:normal; }
+  .angela-broken-chain { width:clamp(260px,58vw,470px); }
+  .angela-panther { width:clamp(220px,44vw,350px); }
+}

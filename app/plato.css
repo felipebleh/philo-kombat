@@ -1,0 +1,31 @@
+/* Keep Plato's feet on the same floor line as Felipe and preserve each frame's aspect ratio. */
+.fighter-plato {
+  bottom: 3%;
+  width: clamp(225px, 28vw, 420px);
+  height: 102%;
+}
+
+.fighter-plato .fighter-sprite.plato-sheet {
+  top: auto;
+  right: auto;
+  bottom: -14%;
+  left: 50%;
+  width: auto;
+  height: 100%;
+  aspect-ratio: 1;
+  background-size: 600% 600%;
+  transform: translateX(-50%);
+}
+
+.fighter-enemy.fighter-plato .fighter-sprite.plato-sheet {
+  transform: translateX(-50%) scaleX(-1);
+}
+
+/* His original full-size illustration is sharper than the tiny idle cells. */
+.fighter-plato.idle .fighter-sprite.plato-sheet {
+  bottom: -6%;
+  background-image: url("/game/plato.webp");
+  background-size: auto 87%;
+  background-position: center bottom;
+  animation: none;
+}

@@ -1,0 +1,24 @@
+/* Remove only the enclosed matte below Marx's right elbow, in the five affected cells.
+ * Native CSS compositing keeps the original pixels, cuffs, hands and beard intact. */
+.fighter-marx {
+  --marx-idle-gap: polygon(evenodd, 0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 54.15% 42.6%, 54.4% 39.95%, 54.9% 40.2%, 56.15% 42.25%, 56.9% 44.2%, 56.45% 45.65%, 55.7% 46.45%, 54.4% 44.0%, 54.15% 43.1%, 54.15% 42.6%, 0% 0%);
+  --marx-walk-gap-a: polygon(evenodd, 0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 52.2% 42.4%, 52.2% 40.9%, 52.45% 39.25%, 53.05% 39.65%, 54.0% 41.5%, 54.5% 43.5%, 54.5% 44.8%, 54.25% 45.8%, 53.8% 46.15%, 53.15% 45.35%, 52.2% 42.4%, 0% 0%);
+  --marx-walk-gap-b: polygon(evenodd, 0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 54.5% 42.5%, 55.0% 44.4%, 55.0% 45.75%, 54.75% 46.5%, 54.3% 47.1%, 53.9% 46.5%, 52.9% 43.6%, 52.9% 41.3%, 53.35% 40.95%, 54.5% 42.5%, 0% 0%);
+}
+.fighter-marx .fighter-sprite { clip-path: inset(0); }
+@keyframes marx-idle-sprite {
+  0%,16% { background-position: 0% 0%; clip-path: inset(0); }
+  17%,33% { background-position: 20% 0%; clip-path: var(--marx-idle-gap); }
+  34%,50% { background-position: 40% 0%; clip-path: var(--marx-idle-gap); }
+  51%,67% { background-position: 60% 0%; clip-path: inset(0); }
+  68%,84% { background-position: 80% 0%; clip-path: inset(0); }
+  85%,100% { background-position: 100% 0%; clip-path: var(--marx-idle-gap); }
+}
+@keyframes marx-walk-sprite {
+  0%,16% { background-position: 0% 20%; clip-path: inset(0); }
+  17%,33% { background-position: 20% 20%; clip-path: inset(0); }
+  34%,50% { background-position: 40% 20%; clip-path: var(--marx-walk-gap-a); }
+  51%,67% { background-position: 60% 20%; clip-path: inset(0); }
+  68%,84% { background-position: 80% 20%; clip-path: inset(0); }
+  85%,100% { background-position: 100% 20%; clip-path: var(--marx-walk-gap-b); }
+}

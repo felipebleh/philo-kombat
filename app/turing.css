@@ -1,0 +1,187 @@
+/* Alan Turing — Bletchley Park, cryptanalysis and the universal machine. */
+.battle-frame.arena-bletchley-park {
+  background:
+    linear-gradient(180deg, rgba(255,250,231,.02), rgba(61,45,25,.12)),
+    url("/game/arena-bletchley-park.webp?v=4.11") center 56% / cover no-repeat;
+}
+.battle-frame.arena-bletchley-park .dialogue-overlay,
+.battle-frame.arena-bletchley-park .post-fight-overlay,
+.battle-frame.arena-bletchley-park .result-overlay,
+.battle-frame.arena-bletchley-park .round-result-overlay {
+  background:
+    linear-gradient(90deg, rgba(22,31,36,.94), rgba(45,69,73,.52), rgba(28,24,19,.9)),
+    url("/game/arena-bletchley-park.webp?v=4.11") center 56% / cover no-repeat;
+}
+.battle-frame.arena-bletchley-park .temple-banner,
+.battle-frame.arena-bletchley-park .torch,
+.battle-frame.arena-bletchley-park .bird { opacity:0; }
+.battle-frame.arena-bletchley-park .dust { background:rgba(89,180,190,.12); filter:blur(5px); }
+
+.fighter-turing {
+  bottom:2.8%;
+  width:clamp(225px,28vw,420px);
+  height:82%;
+  --turing-lunge:18%;
+  --turing-sweep:22%;
+  --turing-recoil:-4%;
+}
+.fighter-enemy.fighter-turing {
+  --turing-lunge:-18%;
+  --turing-sweep:-22%;
+  --turing-recoil:4%;
+}
+.fighter-turing .fighter-aura {
+  background:radial-gradient(ellipse at 50% 72%, rgba(71,201,219,.34), rgba(214,157,62,.14) 48%, transparent 70%);
+}
+.turing-sheet,
+.fighter-turing .turing-sheet {
+  inset:auto auto 0 50%;
+  width:auto;
+  height:100%;
+  aspect-ratio:175 / 192;
+  background:url("/game/turing-fullbody-hq.webp?v=4.11") 50% 100% / contain no-repeat;
+  image-rendering:auto;
+  transform-origin:50% 100%;
+  animation:none;
+  will-change:transform,filter;
+}
+.fighter-player.fighter-turing .fighter-sprite { transform:translateX(-50%); }
+.fighter-enemy.fighter-turing .fighter-sprite { transform:translateX(-50%) scaleX(-1); }
+.fighter-player.fighter-turing.idle .fighter-sprite { animation:turing-idle-player 2.05s ease-in-out infinite !important; }
+.fighter-enemy.fighter-turing.idle .fighter-sprite { animation:turing-idle-enemy 2.05s ease-in-out infinite !important; }
+.fighter-turing:is(.guard,.guard-hit,.jump,.hit,.knocked-out,.special-break-enigma) .fighter-sprite {
+  background-image:url("/game/turing-fullbody-hq.webp?v=4.11");
+  background-position:50% 100%;
+  background-size:contain;
+}
+.fighter-turing.special-universal-machine .fighter-sprite { opacity:0; }
+.fighter-turing.victory .fighter-sprite {
+  background-image:url("/game/turing-victory-hq.webp?v=4.11");
+  background-position:50% 100%;
+  background-size:contain;
+  animation:turing-victory 940ms cubic-bezier(.2,.75,.2,1) both !important;
+}
+.fighter-turing.advance,
+.fighter-turing.retreat { animation:none; transition:left 720ms cubic-bezier(.32,.04,.64,.96); }
+.fighter-turing:is(.advance,.retreat) .fighter-sprite {
+  animation:none !important;
+  background-position:50% 100%;
+  background-size:contain;
+}
+.turing-walk-canvas { display:none; width:100%; height:100%; transform-origin:50% 100%; }
+.fighter-turing:is(.advance,.retreat) .turing-walk-canvas[data-ready="true"] { display:block; }
+.fighter-turing:is(.advance,.retreat) .fighter-sprite:has(.turing-walk-canvas[data-ready="true"]) { background-image:none; }
+.fighter-turing:is(.advance,.retreat) .turing-walk-canvas[data-ready="true"] { animation:turing-walk-weight 720ms ease-in-out both; }
+
+.fighter-turing:is(.attack-punch,.attack-kick,.attack-combo) .fighter-sprite {
+  background-position:50% 100%;
+  background-size:contain;
+  background-repeat:no-repeat;
+}
+.fighter-turing.attack-punch .fighter-sprite { background-image:url("/game/turing-punch-hq.webp?v=4.11"); }
+.fighter-turing.attack-kick .fighter-sprite { background-image:url("/game/turing-kick-hq.webp?v=4.11"); }
+.fighter-turing.attack-combo .fighter-sprite { animation:turing-combo-poses 940ms steps(1,end) both !important; }
+.fighter-turing.attack-punch { animation:turing-jab 520ms cubic-bezier(.12,.76,.2,1); }
+.fighter-turing.attack-kick { animation:turing-kick 650ms cubic-bezier(.12,.72,.2,1); }
+.fighter-turing.attack-combo { animation:turing-combo 940ms cubic-bezier(.12,.74,.2,1); }
+.fighter-turing.special-break-enigma { animation:turing-channel 1450ms ease-out; }
+.fighter-turing.special-universal-machine { animation:turing-channel 1850ms ease-out; }
+.fighter-turing.hit .fighter-sprite { filter:brightness(1.2) saturate(.72); }
+.fighter-turing.knocked-out .fighter-sprite { transform:translateX(-50%) rotate(-75deg) translateY(10%); }
+.fighter-enemy.fighter-turing.knocked-out .fighter-sprite { transform:translateX(-50%) scaleX(-1) rotate(-75deg) translateY(10%); }
+.fighter-turing:is(.attack-punch,.attack-kick,.attack-combo)::after {
+  content:""; position:absolute; z-index:7; right:-3%; top:39%; width:27%; aspect-ratio:1; border-radius:50%;
+  background:radial-gradient(circle,#fff 0 8%,rgba(105,225,244,.9) 13%,rgba(221,164,64,.38) 42%,transparent 70%);
+  animation:turing-contact 520ms ease-out both;
+}
+.fighter-enemy.fighter-turing:is(.attack-punch,.attack-kick,.attack-combo)::after { right:auto; left:-3%; }
+.fighter-turing.attack-kick::after { top:47%; width:29%; animation-duration:650ms; }
+.fighter-turing.attack-combo::after { top:33%; width:33%; animation-duration:940ms; }
+
+.select-overlay.select-turing {
+  background:
+    linear-gradient(90deg,rgba(17,31,38,.95),rgba(84,106,102,.44),rgba(38,29,18,.89)),
+    url("/game/arena-bletchley-park.webp?v=4.11") center 56% / cover no-repeat;
+}
+.showcase-turing::after { background:linear-gradient(90deg,rgba(50,174,194,.3),rgba(202,145,49,.15)); }
+.showcase-turing .fighter-biography { border-left-color:#69d7e7; }
+.portrait-turing img,
+.ending-turing img { object-fit:contain; object-position:50% 100%; }
+.dialogue-turing { height:108%; bottom:-18%; }
+.dialogue-turing > span { color:#caf8ff; }
+
+.effect-turing-enigma .special-colorwash {
+  background:radial-gradient(circle at 50% 50%,rgba(83,218,238,.42),rgba(96,84,46,.28) 42%,rgba(13,24,29,.64) 82%);
+  animation:turing-colorwash 1500ms ease-out;
+}
+.effect-turing-universal-machine .special-colorwash {
+  background:radial-gradient(circle at 50% 54%,rgba(83,218,238,.35),rgba(151,109,35,.27) 45%,rgba(10,19,24,.7) 84%);
+  animation:turing-colorwash 1900ms ease-out;
+}
+.turing-effect { position:absolute; inset:0; z-index:32; pointer-events:none; overflow:hidden; }
+.turing-effect > b {
+  position:absolute; z-index:20; left:50%; top:17%; transform:translateX(-50%);
+  color:#e6fbff; font-family:var(--font-display),Georgia,serif; font-size:clamp(1.05rem,2.2vw,2.2rem);
+  letter-spacing:.12em; text-align:center; text-shadow:0 2px 0 #09242d,0 0 18px rgba(78,218,239,.84);
+  white-space:nowrap; animation:turing-title 1500ms ease-out both;
+}
+.turing-universal-machine > b { animation-duration:1900ms; }
+.turing-enigma-rotors {
+  position:absolute; z-index:13; left:var(--turing-target); top:53%; width:clamp(250px,32vw,500px); height:auto;
+  transform:translate(-50%,-50%); object-fit:contain; opacity:0;
+  filter:drop-shadow(0 12px 15px rgba(0,0,0,.58)) drop-shadow(0 0 22px rgba(70,216,240,.8));
+  animation:turing-rotors 1500ms cubic-bezier(.13,.72,.18,1) both;
+}
+.turing-enigma-impact {
+  position:absolute; z-index:14; left:var(--turing-target); top:55%; width:clamp(90px,12vw,180px); aspect-ratio:1; border-radius:50%;
+  background:radial-gradient(circle,#fff 0 7%,#a8f5ff 13%,rgba(64,189,216,.72) 34%,transparent 71%);
+  animation:turing-impact 1500ms ease-out both;
+}
+.turing-computer {
+  position:absolute; z-index:13; left:var(--turing-origin); bottom:1%; width:clamp(300px,34vw,535px); height:auto;
+  transform:translateX(-50%) scaleX(var(--turing-facing)); transform-origin:50% 100%; object-fit:contain; opacity:0;
+  filter:drop-shadow(0 14px 13px rgba(0,0,0,.62)) drop-shadow(0 0 16px rgba(72,207,229,.52));
+  animation:turing-computer-start 1900ms cubic-bezier(.14,.72,.18,1) both;
+}
+.turing-target-lock {
+  position:absolute; z-index:15; left:var(--turing-target); top:53%; width:clamp(96px,12vw,178px); aspect-ratio:1;
+  display:grid; place-items:center; transform:translate(-50%,-50%); border:3px solid rgba(119,234,250,.82); border-radius:50%;
+  color:#e9fdff; font:800 clamp(1rem,2vw,2rem)/1 var(--font-mono),monospace; letter-spacing:.16em;
+  box-shadow:0 0 0 10px rgba(75,205,226,.12),inset 0 0 28px rgba(75,205,226,.28),0 0 25px rgba(75,205,226,.72);
+  opacity:0; animation:turing-lock 1900ms steps(2,end) both;
+}
+.turing-target-lock::before,
+.turing-target-lock::after { content:""; position:absolute; inset:50% -22%; height:2px; background:rgba(140,239,252,.85); }
+.turing-target-lock::after { inset:-22% 50%; width:2px; height:auto; }
+.turing-digital-explosion {
+  position:absolute; z-index:18; left:var(--turing-target); top:54%; width:clamp(290px,37vw,570px); height:auto;
+  transform:translate(-50%,-50%); object-fit:contain; opacity:0; mix-blend-mode:screen;
+  filter:drop-shadow(0 0 26px rgba(87,221,244,.92));
+  animation:turing-explosion 1900ms cubic-bezier(.13,.72,.18,1) both;
+}
+
+@keyframes turing-idle-player { 0%,100%{transform:translateX(-50%) translateY(0)} 28%{transform:translateX(-50%) translateY(-.34%) rotate(-.12deg)} 57%{transform:translateX(-50%) translateY(-.72%) rotate(.1deg)} 82%{transform:translateX(-50%) translateY(-.25%) rotate(.12deg)} }
+@keyframes turing-idle-enemy { 0%,100%{transform:translateX(-50%) scaleX(-1) translateY(0)} 28%{transform:translateX(-50%) scaleX(-1) translateY(-.34%) rotate(-.12deg)} 57%{transform:translateX(-50%) scaleX(-1) translateY(-.72%) rotate(.1deg)} 82%{transform:translateX(-50%) scaleX(-1) translateY(-.25%) rotate(.12deg)} }
+@keyframes turing-walk-weight { 0%,50%,100%{transform:translateY(0) rotate(0)} 25%{transform:translateY(-.38%) rotate(-.18deg)} 75%{transform:translateY(-.38%) rotate(.18deg)} }
+@keyframes turing-jab { 0%,100%{transform:translateX(-50%)} 22%{transform:translateX(-50%) translateX(var(--turing-recoil))} 58%{transform:translateX(-50%) translateX(var(--turing-lunge)) rotate(-2deg)} }
+@keyframes turing-kick { 0%,100%{transform:translateX(-50%)} 24%{transform:translateX(-50%) translateX(var(--turing-recoil))} 62%{transform:translateX(-50%) translateX(var(--turing-sweep)) rotate(-3deg)} }
+@keyframes turing-combo { 0%,100%{transform:translateX(-50%)} 19%,48%{transform:translateX(-50%) translateX(var(--turing-lunge)) rotate(-2deg)} 68%{transform:translateX(-50%) translateX(var(--turing-sweep)) rotate(3deg)} }
+@keyframes turing-combo-poses { 0%,18%,90%,100%{background-image:url("/game/turing-fullbody-hq.webp?v=4.11")} 19%,39%{background-image:url("/game/turing-punch-hq.webp?v=4.11")} 40%,62%{background-image:url("/game/turing-kick-hq.webp?v=4.11")} 63%,89%{background-image:url("/game/turing-combo-hq.webp?v=4.11")} }
+@keyframes turing-channel { 0%,100%{filter:brightness(1)} 68%{filter:brightness(1.18) drop-shadow(0 0 22px #4bcce2)} }
+@keyframes turing-victory { 0%{opacity:.72;transform:translateX(-50%) translateY(3%)} 62%,100%{opacity:1;transform:translateX(-50%) translateY(0);filter:drop-shadow(0 0 20px rgba(76,207,228,.5))} }
+@keyframes turing-contact { 0%,32%{opacity:0;transform:scale(.2)} 45%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(2.8)} }
+@keyframes turing-colorwash { 0%,100%{opacity:0} 17%,91%{opacity:1} }
+@keyframes turing-title { 0%,22%,100%{opacity:0;transform:translateX(-50%) translateY(14px)} 40%,90%{opacity:1;transform:translateX(-50%) translateY(0)} }
+@keyframes turing-rotors { 0%,12%{opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(-120deg)} 28%{opacity:1} 65%{opacity:1;transform:translate(-50%,-50%) scale(1.03) rotate(55deg)} 82%{opacity:1;filter:brightness(1.5) drop-shadow(0 0 36px rgba(83,226,248,.98))} 100%{opacity:0;transform:translate(-50%,-50%) scale(1.34) rotate(105deg)} }
+@keyframes turing-impact { 0%,58%{opacity:0;transform:translate(-50%,-50%) scale(.12)} 69%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(4.8)} }
+@keyframes turing-computer-start { 0%,8%{opacity:0;transform:translateX(-50%) scaleX(var(--turing-facing)) translateY(8%) scale(.82)} 22%,82%{opacity:1;transform:translateX(-50%) scaleX(var(--turing-facing)) translateY(0) scale(1)} 100%{opacity:0;transform:translateX(-50%) scaleX(var(--turing-facing)) translateY(-2%) scale(1.03)} }
+@keyframes turing-lock { 0%,38%{opacity:0;transform:translate(-50%,-50%) scale(1.3) rotate(-18deg)} 48%,72%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0)} 78%,100%{opacity:0;transform:translate(-50%,-50%) scale(.72) rotate(12deg)} }
+@keyframes turing-explosion { 0%,70%{opacity:0;transform:translate(-50%,-50%) scale(.08) rotate(-18deg)} 78%{opacity:1;transform:translate(-50%,-50%) scale(.82) rotate(0)} 88%{opacity:1;transform:translate(-50%,-50%) scale(1.12) rotate(5deg)} 100%{opacity:0;transform:translate(-50%,-50%) scale(1.65) rotate(9deg)} }
+
+@media (max-width:760px) {
+  .fighter-turing { width:clamp(210px,42vw,330px); height:78%; }
+  .turing-effect > b { letter-spacing:.04em; max-width:92%; white-space:normal; }
+  .turing-enigma-rotors { width:clamp(240px,61vw,420px); }
+  .turing-computer { width:clamp(275px,64vw,450px); }
+  .turing-digital-explosion { width:clamp(265px,67vw,470px); }
+}

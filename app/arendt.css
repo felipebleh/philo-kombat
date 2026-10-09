@@ -1,0 +1,357 @@
+/* Hannah Arendt — Eichmann courtroom, constant-scale frames and fluid motion. */
+.battle-frame.arena-eichmann-courtroom {
+  background:
+    linear-gradient(180deg,rgba(239,226,194,.04),rgba(44,30,22,.24)),
+    url("/game/arena-eichmann-courtroom.webp?v=4.3") center 57% / cover no-repeat;
+}
+.battle-frame.arena-eichmann-courtroom .dialogue-overlay,
+.battle-frame.arena-eichmann-courtroom .post-fight-overlay,
+.battle-frame.arena-eichmann-courtroom .result-overlay,
+.battle-frame.arena-eichmann-courtroom .round-result-overlay {
+  background:
+    linear-gradient(90deg,rgba(28,23,19,.91),rgba(71,55,39,.64),rgba(25,21,18,.9)),
+    url("/game/arena-eichmann-courtroom.webp?v=4.3") center 57% / cover no-repeat;
+}
+.battle-frame.arena-eichmann-courtroom .temple-banner,
+.battle-frame.arena-eichmann-courtroom .torch,
+.battle-frame.arena-eichmann-courtroom .bird { opacity: 0; }
+.battle-frame.arena-eichmann-courtroom .dust {
+  background: rgba(218,194,148,.18);
+  filter: blur(4px);
+}
+
+.fighter-arendt {
+  bottom: 2.8%;
+  width: clamp(225px,28vw,420px);
+  height: 82%;
+  --arendt-lunge: 18%;
+  --arendt-sweep: 23%;
+  --arendt-recoil: -4%;
+}
+.fighter-enemy.fighter-arendt {
+  --arendt-lunge: -18%;
+  --arendt-sweep: -23%;
+  --arendt-recoil: 4%;
+}
+.fighter-arendt .fighter-aura {
+  background: radial-gradient(ellipse at 50% 72%,rgba(245,220,160,.45),rgba(123,72,38,.12) 48%,transparent 70%);
+}
+.arendt-sheet,
+.fighter-arendt .arendt-sheet {
+  inset: auto auto 0 50%;
+  width: auto;
+  height: 100%;
+  aspect-ratio: 4 / 3;
+  background: url("/game/arendt-guard-frame.webp?v=4.3") 50% 100% / contain no-repeat;
+  image-rendering: auto;
+  transform-origin: 50% 100%;
+  animation: none;
+  will-change: transform,filter;
+}
+.fighter-player.fighter-arendt .fighter-sprite { transform: translateX(-50%); }
+.fighter-enemy.fighter-arendt .fighter-sprite { transform: translateX(-50%) scaleX(-1); }
+.fighter-player.fighter-arendt.idle .fighter-sprite { animation: arendt-idle-player 2.35s ease-in-out infinite !important; }
+.fighter-enemy.fighter-arendt.idle .fighter-sprite { animation: arendt-idle-enemy 2.35s ease-in-out infinite !important; }
+.fighter-arendt:is(.guard,.guard-hit,.jump,.hit,.victory,.knocked-out,.special-banality,.special-natality) .fighter-sprite {
+  background-image: url("/game/arendt-guard-frame.webp?v=4.3");
+  background-position: 50% 100%;
+  background-size: contain;
+}
+.fighter-arendt.advance,
+.fighter-arendt.retreat { animation: none; transition: left 720ms cubic-bezier(.35,.05,.65,.95); }
+.fighter-arendt:is(.advance,.retreat) .fighter-sprite {
+  animation: none !important;
+  background-position: 50% 100%;
+  background-size: contain;
+}
+.arendt-walk-canvas {
+  display: none;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 100%;
+}
+.fighter-arendt:is(.advance,.retreat) .arendt-walk-canvas[data-ready="true"] { display: block; }
+.fighter-arendt:is(.advance,.retreat) .fighter-sprite:has(.arendt-walk-canvas[data-ready="true"]) { background-image: none; }
+.fighter-arendt:is(.advance,.retreat) .arendt-walk-canvas[data-ready="true"] {
+  animation: arendt-walk-weight 720ms ease-in-out both;
+}
+
+.fighter-arendt:is(.attack-punch,.attack-kick,.attack-combo) .fighter-sprite {
+  background-position: 50% 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.fighter-arendt.attack-punch .fighter-sprite { background-image: url("/game/arendt-punch-hq.webp?v=4.3"); }
+.fighter-arendt.attack-kick .fighter-sprite { background-image: url("/game/arendt-kick-hq.webp?v=4.3"); }
+.fighter-arendt.attack-combo .fighter-sprite { animation: arendt-combo-poses 940ms steps(1,end) both !important; }
+.fighter-arendt.attack-punch { animation: arendt-jab 520ms cubic-bezier(.12,.76,.2,1); }
+.fighter-arendt.attack-kick { animation: arendt-kick 650ms cubic-bezier(.12,.72,.2,1); }
+.fighter-arendt.attack-combo { animation: arendt-combo 940ms cubic-bezier(.12,.74,.2,1); }
+.fighter-arendt.special-banality,
+.fighter-arendt.special-natality { animation: arendt-channel 1450ms ease-out; }
+.fighter-arendt.hit .fighter-sprite { filter: brightness(1.2) saturate(.72); }
+.fighter-arendt.knocked-out .fighter-sprite { transform: translateX(-50%) rotate(-75deg) translateY(10%); }
+.fighter-enemy.fighter-arendt.knocked-out .fighter-sprite { transform: translateX(-50%) scaleX(-1) rotate(-75deg) translateY(10%); }
+.fighter-arendt:is(.attack-punch,.attack-kick,.attack-combo)::after {
+  content: "";
+  position: absolute;
+  z-index: 7;
+  right: -3%;
+  top: 39%;
+  width: 27%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle,#fff7dc 0 8%,rgba(231,185,87,.86) 13%,rgba(123,47,30,.27) 41%,transparent 70%);
+  animation: arendt-contact 520ms ease-out both;
+}
+.fighter-enemy.fighter-arendt:is(.attack-punch,.attack-kick,.attack-combo)::after { right: auto; left: -3%; }
+.fighter-arendt.attack-kick::after { top: 49%; width: 29%; animation-duration: 650ms; }
+.fighter-arendt.attack-combo::after { top: 40%; width: 31%; animation-duration: 940ms; }
+
+.select-overlay.select-arendt {
+  background:
+    linear-gradient(90deg,rgba(28,22,18,.96),rgba(87,64,40,.65),rgba(24,20,17,.92)),
+    url("/game/arena-eichmann-courtroom.webp?v=4.3") center 57% / cover no-repeat;
+}
+.showcase-arendt::after { background: linear-gradient(90deg,rgba(183,118,62,.34),rgba(18,13,10,.15)); }
+.showcase-arendt .fighter-biography { border-left-color: #c68b51; }
+.portrait-arendt img,
+.ending-arendt img { object-fit: contain; object-position: 50% 100%; }
+.dialogue-arendt { height: 108%; bottom: -18%; }
+.dialogue-arendt > span { color: #ffe4ac; }
+
+.effect-arendt-banality .special-colorwash {
+  background: radial-gradient(circle at var(--arendt-target) 50%,rgba(190,18,28,.31),rgba(75,47,32,.42) 30%,rgba(13,10,9,.87) 74%);
+  animation: arendt-colorwash 1500ms ease-out;
+}
+.effect-arendt-natality .special-colorwash {
+  background: radial-gradient(circle at var(--arendt-target) 49%,rgba(255,248,205,.58),rgba(145,105,44,.26) 37%,rgba(17,13,10,.82) 78%);
+  animation: arendt-colorwash 1900ms ease-out;
+}
+.arendt-effect { position: absolute; inset: 0; z-index: 32; pointer-events: none; }
+.arendt-effect > b {
+  position: absolute;
+  z-index: 15;
+  left: 50%;
+  top: 17%;
+  transform: translateX(-50%);
+  color: #fff1c6;
+  font-family: var(--font-display),Georgia,serif;
+  font-size: clamp(1.05rem,2.25vw,2.2rem);
+  letter-spacing: .12em;
+  text-shadow: 0 2px 0 #1d100a,0 0 18px rgba(218,156,80,.76);
+  white-space: nowrap;
+  animation: arendt-title 1500ms ease-out both;
+}
+.arendt-bureaucracy {
+  position: absolute;
+  z-index: 7;
+  left: var(--arendt-target);
+  top: 51%;
+  width: clamp(170px,23vw,350px);
+  height: 62%;
+  transform: translate(-50%,-50%);
+  animation: arendt-paper-cage 1500ms ease-in-out both;
+}
+.arendt-bureaucracy i {
+  position: absolute;
+  width: 72%;
+  padding: .7rem .55rem;
+  border: 1px solid #9c8766;
+  background:
+    repeating-linear-gradient(180deg,transparent 0 8px,rgba(57,43,31,.18) 8px 9px),
+    #eee1c2;
+  color: #493524;
+  font-style: normal;
+  font-size: clamp(.58rem,1vw,.9rem);
+  font-weight: 900;
+  letter-spacing: .14em;
+  text-align: center;
+  box-shadow: 0 7px 16px rgba(17,10,7,.45);
+}
+.arendt-bureaucracy i:nth-child(1) { left: -4%; top: 6%; transform: rotate(-11deg); }
+.arendt-bureaucracy i:nth-child(2) { right: -4%; top: 36%; transform: rotate(9deg); }
+.arendt-bureaucracy i:nth-child(3) { left: 10%; top: 68%; transform: rotate(-4deg); }
+.arendt-stamp {
+  position: absolute;
+  z-index: 11;
+  left: var(--arendt-target);
+  top: 47%;
+  width: clamp(96px,12vw,180px);
+  height: clamp(150px,20vw,280px);
+  transform: translate(-50%,-50%);
+  transform-origin: 50% 88%;
+  animation: arendt-stamp 1500ms cubic-bezier(.25,.72,.22,1) both;
+}
+.arendt-stamp::before {
+  content: "";
+  position: absolute;
+  left: 33%;
+  top: 0;
+  width: 34%;
+  height: 67%;
+  border: 3px solid #2e170d;
+  border-radius: 30% 30% 12% 12%;
+  background: linear-gradient(90deg,#5b2d17,#a66232 48%,#4c2514);
+  box-shadow: inset 0 0 0 3px rgba(236,172,90,.18),0 7px 10px rgba(16,8,5,.5);
+}
+.arendt-stamp::after {
+  content: "";
+  position: absolute;
+  left: 5%;
+  bottom: 0;
+  width: 90%;
+  height: 26%;
+  border: 5px solid #33150f;
+  border-radius: 8px;
+  background: linear-gradient(#7e261f,#3a100d);
+  box-shadow: 0 6px 0 #190907,0 12px 18px rgba(35,5,5,.6);
+}
+.arendt-stamp span {
+  position: absolute;
+  left: 22%;
+  top: 4%;
+  width: 56%;
+  height: 20%;
+  border-radius: 50%;
+  background: linear-gradient(#b1773f,#6b351d);
+  border: 3px solid #2e170d;
+}
+.arendt-mal-mark {
+  position: absolute;
+  z-index: 12;
+  left: var(--arendt-target);
+  top: 61%;
+  min-width: clamp(105px,13vw,195px);
+  padding: .08em .25em;
+  border: clamp(3px,.45vw,7px) double #a30d18;
+  color: #a30d18;
+  background: rgba(242,221,185,.25);
+  font-family: Impact,"Arial Black",sans-serif;
+  font-size: clamp(2rem,5vw,5.2rem);
+  letter-spacing: .06em;
+  line-height: .88;
+  text-align: center;
+  text-shadow: 1px 0 #681015,-1px 0 rgba(178,31,35,.5);
+  mix-blend-mode: multiply;
+  animation: arendt-mal-mark 1500ms ease-out both;
+}
+.arendt-banality-impact,
+.arendt-natality-impact {
+  position: absolute;
+  z-index: 10;
+  left: var(--arendt-target);
+  top: 55%;
+  width: clamp(70px,10vw,150px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle,#fff 0 6%,#e43b40 12%,rgba(144,11,20,.7) 32%,transparent 70%);
+  animation: arendt-impact 1500ms ease-out both;
+}
+
+.arendt-natality > b { animation-duration: 1900ms; }
+.arendt-new-path {
+  position: absolute;
+  z-index: 5;
+  left: var(--arendt-path-left);
+  top: 63%;
+  width: var(--arendt-path-width);
+  height: 7%;
+  transform-origin: calc(var(--arendt-facing) * -100%) 50%;
+  background: linear-gradient(calc(90deg * var(--arendt-facing)),rgba(241,194,97,.08),#fff3b2,rgba(255,255,240,.12));
+  filter: drop-shadow(0 0 14px #f5cd72);
+  clip-path: polygon(0 43%,100% 0,100% 100%,0 57%);
+  animation: arendt-path-open 1900ms ease-out both;
+}
+.arendt-doorway {
+  position: absolute;
+  z-index: 7;
+  left: var(--arendt-target);
+  top: 50%;
+  width: clamp(105px,14vw,210px);
+  height: 55%;
+  transform: translate(-50%,-50%);
+  border: clamp(5px,.7vw,10px) solid #efc768;
+  border-bottom: 0;
+  background: linear-gradient(90deg,rgba(103,58,22,.66),rgba(255,252,218,.98));
+  box-shadow: 0 0 30px #ffe89a,inset 0 0 24px #fff;
+  perspective: 500px;
+  animation: arendt-door-open 1900ms cubic-bezier(.2,.72,.2,1) both;
+}
+.arendt-doorway span {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg,#53311c,#95653b);
+  border-right: 4px solid #32190e;
+  animation: arendt-door-panel 1900ms ease-out both;
+}
+.arendt-natality-ring {
+  position: absolute;
+  z-index: 9;
+  left: var(--arendt-target);
+  top: 52%;
+  width: clamp(130px,18vw,275px);
+  aspect-ratio: 1;
+  border: 4px solid rgba(255,235,151,.88);
+  border-radius: 50%;
+  box-shadow: 0 0 25px #ffe790,inset 0 0 22px rgba(255,244,185,.5);
+  animation: arendt-natality-ring 1900ms ease-out both;
+}
+.arendt-natality-ring.ring-two { width: clamp(85px,12vw,185px); animation-delay: 90ms; }
+.arendt-natality-impact {
+  background: radial-gradient(circle,#fff 0 7%,#fff0a2 13%,rgba(219,158,55,.64) 34%,transparent 72%);
+  animation-duration: 1900ms;
+}
+
+@keyframes arendt-idle-player {
+  0%,100%{transform:translateX(-50%) translateY(0) rotate(0)}
+  24%{transform:translateX(-50%) translateY(-.3%) rotate(-.12deg)}
+  52%{transform:translateX(-50%) translateY(-.65%) rotate(.08deg)}
+  76%{transform:translateX(-50%) translateY(-.25%) rotate(.14deg)}
+}
+@keyframes arendt-idle-enemy {
+  0%,100%{transform:translateX(-50%) scaleX(-1) translateY(0) rotate(0)}
+  24%{transform:translateX(-50%) scaleX(-1) translateY(-.3%) rotate(-.12deg)}
+  52%{transform:translateX(-50%) scaleX(-1) translateY(-.65%) rotate(.08deg)}
+  76%{transform:translateX(-50%) scaleX(-1) translateY(-.25%) rotate(.14deg)}
+}
+@keyframes arendt-walk-weight {
+  0%,50%,100%{transform:translateY(0) rotate(0)}
+  25%{transform:translateY(-.28%) rotate(-.16deg)}
+  75%{transform:translateY(-.28%) rotate(.16deg)}
+}
+@keyframes arendt-jab { 0%,100%{transform:translateX(-50%)} 22%{transform:translateX(-50%) translateX(var(--arendt-recoil))} 58%{transform:translateX(-50%) translateX(var(--arendt-lunge)) rotate(-2deg)} }
+@keyframes arendt-kick { 0%,100%{transform:translateX(-50%)} 24%{transform:translateX(-50%) translateX(var(--arendt-recoil))} 62%{transform:translateX(-50%) translateX(var(--arendt-sweep)) rotate(-3deg)} }
+@keyframes arendt-combo { 0%,100%{transform:translateX(-50%)} 19%,48%{transform:translateX(-50%) translateX(var(--arendt-lunge)) rotate(-2deg)} 68%{transform:translateX(-50%) translateX(var(--arendt-sweep)) rotate(3deg)} }
+@keyframes arendt-combo-poses { 0%,18%,90%,100%{background-image:url("/game/arendt-guard-frame.webp?v=4.3")} 19%,39%{background-image:url("/game/arendt-punch-hq.webp?v=4.3")} 40%,62%{background-image:url("/game/arendt-kick-hq.webp?v=4.3")} 63%,89%{background-image:url("/game/arendt-combo-hq.webp?v=4.3")} }
+@keyframes arendt-channel { 0%,100%{filter:brightness(1)} 68%{filter:brightness(1.17) drop-shadow(0 0 22px #d49c58)} }
+@keyframes arendt-contact { 0%,32%{opacity:0;transform:scale(.2)} 45%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(2.8)} }
+@keyframes arendt-colorwash { 0%,100%{opacity:0} 17%,91%{opacity:1} }
+@keyframes arendt-title { 0%,22%,100%{opacity:0;transform:translateX(-50%) translateY(14px)} 40%,90%{opacity:1;transform:translateX(-50%) translateY(0)} }
+@keyframes arendt-paper-cage { 0%,14%{opacity:0;transform:translate(-50%,-50%) scale(1.4)} 30%,82%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(.8)} }
+@keyframes arendt-stamp {
+  0%,20%{opacity:0;transform:translate(-50%,-165%) rotate(-10deg)}
+  34%{opacity:1;transform:translate(-50%,-112%) rotate(7deg)}
+  64%{transform:translate(-50%,-68%) rotate(-4deg)}
+  79%{transform:translate(-50%,-23%) rotate(0)}
+  85%{transform:translate(-50%,-44%) rotate(3deg)}
+  100%{opacity:0;transform:translate(-50%,-64%) rotate(7deg)}
+}
+@keyframes arendt-mal-mark {
+  0%,78%{opacity:0;transform:translate(-50%,-50%) rotate(-7deg) scale(1.8)}
+  79%{opacity:1;transform:translate(-50%,-50%) rotate(-7deg) scale(.91)}
+  84%,94%{opacity:.9;transform:translate(-50%,-50%) rotate(-7deg) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-50%) rotate(-7deg) scale(1.06)}
+}
+@keyframes arendt-impact { 0%,76%{opacity:0;transform:translate(-50%,-50%) scale(.14)} 79%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(4.4)} }
+@keyframes arendt-path-open { 0%,18%{opacity:0;transform:scaleX(0)} 48%,88%{opacity:1;transform:scaleX(1)} 100%{opacity:0;transform:scaleX(1.08)} }
+@keyframes arendt-door-open { 0%,18%{opacity:0;transform:translate(-50%,-50%) scale(.7)} 34%,88%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(1.18)} }
+@keyframes arendt-door-panel { 0%,28%{transform:rotateY(0)} 64%,100%{transform:rotateY(-78deg)} }
+@keyframes arendt-natality-ring { 0%,45%{opacity:0;transform:translate(-50%,-50%) scale(.2)} 62%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(2.4)} }
+
+@media (max-width: 760px) {
+  .fighter-arendt { width: clamp(210px,42vw,330px); height: 78%; }
+  .arendt-effect > b { letter-spacing: .05em; max-width: 92%; text-align: center; white-space: normal; }
+  .arendt-bureaucracy { width: clamp(140px,34vw,250px); }
+}

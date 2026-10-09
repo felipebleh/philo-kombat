@@ -7,13 +7,21 @@
   },
   "scripts": {
     "install:ci": "bash scripts/install-ci.sh",
-    "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vite",
-    "build": "bash scripts/build-verified.sh",
-    "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
-    "test": "npm run build && node --test tests/rendered-html.test.mjs",
+    "dev": "vite --config vite.beta.config.ts",
+    "build": "npm run build:beta",
+    "start": "vite preview --config vite.beta.config.ts",
+    "test": "npm run test:beta",
     "validate:artifact": "bash scripts/validate-artifact.sh",
     "lint": "bash scripts/sites-env.sh -- eslint . --ignore-pattern dist --ignore-pattern .next",
-    "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate"
+    "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate",
+    "dev:beta": "vite --config vite.beta.config.ts",
+    "build:beta": "node scripts/verify-beta.mjs source && vite build --config vite.beta.config.ts && node scripts/verify-beta.mjs dist",
+    "preview:beta": "vite preview --config vite.beta.config.ts",
+    "test:beta": "node --test tests/angela-davis.test.mjs tests/arendt.test.mjs tests/assets.test.mjs tests/augustine-walk.test.mjs tests/beauvoir.test.mjs tests/combat-audio.test.mjs tests/darwin-walk.test.mjs tests/deleuze.test.mjs tests/doctor-story.test.mjs tests/fanon.test.mjs tests/felipe.test.mjs tests/foucault.test.mjs tests/kierkegaard.test.mjs tests/krenak.test.mjs tests/olympe-walk.test.mjs tests/paulo-freire.test.mjs tests/soundtrack.test.mjs tests/story-loading.test.mjs tests/story-mode.test.mjs tests/superintelligence.test.mjs tests/versus-selection.test.mjs tests/wittgenstein.test.mjs",
+    "dev:sites": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vite",
+    "build:sites": "bash scripts/build-verified.sh",
+    "start:sites": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
+    "test:sites": "npm run build && node --test tests/rendered-html.test.mjs tests/story-mode.test.mjs"
   },
   "dependencies": {
     "drizzle-orm": "0.45.2",

@@ -1,0 +1,256 @@
+/* Foucault — white clinic, constant-scale combat frames and target-bound specials. */
+.battle-frame.arena-hospital-panoptico {
+  background:
+    linear-gradient(180deg,rgba(245,252,255,.04),rgba(168,190,199,.15)),
+    url("/game/arena-hospital-panoptico.webp?v=4.2") center 58% / cover no-repeat;
+}
+.battle-frame.arena-hospital-panoptico .dialogue-overlay,
+.battle-frame.arena-hospital-panoptico .post-fight-overlay,
+.battle-frame.arena-hospital-panoptico .result-overlay,
+.battle-frame.arena-hospital-panoptico .round-result-overlay {
+  background:
+    linear-gradient(90deg,rgba(236,246,249,.91),rgba(241,248,250,.73),rgba(222,235,239,.88)),
+    url("/game/arena-hospital-panoptico.webp?v=4.2") center 58% / cover no-repeat;
+  color: #10191d;
+}
+.battle-frame.arena-hospital-panoptico .temple-banner,
+.battle-frame.arena-hospital-panoptico .torch,
+.battle-frame.arena-hospital-panoptico .bird { opacity: 0; }
+.battle-frame.arena-hospital-panoptico .dust {
+  background: rgba(147,179,188,.2);
+  filter: blur(3px);
+}
+
+.fighter-foucault {
+  bottom: 2.8%;
+  width: clamp(225px,28vw,420px);
+  height: 82%;
+  --foucault-lunge: 18%;
+  --foucault-sweep: 23%;
+  --foucault-recoil: -4%;
+}
+.fighter-enemy.fighter-foucault {
+  --foucault-lunge: -18%;
+  --foucault-sweep: -23%;
+  --foucault-recoil: 4%;
+}
+.fighter-foucault .fighter-aura {
+  background: radial-gradient(ellipse at 50% 72%,rgba(211,243,249,.48),rgba(91,147,162,.12) 48%,transparent 70%);
+}
+.foucault-sheet,
+.fighter-foucault .foucault-sheet {
+  inset: auto auto 0 50%;
+  width: auto;
+  height: 100%;
+  aspect-ratio: 4 / 3;
+  background: url("/game/foucault-guard-frame.webp?v=4.2") 50% 100% / contain no-repeat;
+  image-rendering: auto;
+  transform-origin: 50% 100%;
+  animation: none;
+  will-change: transform,filter;
+}
+.fighter-player.fighter-foucault .fighter-sprite { transform: translateX(-50%); }
+.fighter-enemy.fighter-foucault .fighter-sprite { transform: translateX(-50%) scaleX(-1); }
+.fighter-player.fighter-foucault.idle .fighter-sprite { animation: foucault-idle-player 2.8s ease-in-out infinite !important; }
+.fighter-enemy.fighter-foucault.idle .fighter-sprite { animation: foucault-idle-enemy 2.8s ease-in-out infinite !important; }
+.fighter-foucault:is(.guard,.guard-hit,.jump,.hit,.victory,.knocked-out,.special-panopticon,.special-biopower) .fighter-sprite {
+  background-image: url("/game/foucault-guard-frame.webp?v=4.2");
+  background-position: 50% 100%;
+  background-size: contain;
+}
+.fighter-foucault.advance,
+.fighter-foucault.retreat { animation: none; transition: left 660ms linear; }
+.fighter-foucault:is(.advance,.retreat) .fighter-sprite {
+  animation: none !important;
+  background-position: 50% 100%;
+  background-size: contain;
+}
+.foucault-walk-canvas { display: none; width: 100%; height: 100%; }
+.fighter-foucault:is(.advance,.retreat) .foucault-walk-canvas[data-ready="true"] { display: block; }
+.fighter-foucault:is(.advance,.retreat) .fighter-sprite:has(.foucault-walk-canvas[data-ready="true"]) { background-image: none; }
+
+.fighter-foucault:is(.attack-punch,.attack-kick,.attack-combo) .fighter-sprite {
+  background-position: 50% 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.fighter-foucault.attack-punch .fighter-sprite { background-image: url("/game/foucault-punch-hq.webp?v=4.2"); }
+.fighter-foucault.attack-kick .fighter-sprite { background-image: url("/game/foucault-kick-hq.webp?v=4.2"); }
+.fighter-foucault.attack-combo .fighter-sprite { animation: foucault-combo-poses 940ms steps(1,end) both !important; }
+.fighter-foucault.attack-punch { animation: foucault-jab 520ms cubic-bezier(.12,.76,.2,1); }
+.fighter-foucault.attack-kick { animation: foucault-kick 650ms cubic-bezier(.12,.72,.2,1); }
+.fighter-foucault.attack-combo { animation: foucault-combo 940ms cubic-bezier(.12,.74,.2,1); }
+.fighter-foucault.special-panopticon,
+.fighter-foucault.special-biopower { animation: foucault-channel 1450ms ease-out; }
+.fighter-foucault.hit .fighter-sprite { filter: brightness(1.22) saturate(.68); }
+.fighter-foucault.knocked-out .fighter-sprite { transform: translateX(-50%) rotate(-75deg) translateY(10%); }
+.fighter-enemy.fighter-foucault.knocked-out .fighter-sprite { transform: translateX(-50%) scaleX(-1) rotate(-75deg) translateY(10%); }
+.fighter-foucault:is(.attack-punch,.attack-kick,.attack-combo)::after {
+  content: "";
+  position: absolute;
+  z-index: 7;
+  right: -3%;
+  top: 38%;
+  width: 26%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle,#f8ffff 0 8%,rgba(125,204,222,.84) 13%,rgba(29,91,108,.25) 40%,transparent 69%);
+  animation: foucault-contact 520ms ease-out both;
+}
+.fighter-enemy.fighter-foucault:is(.attack-punch,.attack-kick,.attack-combo)::after { right: auto; left: -3%; }
+.fighter-foucault.attack-kick::after { top: 49%; width: 29%; animation-duration: 650ms; }
+.fighter-foucault.attack-combo::after { top: 39%; width: 31%; animation-duration: 940ms; }
+
+.select-overlay.select-foucault {
+  /* Keep the clinic visible without a full-screen white wash on selection. */
+  background:
+    linear-gradient(90deg,rgba(7,20,29,.94),rgba(16,39,50,.82),rgba(7,20,29,.94)),
+    url("/game/arena-hospital-panoptico.webp?v=4.2") center 58% / cover no-repeat,
+    #0b1b25;
+  color: #edf5f7;
+}
+.showcase-foucault::after { background: linear-gradient(90deg,rgba(157,212,224,.34),rgba(20,40,47,.11)); }
+.showcase-foucault .fighter-biography { border-left-color: #62a9b8; }
+.portrait-foucault img,
+.ending-foucault img { object-fit: contain; object-position: 50% 100%; }
+.dialogue-foucault { height: 108%; bottom: -18%; }
+.dialogue-foucault > span { color: #d7f7ff; }
+
+.effect-foucault-panopticon .special-colorwash {
+  background: radial-gradient(circle at var(--foucault-target) 46%,rgba(238,255,255,.35),rgba(80,130,143,.38) 28%,rgba(8,20,26,.83) 72%);
+  animation: foucault-colorwash 1500ms ease-out;
+}
+.effect-foucault-biopower .special-colorwash {
+  background: radial-gradient(circle at var(--foucault-target) 48%,rgba(223,255,247,.39),rgba(32,107,108,.45) 34%,rgba(5,18,24,.88) 75%);
+  animation: foucault-colorwash 1900ms ease-out;
+}
+.foucault-effect { position: absolute; inset: 0; z-index: 32; pointer-events: none; }
+.foucault-effect > b {
+  position: absolute;
+  z-index: 12;
+  left: 50%;
+  top: 18%;
+  transform: translateX(-50%);
+  color: #eaffff;
+  font-family: var(--font-display),Georgia,serif;
+  font-size: clamp(1.05rem,2.2vw,2.15rem);
+  letter-spacing: .12em;
+  text-shadow: 0 2px 0 #09171d,0 0 18px #6fc2d1;
+  white-space: nowrap;
+  animation: foucault-title 1500ms ease-out both;
+}
+.foucault-panopticon-lock {
+  position: absolute;
+  left: var(--foucault-target);
+  top: 50%;
+  width: clamp(160px,22vw,340px);
+  aspect-ratio: 1;
+  transform: translate(-50%,-50%);
+  animation: foucault-lock 1500ms ease-in-out both;
+}
+.foucault-surveillance-ring {
+  position: absolute;
+  inset: 9%;
+  border: clamp(2px,.35vw,5px) solid rgba(210,249,255,.88);
+  border-radius: 50%;
+  box-shadow: 0 0 18px rgba(102,200,218,.72),inset 0 0 20px rgba(21,74,85,.42);
+}
+.foucault-surveillance-ring.ring-two { inset: 25%; border-style: dashed; animation: foucault-ring-spin 1.3s linear infinite; }
+.foucault-surveillance-ring.ring-three { inset: 40%; background: radial-gradient(circle,#f6ffff 0 10%,#65b4c4 25%,transparent 69%); border: 0; }
+.foucault-searchlight {
+  position: absolute;
+  left: 50%;
+  top: -38%;
+  width: 42%;
+  height: 116%;
+  clip-path: polygon(44% 0,56% 0,100% 100%,0 100%);
+  background: linear-gradient(180deg,rgba(255,255,255,.82),rgba(151,225,237,.06));
+  transform-origin: 50% 0;
+  mix-blend-mode: screen;
+}
+.foucault-searchlight.beam-one { transform: translateX(-50%) rotate(-13deg); }
+.foucault-searchlight.beam-two { transform: translateX(-50%) rotate(13deg); }
+.foucault-prison-bars {
+  position: absolute;
+  inset: 1% 20%;
+  border: 4px solid rgba(218,242,246,.84);
+  background: repeating-linear-gradient(90deg,transparent 0 12%,rgba(210,241,246,.88) 12% 15%);
+  box-shadow: 0 0 22px rgba(65,150,166,.64);
+}
+.foucault-panopticon-impact,
+.foucault-biopower-impact {
+  position: absolute;
+  left: var(--foucault-target);
+  top: 51%;
+  width: clamp(70px,10vw,150px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle,#fff 0 7%,#a7f4ff 11%,rgba(48,148,168,.64) 31%,transparent 69%);
+  animation: foucault-impact 1500ms ease-out both;
+}
+
+.foucault-biopower > b { animation-duration: 1900ms; color: #dffff4; }
+.foucault-institutions {
+  position: absolute;
+  left: var(--foucault-target);
+  top: 50%;
+  width: clamp(210px,28vw,430px);
+  height: 64%;
+  transform: translate(-50%,-50%);
+  animation: foucault-institution-collapse 1900ms cubic-bezier(.3,.8,.2,1) both;
+}
+.foucault-institutions i {
+  position: absolute;
+  min-width: 42%;
+  padding: .42rem .65rem;
+  border: 2px solid rgba(219,247,244,.86);
+  background: rgba(10,46,51,.86);
+  color: #e9fffc;
+  font-style: normal;
+  font-weight: 900;
+  font-size: clamp(.58rem,1vw,.9rem);
+  letter-spacing: .13em;
+  text-align: center;
+  box-shadow: 0 0 16px rgba(76,188,184,.55);
+}
+.foucault-institutions i:nth-child(1) { left: 0; top: 2%; }
+.foucault-institutions i:nth-child(2) { right: 0; top: 26%; }
+.foucault-institutions i:nth-child(3) { left: 0; top: 54%; }
+.foucault-institutions i:nth-child(4) { right: 0; top: 80%; }
+.foucault-vital-grid {
+  position: absolute;
+  left: var(--foucault-target);
+  top: 51%;
+  width: clamp(170px,24vw,370px);
+  height: 46%;
+  transform: translate(-50%,-50%);
+  border: 2px solid rgba(178,241,231,.72);
+  background:
+    linear-gradient(rgba(98,196,188,.22) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(98,196,188,.22) 1px,transparent 1px);
+  background-size: 18px 18px;
+  box-shadow: inset 0 0 28px rgba(13,85,84,.72),0 0 24px rgba(74,184,179,.48);
+  animation: foucault-grid-pulse 1900ms ease-out both;
+}
+.foucault-biopower-impact { animation-duration: 1900ms; background: radial-gradient(circle,#fff 0 7%,#8fffe4 13%,rgba(25,137,126,.72) 34%,transparent 70%); }
+
+@keyframes foucault-idle-player { 0%,100%{transform:translateX(-50%)} 50%{transform:translateX(-50%) translateY(-.35%) rotate(-.1deg)} }
+@keyframes foucault-idle-enemy { 0%,100%{transform:translateX(-50%) scaleX(-1)} 50%{transform:translateX(-50%) scaleX(-1) translateY(-.35%) rotate(-.1deg)} }
+@keyframes foucault-jab { 0%,100%{transform:translateX(-50%)} 22%{transform:translateX(-50%) translateX(var(--foucault-recoil))} 58%{transform:translateX(-50%) translateX(var(--foucault-lunge)) rotate(-2deg)} }
+@keyframes foucault-kick { 0%,100%{transform:translateX(-50%)} 24%{transform:translateX(-50%) translateX(var(--foucault-recoil))} 62%{transform:translateX(-50%) translateX(var(--foucault-sweep)) rotate(-3deg)} }
+@keyframes foucault-combo { 0%,100%{transform:translateX(-50%)} 19%,48%{transform:translateX(-50%) translateX(var(--foucault-lunge)) rotate(-2deg)} 68%{transform:translateX(-50%) translateX(var(--foucault-sweep)) rotate(3deg)} }
+@keyframes foucault-combo-poses { 0%,18%,90%,100%{background-image:url("/game/foucault-guard-frame.webp?v=4.2")} 19%,39%{background-image:url("/game/foucault-punch-hq.webp?v=4.2")} 40%,62%{background-image:url("/game/foucault-kick-hq.webp?v=4.2")} 63%,89%{background-image:url("/game/foucault-combo-hq.webp?v=4.2")} }
+@keyframes foucault-channel { 0%,100%{filter:brightness(1)} 68%{filter:brightness(1.17) drop-shadow(0 0 22px #78c6d3)} }
+@keyframes foucault-contact { 0%,32%{opacity:0;transform:scale(.2)} 45%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(2.8)} }
+@keyframes foucault-colorwash { 0%,100%{opacity:0} 17%,89%{opacity:1} }
+@keyframes foucault-title { 0%,23%,100%{opacity:0;transform:translateX(-50%) translateY(14px)} 42%,88%{opacity:1;transform:translateX(-50%) translateY(0)} }
+@keyframes foucault-lock { 0%{opacity:0;transform:translate(-50%,-50%) scale(1.65) rotate(-18deg)} 24%,72%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0)} 79%{transform:translate(-50%,-50%) scale(.82)} 100%{opacity:0;transform:translate(-50%,-50%) scale(1.5) rotate(14deg)} }
+@keyframes foucault-ring-spin { to{transform:rotate(360deg)} }
+@keyframes foucault-impact { 0%,76%{opacity:0;transform:translate(-50%,-50%) scale(.14)} 79%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(4.3)} }
+@keyframes foucault-institution-collapse { 0%,14%{opacity:0;transform:translate(-50%,-50%) scale(1.45)} 28%,69%{opacity:1;transform:translate(-50%,-50%) scale(1)} 78%{transform:translate(-50%,-50%) scale(.7)} 100%{opacity:0;transform:translate(-50%,-50%) scale(.4)} }
+@keyframes foucault-grid-pulse { 0%,20%,100%{opacity:0} 32%,72%{opacity:.95} 78%{opacity:1;filter:brightness(1.9)} 90%{opacity:0;transform:translate(-50%,-50%) scale(1.3)} }
+
+@media (max-width: 760px) {
+  .fighter-foucault { width: clamp(210px,42vw,330px); height: 78%; }
+  .foucault-effect > b { letter-spacing: .05em; max-width: 92%; text-align: center; white-space: normal; }
+}

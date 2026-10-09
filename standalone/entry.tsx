@@ -1,0 +1,25 @@
+import { createRoot } from "react-dom/client";
+import Game from "../app/page";
+import "../app/globals.css";
+import "../app/kierkegaard.css";
+import "../app/beauvoir.css";
+import "../app/foucault.css";
+import "../app/arendt.css";
+import "../app/wittgenstein.css";
+import "../app/angela-davis.css";
+import "../app/paulo-freire.css";
+import "../app/fanon.css";
+import "../app/krenak.css";
+import "../app/turing.css";
+import "../app/deleuze.css";
+import "../app/superintelligence.css";
+import "../app/felipe.css";
+import "../app/plato.css";
+import "../app/aristotle.css";
+import "../app/augustine.css";
+import "../app/marx.css";
+import "../app/descartes.css";
+import "../app/versus-selection.css";
+import "./fonts.css";
+
+createRoot(document.getElementById("root")!).render(<Game />);

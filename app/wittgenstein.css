@@ -1,0 +1,267 @@
+/* Ludwig Wittgenstein — Freud-quality independent poses and articulated walk. */
+.battle-frame.arena-wittgenstein-cabin {
+  background:
+    linear-gradient(180deg,rgba(182,210,225,.05),rgba(19,28,31,.26)),
+    url("/game/arena-wittgenstein.webp?v=4.4") center 58% / cover no-repeat;
+}
+.battle-frame.arena-wittgenstein-cabin .dialogue-overlay,
+.battle-frame.arena-wittgenstein-cabin .post-fight-overlay,
+.battle-frame.arena-wittgenstein-cabin .result-overlay,
+.battle-frame.arena-wittgenstein-cabin .round-result-overlay {
+  background:
+    linear-gradient(90deg,rgba(13,19,20,.93),rgba(58,70,68,.57),rgba(12,18,20,.91)),
+    url("/game/arena-wittgenstein.webp?v=4.4") center 58% / cover no-repeat;
+}
+.battle-frame.arena-wittgenstein-cabin .temple-banner,
+.battle-frame.arena-wittgenstein-cabin .torch,
+.battle-frame.arena-wittgenstein-cabin .bird { opacity: 0; }
+.battle-frame.arena-wittgenstein-cabin .dust {
+  background: rgba(213,231,229,.16);
+  filter: blur(5px);
+}
+
+.fighter-wittgenstein {
+  bottom: 2.8%;
+  width: clamp(225px,28vw,420px);
+  height: 82%;
+  --wittgenstein-lunge: 18%;
+  --wittgenstein-sweep: 23%;
+  --wittgenstein-recoil: -4%;
+}
+.fighter-enemy.fighter-wittgenstein {
+  --wittgenstein-lunge: -18%;
+  --wittgenstein-sweep: -23%;
+  --wittgenstein-recoil: 4%;
+}
+.fighter-wittgenstein .fighter-aura {
+  background: radial-gradient(ellipse at 50% 72%,rgba(177,218,219,.43),rgba(58,85,83,.12) 48%,transparent 70%);
+}
+.wittgenstein-sheet,
+.fighter-wittgenstein .wittgenstein-sheet {
+  inset: auto auto 0 50%;
+  width: auto;
+  height: 100%;
+  aspect-ratio: 175 / 192;
+  background: url("/game/wittgenstein-fullbody-hq.webp?v=4.4") 50% 100% / contain no-repeat;
+  image-rendering: auto;
+  transform-origin: 50% 100%;
+  animation: none;
+  will-change: transform,filter;
+}
+.fighter-player.fighter-wittgenstein .fighter-sprite { transform: translateX(-50%); }
+.fighter-enemy.fighter-wittgenstein .fighter-sprite { transform: translateX(-50%) scaleX(-1); }
+.fighter-player.fighter-wittgenstein.idle .fighter-sprite { animation: wittgenstein-idle-player 2.3s ease-in-out infinite !important; }
+.fighter-enemy.fighter-wittgenstein.idle .fighter-sprite { animation: wittgenstein-idle-enemy 2.3s ease-in-out infinite !important; }
+.fighter-wittgenstein:is(.guard,.guard-hit,.jump,.hit,.victory,.knocked-out,.special-poker,.special-language-limits) .fighter-sprite {
+  background-image: url("/game/wittgenstein-fullbody-hq.webp?v=4.4");
+  background-position: 50% 100%;
+  background-size: contain;
+}
+.fighter-wittgenstein.advance,
+.fighter-wittgenstein.retreat { animation: none; transition: left 720ms cubic-bezier(.35,.05,.65,.95); }
+.fighter-wittgenstein:is(.advance,.retreat) .fighter-sprite {
+  animation: none !important;
+  background-position: 50% 100%;
+  background-size: contain;
+}
+.wittgenstein-walk-canvas {
+  display: none;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 100%;
+}
+.fighter-wittgenstein:is(.advance,.retreat) .wittgenstein-walk-canvas[data-ready="true"] { display: block; }
+.fighter-wittgenstein:is(.advance,.retreat) .fighter-sprite:has(.wittgenstein-walk-canvas[data-ready="true"]) { background-image: none; }
+.fighter-wittgenstein:is(.advance,.retreat) .wittgenstein-walk-canvas[data-ready="true"] {
+  animation: wittgenstein-walk-weight 720ms ease-in-out both;
+}
+
+.fighter-wittgenstein:is(.attack-punch,.attack-kick,.attack-combo,.special-poker) .fighter-sprite {
+  background-position: 50% 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.fighter-wittgenstein.attack-punch .fighter-sprite { background-image: url("/game/wittgenstein-punch-hq.webp?v=4.4"); }
+.fighter-wittgenstein.attack-kick .fighter-sprite { background-image: url("/game/wittgenstein-kick-hq.webp?v=4.4"); }
+.fighter-wittgenstein.attack-combo .fighter-sprite { animation: wittgenstein-combo-poses 940ms steps(1,end) both !important; }
+.fighter-wittgenstein.special-poker .fighter-sprite { background-image: url("/game/wittgenstein-poker-hq.webp?v=4.4"); }
+.fighter-wittgenstein.attack-punch { animation: wittgenstein-jab 520ms cubic-bezier(.12,.76,.2,1); }
+.fighter-wittgenstein.attack-kick { animation: wittgenstein-kick 650ms cubic-bezier(.12,.72,.2,1); }
+.fighter-wittgenstein.attack-combo { animation: wittgenstein-combo 940ms cubic-bezier(.12,.74,.2,1); }
+.fighter-wittgenstein.special-poker { animation: wittgenstein-poker-strike 1450ms cubic-bezier(.18,.71,.18,1); }
+.fighter-wittgenstein.special-language-limits { animation: wittgenstein-channel 1850ms ease-out; }
+.fighter-wittgenstein.hit .fighter-sprite { filter: brightness(1.2) saturate(.72); }
+.fighter-wittgenstein.knocked-out .fighter-sprite { transform: translateX(-50%) rotate(-75deg) translateY(10%); }
+.fighter-enemy.fighter-wittgenstein.knocked-out .fighter-sprite { transform: translateX(-50%) scaleX(-1) rotate(-75deg) translateY(10%); }
+.fighter-wittgenstein:is(.attack-punch,.attack-kick,.attack-combo)::after {
+  content: "";
+  position: absolute;
+  z-index: 7;
+  right: -3%;
+  top: 39%;
+  width: 27%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle,#fff 0 8%,rgba(132,220,224,.88) 13%,rgba(38,100,104,.27) 41%,transparent 70%);
+  animation: wittgenstein-contact 520ms ease-out both;
+}
+.fighter-enemy.fighter-wittgenstein:is(.attack-punch,.attack-kick,.attack-combo)::after { right: auto; left: -3%; }
+.fighter-wittgenstein.attack-kick::after { top: 49%; width: 29%; animation-duration: 650ms; }
+.fighter-wittgenstein.attack-combo::after { top: 40%; width: 31%; animation-duration: 940ms; }
+
+.select-overlay.select-wittgenstein {
+  background:
+    linear-gradient(90deg,rgba(12,19,20,.96),rgba(55,76,75,.61),rgba(12,18,20,.93)),
+    url("/game/arena-wittgenstein.webp?v=4.4") center 58% / cover no-repeat;
+}
+.showcase-wittgenstein::after { background: linear-gradient(90deg,rgba(76,148,151,.28),rgba(11,18,18,.15)); }
+.showcase-wittgenstein .fighter-biography { border-left-color: #74b4b6; }
+.portrait-wittgenstein img,
+.ending-wittgenstein img { object-fit: contain; object-position: 50% 100%; }
+.dialogue-wittgenstein { height: 108%; bottom: -18%; }
+.dialogue-wittgenstein > span { color: #d7ffff; }
+
+.effect-wittgenstein-poker .special-colorwash {
+  background: radial-gradient(circle at var(--wittgenstein-target) 61%,rgba(173,232,235,.42),rgba(55,83,82,.32) 31%,rgba(10,17,18,.83) 76%);
+  animation: wittgenstein-colorwash 1500ms ease-out;
+}
+.effect-wittgenstein-language .special-colorwash {
+  background: radial-gradient(circle at var(--wittgenstein-target) 50%,rgba(230,250,244,.52),rgba(48,85,85,.34) 36%,rgba(7,13,15,.89) 78%);
+  animation: wittgenstein-colorwash 1900ms ease-out;
+}
+.wittgenstein-effect { position: absolute; inset: 0; z-index: 32; pointer-events: none; }
+.wittgenstein-effect > b {
+  position: absolute;
+  z-index: 15;
+  left: 50%;
+  top: 17%;
+  transform: translateX(-50%);
+  color: #e4ffff;
+  font-family: var(--font-display),Georgia,serif;
+  font-size: clamp(1.05rem,2.25vw,2.2rem);
+  letter-spacing: .12em;
+  text-shadow: 0 2px 0 #071516,0 0 18px rgba(111,207,211,.76);
+  white-space: nowrap;
+  animation: wittgenstein-title 1500ms ease-out both;
+}
+.wittgenstein-poker-line {
+  position: absolute;
+  z-index: 7;
+  left: var(--wittgenstein-target);
+  top: 22%;
+  width: clamp(9px,1vw,15px);
+  height: 48%;
+  transform: translateX(-50%) rotate(calc(var(--wittgenstein-facing) * -19deg));
+  transform-origin: 50% 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg,#1c2929,#bdd3d0 45%,#233638 67%,#0d1516);
+  box-shadow: 0 0 13px rgba(172,237,239,.56);
+  animation: wittgenstein-poker-line 1500ms cubic-bezier(.2,.73,.18,1) both;
+}
+.wittgenstein-ground-crack {
+  position: absolute;
+  z-index: 9;
+  left: var(--wittgenstein-target);
+  top: 70%;
+  width: clamp(130px,20vw,310px);
+  height: 18%;
+  transform: translate(-50%,-50%);
+  background:
+    linear-gradient(25deg,transparent 46%,#dff 48% 50%,transparent 52%) 50% 50%/45% 100%,
+    linear-gradient(-21deg,transparent 46%,#9fd6d7 48% 50%,transparent 52%) 50% 50%/70% 100%;
+  filter: drop-shadow(0 0 8px #a6f1f1);
+  animation: wittgenstein-crack 1500ms ease-out both;
+}
+.wittgenstein-poker-impact,
+.wittgenstein-language-impact {
+  position: absolute;
+  z-index: 10;
+  left: var(--wittgenstein-target);
+  top: 66%;
+  width: clamp(70px,10vw,150px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle,#fff 0 7%,#a8eff0 13%,rgba(50,143,147,.7) 33%,transparent 71%);
+  animation: wittgenstein-impact 1500ms ease-out both;
+}
+.wittgenstein-language > b { animation-duration: 1900ms; }
+.wittgenstein-language-cage {
+  position: absolute;
+  z-index: 8;
+  left: var(--wittgenstein-target);
+  top: 51%;
+  width: clamp(145px,20vw,305px);
+  height: 58%;
+  transform: translate(-50%,-50%);
+  border: 3px solid rgba(190,244,244,.9);
+  box-shadow: 0 0 24px rgba(126,224,227,.64),inset 0 0 22px rgba(126,224,227,.27);
+  animation: wittgenstein-cage 1900ms ease-in-out both;
+}
+.wittgenstein-language-cage::before,
+.wittgenstein-language-cage::after {
+  content: "";
+  position: absolute;
+  inset: 12% -15%;
+  border-top: 2px solid #d9ffff;
+  border-bottom: 2px solid #d9ffff;
+  transform: rotate(18deg);
+}
+.wittgenstein-language-cage::after { transform: rotate(-18deg); }
+.wittgenstein-language-signs {
+  position: absolute;
+  z-index: 11;
+  left: var(--wittgenstein-target);
+  top: 49%;
+  width: clamp(170px,23vw,345px);
+  height: 55%;
+  transform: translate(-50%,-50%);
+  animation: wittgenstein-signs 1900ms ease-out both;
+}
+.wittgenstein-language-signs i {
+  position: absolute;
+  color: #eaffff;
+  font-family: var(--font-geist-mono),monospace;
+  font-size: clamp(1.45rem,3vw,3rem);
+  font-style: normal;
+  font-weight: 800;
+  text-shadow: 0 0 13px #66dfe3;
+}
+.wittgenstein-language-signs i:nth-child(1) { left: 3%; top: 14%; }
+.wittgenstein-language-signs i:nth-child(2) { right: 4%; top: 9%; }
+.wittgenstein-language-signs i:nth-child(3) { left: 13%; bottom: 10%; }
+.wittgenstein-language-signs i:nth-child(4) { right: 9%; bottom: 16%; }
+.wittgenstein-language-impact { top: 52%; animation-duration: 1900ms; }
+
+@keyframes wittgenstein-idle-player {
+  0%,100%{transform:translateX(-50%) translateY(0) rotate(0)}
+  25%{transform:translateX(-50%) translateY(-.3%) rotate(-.12deg)}
+  52%{transform:translateX(-50%) translateY(-.65%) rotate(.08deg)}
+  77%{transform:translateX(-50%) translateY(-.25%) rotate(.14deg)}
+}
+@keyframes wittgenstein-idle-enemy {
+  0%,100%{transform:translateX(-50%) scaleX(-1) translateY(0) rotate(0)}
+  25%{transform:translateX(-50%) scaleX(-1) translateY(-.3%) rotate(-.12deg)}
+  52%{transform:translateX(-50%) scaleX(-1) translateY(-.65%) rotate(.08deg)}
+  77%{transform:translateX(-50%) scaleX(-1) translateY(-.25%) rotate(.14deg)}
+}
+@keyframes wittgenstein-walk-weight { 0%,50%,100%{transform:translateY(0) rotate(0)} 25%{transform:translateY(-.28%) rotate(-.16deg)} 75%{transform:translateY(-.28%) rotate(.16deg)} }
+@keyframes wittgenstein-jab { 0%,100%{transform:translateX(-50%)} 22%{transform:translateX(-50%) translateX(var(--wittgenstein-recoil))} 58%{transform:translateX(-50%) translateX(var(--wittgenstein-lunge)) rotate(-2deg)} }
+@keyframes wittgenstein-kick { 0%,100%{transform:translateX(-50%)} 24%{transform:translateX(-50%) translateX(var(--wittgenstein-recoil))} 62%{transform:translateX(-50%) translateX(var(--wittgenstein-sweep)) rotate(-3deg)} }
+@keyframes wittgenstein-combo { 0%,100%{transform:translateX(-50%)} 19%,48%{transform:translateX(-50%) translateX(var(--wittgenstein-lunge)) rotate(-2deg)} 68%{transform:translateX(-50%) translateX(var(--wittgenstein-sweep)) rotate(3deg)} }
+@keyframes wittgenstein-combo-poses { 0%,18%,90%,100%{background-image:url("/game/wittgenstein-fullbody-hq.webp?v=4.4")} 19%,39%{background-image:url("/game/wittgenstein-punch-hq.webp?v=4.4")} 40%,62%{background-image:url("/game/wittgenstein-kick-hq.webp?v=4.4")} 63%,89%{background-image:url("/game/wittgenstein-poker-hq.webp?v=4.4")} }
+@keyframes wittgenstein-poker-strike { 0%,100%{transform:translateX(-50%)} 20%{transform:translateX(-50%) translateX(var(--wittgenstein-recoil)) rotate(-2deg)} 64%,82%{transform:translateX(-50%) translateX(var(--wittgenstein-lunge)) rotate(3deg)} }
+@keyframes wittgenstein-channel { 0%,100%{filter:brightness(1)} 68%{filter:brightness(1.18) drop-shadow(0 0 22px #72cfd2)} }
+@keyframes wittgenstein-contact { 0%,32%{opacity:0;transform:scale(.2)} 45%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(2.8)} }
+@keyframes wittgenstein-colorwash { 0%,100%{opacity:0} 17%,91%{opacity:1} }
+@keyframes wittgenstein-title { 0%,22%,100%{opacity:0;transform:translateX(-50%) translateY(14px)} 40%,90%{opacity:1;transform:translateX(-50%) translateY(0)} }
+@keyframes wittgenstein-poker-line { 0%,20%{opacity:0;transform:translateX(-50%) translateY(-60%) rotate(calc(var(--wittgenstein-facing) * -34deg))} 61%,82%{opacity:1;transform:translateX(-50%) translateY(0) rotate(calc(var(--wittgenstein-facing) * -5deg))} 100%{opacity:0;transform:translateX(-50%) translateY(8%) rotate(calc(var(--wittgenstein-facing) * -2deg))} }
+@keyframes wittgenstein-crack { 0%,59%{opacity:0;transform:translate(-50%,-50%) scale(.1)} 65%,88%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(1.22)} }
+@keyframes wittgenstein-impact { 0%,58%{opacity:0;transform:translate(-50%,-50%) scale(.14)} 64%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(4.4)} }
+@keyframes wittgenstein-cage { 0%,16%{opacity:0;transform:translate(-50%,-50%) scale(1.45) rotate(7deg)} 36%,76%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0)} 88%{opacity:1;transform:translate(-50%,-50%) scale(.68) rotate(-3deg)} 100%{opacity:0;transform:translate(-50%,-50%) scale(1.7) rotate(10deg)} }
+@keyframes wittgenstein-signs { 0%,20%{opacity:0;transform:translate(-50%,-50%) scale(1.5)} 40%,80%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(2.1)} }
+
+@media (max-width: 760px) {
+  .fighter-wittgenstein { width: clamp(210px,42vw,330px); height: 78%; }
+  .wittgenstein-effect > b { letter-spacing: .05em; max-width: 92%; text-align: center; white-space: normal; }
+  .wittgenstein-language-cage { width: clamp(130px,34vw,240px); }
+}

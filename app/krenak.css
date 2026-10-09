@@ -1,0 +1,170 @@
+/* Ailton Krenak — Watu, natureza viva e resolução nativa. */
+.battle-frame.arena-krenak {
+  background:
+    linear-gradient(180deg,rgba(37,77,62,.06),rgba(35,24,13,.18)),
+    url("/game/arena-krenak.webp?v=4.9") center 58% / cover no-repeat;
+}
+.battle-frame.arena-krenak .dialogue-overlay,
+.battle-frame.arena-krenak .post-fight-overlay,
+.battle-frame.arena-krenak .result-overlay,
+.battle-frame.arena-krenak .round-result-overlay {
+  background:
+    linear-gradient(90deg,rgba(10,22,17,.95),rgba(41,88,71,.48),rgba(21,14,8,.93)),
+    url("/game/arena-krenak.webp?v=4.9") center 58% / cover no-repeat;
+}
+.battle-frame.arena-krenak .temple-banner,
+.battle-frame.arena-krenak .torch,
+.battle-frame.arena-krenak .bird { opacity:0; }
+.battle-frame.arena-krenak .dust { background:rgba(77,155,116,.18); filter:blur(5px); }
+
+.fighter-krenak {
+  bottom:2.8%;
+  width:clamp(225px,28vw,420px);
+  height:82%;
+  --krenak-lunge:18%;
+  --krenak-sweep:22%;
+  --krenak-recoil:-4%;
+}
+.fighter-enemy.fighter-krenak {
+  --krenak-lunge:-18%;
+  --krenak-sweep:-22%;
+  --krenak-recoil:4%;
+}
+.fighter-krenak .fighter-aura {
+  background:radial-gradient(ellipse at 50% 73%,rgba(56,157,113,.4),rgba(183,128,46,.15) 47%,transparent 70%);
+}
+.krenak-sheet,
+.fighter-krenak .krenak-sheet {
+  inset:auto auto 0 50%;
+  width:auto;
+  height:100%;
+  aspect-ratio:175 / 192;
+  background:url("/game/krenak-fullbody-clean-hq.webp?v=4.9") 50% 100% / contain no-repeat;
+  image-rendering:auto;
+  transform-origin:50% 100%;
+  animation:none;
+  will-change:transform,filter;
+}
+.fighter-player.fighter-krenak .fighter-sprite { transform:translateX(-50%); }
+.fighter-enemy.fighter-krenak .fighter-sprite { transform:translateX(-50%) scaleX(-1); }
+.fighter-player.fighter-krenak.idle .fighter-sprite { animation:krenak-idle-player 2.3s ease-in-out infinite !important; }
+.fighter-enemy.fighter-krenak.idle .fighter-sprite { animation:krenak-idle-enemy 2.3s ease-in-out infinite !important; }
+.fighter-krenak:is(.guard,.guard-hit,.jump,.hit,.knocked-out,.special-delay-world-end,.special-watu-resists) .fighter-sprite {
+  background-image:url("/game/krenak-fullbody-clean-hq.webp?v=4.9");
+  background-position:50% 100%;
+  background-size:contain;
+}
+.fighter-krenak.victory .fighter-sprite {
+  background-image:url("/game/krenak-victory-final-hq.webp?v=4.10");
+  background-position:50% 100%;
+  background-size:contain;
+  animation:krenak-victory 960ms cubic-bezier(.2,.75,.2,1) both !important;
+}
+.fighter-krenak.advance,
+.fighter-krenak.retreat { animation:none; transition:left 780ms cubic-bezier(.35,.05,.65,.95); }
+.fighter-krenak:is(.advance,.retreat) .fighter-sprite {
+  animation:none !important;
+  background-position:50% 100%;
+  background-size:contain;
+}
+.krenak-walk-canvas { display:none; width:100%; height:100%; transform-origin:50% 100%; }
+.fighter-krenak:is(.advance,.retreat) .krenak-walk-canvas[data-ready="true"] { display:block; }
+.fighter-krenak:is(.advance,.retreat) .fighter-sprite:has(.krenak-walk-canvas[data-ready="true"]) { background-image:none; }
+.fighter-krenak:is(.advance,.retreat) .krenak-walk-canvas[data-ready="true"] { animation:krenak-walk-weight 780ms ease-in-out both; }
+
+.fighter-krenak:is(.attack-punch,.attack-kick,.attack-combo) .fighter-sprite {
+  background-position:50% 100%;
+  background-size:contain;
+  background-repeat:no-repeat;
+}
+.fighter-krenak.attack-punch .fighter-sprite { background-image:url("/game/krenak-punch-clean-hq.webp?v=4.9"); }
+.fighter-krenak.attack-kick .fighter-sprite { background-image:url("/game/krenak-kick-clean-hq.webp?v=4.9"); }
+.fighter-krenak.attack-combo .fighter-sprite { animation:krenak-combo-poses 940ms steps(1,end) both !important; }
+.fighter-krenak.attack-punch { animation:krenak-jab 520ms cubic-bezier(.12,.76,.2,1); }
+.fighter-krenak.attack-kick { animation:krenak-kick 650ms cubic-bezier(.12,.72,.2,1); }
+.fighter-krenak.attack-combo { animation:krenak-combo 940ms cubic-bezier(.12,.74,.2,1); }
+.fighter-krenak.special-delay-world-end { animation:krenak-channel 1450ms ease-out; }
+.fighter-krenak.special-watu-resists { animation:krenak-channel 1850ms ease-out; }
+.fighter-krenak.hit .fighter-sprite { filter:brightness(1.2) saturate(.72); }
+.fighter-krenak.knocked-out .fighter-sprite { transform:translateX(-50%) rotate(-75deg) translateY(10%); }
+.fighter-enemy.fighter-krenak.knocked-out .fighter-sprite { transform:translateX(-50%) scaleX(-1) rotate(-75deg) translateY(10%); }
+.fighter-krenak:is(.attack-punch,.attack-kick,.attack-combo)::after {
+  content:""; position:absolute; z-index:7; right:-3%; top:39%; width:27%; aspect-ratio:1; border-radius:50%;
+  background:radial-gradient(circle,#fff 0 8%,rgba(121,219,170,.9) 13%,rgba(210,151,56,.35) 42%,transparent 70%);
+  animation:krenak-contact 520ms ease-out both;
+}
+.fighter-enemy.fighter-krenak:is(.attack-punch,.attack-kick,.attack-combo)::after { right:auto; left:-3%; }
+.fighter-krenak.attack-kick::after { top:49%; width:29%; animation-duration:650ms; }
+.fighter-krenak.attack-combo::after { top:63%; width:33%; animation-duration:940ms; }
+
+.select-overlay.select-krenak {
+  background:
+    linear-gradient(90deg,rgba(8,22,17,.96),rgba(45,95,75,.52),rgba(27,17,9,.93)),
+    url("/game/arena-krenak.webp?v=4.9") center 58% / cover no-repeat;
+}
+.showcase-krenak::after { background:linear-gradient(90deg,rgba(47,133,96,.34),rgba(191,128,42,.15)); }
+.showcase-krenak .fighter-biography { border-left-color:#68b68b; }
+.portrait-krenak img,
+.ending-krenak img { object-fit:contain; object-position:50% 100%; }
+.dialogue-krenak { height:108%; bottom:-18%; }
+.dialogue-krenak > span { color:#bff4d5; }
+
+.effect-krenak-world .special-colorwash {
+  background:radial-gradient(circle at 50% 50%,rgba(56,218,213,.52),rgba(31,98,81,.48) 39%,rgba(4,12,14,.91) 80%);
+  animation:krenak-colorwash 1500ms ease-out;
+}
+.effect-krenak-watu .special-colorwash {
+  background:radial-gradient(circle at 50% 55%,rgba(90,218,224,.46),rgba(18,89,96,.39) 42%,rgba(5,16,19,.9) 81%);
+  animation:krenak-colorwash 1900ms ease-out;
+}
+.krenak-effect { position:absolute; inset:0; z-index:32; pointer-events:none; overflow:hidden; }
+.krenak-effect > b {
+  position:absolute; z-index:18; left:50%; top:17%; transform:translateX(-50%);
+  color:#d8ffe8; font-family:var(--font-display),Georgia,serif; font-size:clamp(1.02rem,2.2vw,2.15rem);
+  letter-spacing:.1em; text-align:center; text-shadow:0 2px 0 #071c13,0 0 18px rgba(80,211,150,.82);
+  white-space:nowrap; animation:krenak-title 1500ms ease-out both;
+}
+.krenak-earth {
+  position:absolute; z-index:12; left:var(--krenak-target); top:52%; width:clamp(270px,34vw,530px); height:auto;
+  transform:translate(-50%,-50%); object-fit:contain; opacity:0; border-radius:50%; mix-blend-mode:screen;
+  filter:drop-shadow(0 12px 16px rgba(0,0,0,.72)) drop-shadow(0 0 22px rgba(69,222,194,.72));
+  animation:krenak-earth-arrival 1500ms cubic-bezier(.14,.74,.17,1) both;
+}
+.krenak-watu-wave {
+  position:absolute; z-index:11; left:var(--krenak-origin); bottom:4%; width:clamp(430px,61vw,940px); height:auto;
+  object-fit:contain; opacity:0;
+  filter:drop-shadow(0 13px 10px rgba(0,0,0,.7)) drop-shadow(0 0 13px rgba(69,208,221,.58));
+  animation:krenak-watu-charge 1900ms cubic-bezier(.1,.72,.2,1) both;
+}
+.krenak-watu-wave.enemy-wave { animation-name:krenak-watu-charge-enemy; }
+.krenak-earth-impact,.krenak-watu-impact {
+  position:absolute; z-index:13; left:var(--krenak-target); top:56%; width:clamp(80px,11vw,165px); aspect-ratio:1; border-radius:50%;
+  background:radial-gradient(circle,#fff 0 7%,#a9f5cb 13%,rgba(55,151,102,.72) 34%,transparent 71%);
+  animation:krenak-impact 1500ms ease-out both;
+}
+.krenak-watu-impact { background:radial-gradient(circle,#fff 0 7%,#a8fbff 13%,rgba(39,156,171,.72) 34%,transparent 71%); animation-duration:1900ms; }
+.krenak-watu > b { animation-duration:1900ms; }
+
+@keyframes krenak-idle-player { 0%,100%{transform:translateX(-50%) translateY(0)} 30%{transform:translateX(-50%) translateY(-.3%) rotate(-.1deg)} 58%{transform:translateX(-50%) translateY(-.68%) rotate(.08deg)} 82%{transform:translateX(-50%) translateY(-.23%) rotate(.12deg)} }
+@keyframes krenak-idle-enemy { 0%,100%{transform:translateX(-50%) scaleX(-1) translateY(0)} 30%{transform:translateX(-50%) scaleX(-1) translateY(-.3%) rotate(-.1deg)} 58%{transform:translateX(-50%) scaleX(-1) translateY(-.68%) rotate(.08deg)} 82%{transform:translateX(-50%) scaleX(-1) translateY(-.23%) rotate(.12deg)} }
+@keyframes krenak-walk-weight { 0%,50%,100%{transform:translateY(0) rotate(0)} 25%{transform:translateY(-.32%) rotate(-.15deg)} 75%{transform:translateY(-.32%) rotate(.15deg)} }
+@keyframes krenak-jab { 0%,100%{transform:translateX(-50%)} 22%{transform:translateX(-50%) translateX(var(--krenak-recoil))} 58%{transform:translateX(-50%) translateX(var(--krenak-lunge)) rotate(-2deg)} }
+@keyframes krenak-kick { 0%,100%{transform:translateX(-50%)} 24%{transform:translateX(-50%) translateX(var(--krenak-recoil))} 62%{transform:translateX(-50%) translateX(var(--krenak-sweep)) rotate(-3deg)} }
+@keyframes krenak-combo { 0%,100%{transform:translateX(-50%)} 19%,48%{transform:translateX(-50%) translateX(var(--krenak-lunge)) rotate(-2deg)} 68%{transform:translateX(-50%) translateX(var(--krenak-sweep)) rotate(3deg)} }
+@keyframes krenak-combo-poses { 0%,18%,90%,100%{background-image:url("/game/krenak-fullbody-clean-hq.webp?v=4.9")} 19%,39%{background-image:url("/game/krenak-punch-clean-hq.webp?v=4.9")} 40%,62%{background-image:url("/game/krenak-kick-clean-hq.webp?v=4.9")} 63%,89%{background-image:url("/game/krenak-combo-clean-hq.webp?v=4.9")} }
+@keyframes krenak-channel { 0%,100%{filter:brightness(1)} 68%{filter:brightness(1.18) drop-shadow(0 0 22px #52bf86)} }
+@keyframes krenak-victory { 0%{opacity:.72;transform:translateX(-50%) translateY(3%)} 62%,100%{opacity:1;transform:translateX(-50%) translateY(0);filter:drop-shadow(0 0 20px rgba(87,202,137,.48))} }
+@keyframes krenak-contact { 0%,32%{opacity:0;transform:scale(.2)} 45%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(2.8)} }
+@keyframes krenak-colorwash { 0%,100%{opacity:0} 17%,91%{opacity:1} }
+@keyframes krenak-title { 0%,22%,100%{opacity:0;transform:translateX(-50%) translateY(14px)} 40%,90%{opacity:1;transform:translateX(-50%) translateY(0)} }
+@keyframes krenak-earth-arrival { 0%,12%{opacity:0;transform:translate(-50%,-76%) scale(.18) rotate(-18deg)} 28%{opacity:1;transform:translate(-50%,-56%) scale(.82) rotate(-7deg)} 56%{opacity:1;transform:translate(-50%,-50%) scale(1.08) rotate(4deg)} 76%{opacity:1;transform:translate(-50%,-50%) scale(.9) rotate(8deg);filter:brightness(1.34) drop-shadow(0 0 34px rgba(75,244,215,.94))} 100%{opacity:0;transform:translate(-50%,-48%) scale(1.34) rotate(14deg)} }
+@keyframes krenak-impact { 0%,57%{opacity:0;transform:translate(-50%,-50%) scale(.14)} 66%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(4.7)} }
+@keyframes krenak-watu-charge { 0%,12%{opacity:0;transform:translateX(-42%) translateY(12%) scale(.66)} 24%{opacity:1} 60%{transform:translateX(var(--krenak-travel-mid)) translateY(-5%) scale(.92)} 84%{opacity:1;transform:translateX(var(--krenak-travel)) translateY(0) scale(1.02)} 100%{opacity:0;transform:translateX(var(--krenak-travel)) translateY(2%) scale(1.08)} }
+@keyframes krenak-watu-charge-enemy { 0%,12%{opacity:0;transform:translateX(42%) translateY(12%) scaleX(-1) scale(.66)} 24%{opacity:1} 60%{transform:translateX(var(--krenak-travel-mid)) translateY(-5%) scaleX(-1) scale(.92)} 84%{opacity:1;transform:translateX(var(--krenak-travel)) translateY(0) scaleX(-1) scale(1.02)} 100%{opacity:0;transform:translateX(var(--krenak-travel)) translateY(2%) scaleX(-1) scale(1.08)} }
+
+@media (max-width:760px) {
+  .fighter-krenak { width:clamp(210px,42vw,330px); height:78%; }
+  .krenak-effect > b { letter-spacing:.04em; max-width:92%; white-space:normal; }
+  .krenak-earth { width:clamp(250px,62vw,430px); }
+  .krenak-watu-wave { width:clamp(390px,78vw,650px); }
+}

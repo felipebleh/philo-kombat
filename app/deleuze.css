@@ -1,0 +1,215 @@
+/* Gilles Deleuze — Vincennes, the rhizome and the Deleuze–Guattari alliance. */
+.battle-frame.arena-vincennes {
+  background:
+    linear-gradient(180deg, rgba(255,248,224,.02), rgba(64,38,24,.13)),
+    url("/game/arena-vincennes.webp?v=4.12") center 55% / cover no-repeat;
+}
+.battle-frame.arena-vincennes .dialogue-overlay,
+.battle-frame.arena-vincennes .post-fight-overlay,
+.battle-frame.arena-vincennes .result-overlay,
+.battle-frame.arena-vincennes .round-result-overlay {
+  background:
+    linear-gradient(90deg, rgba(35,24,21,.94), rgba(92,59,38,.5), rgba(30,36,33,.91)),
+    url("/game/arena-vincennes.webp?v=4.12") center 55% / cover no-repeat;
+}
+.battle-frame.arena-vincennes .temple-banner,
+.battle-frame.arena-vincennes .torch,
+.battle-frame.arena-vincennes .bird { opacity:0; }
+.battle-frame.arena-vincennes .dust { background:rgba(220,170,91,.15); filter:blur(5px); }
+
+.fighter-deleuze {
+  bottom:2.8%;
+  width:clamp(225px,28vw,420px);
+  height:82%;
+  --deleuze-lunge:17%;
+  --deleuze-sweep:21%;
+  --deleuze-recoil:-4%;
+}
+.fighter-enemy.fighter-deleuze {
+  --deleuze-lunge:-17%;
+  --deleuze-sweep:-21%;
+  --deleuze-recoil:4%;
+}
+.fighter-deleuze .fighter-aura {
+  background:radial-gradient(ellipse at 50% 72%, rgba(219,119,58,.3), rgba(80,183,151,.17) 47%, transparent 70%);
+}
+.deleuze-sheet,
+.fighter-deleuze .deleuze-sheet {
+  inset:auto auto 0 50%;
+  width:auto;
+  height:100%;
+  aspect-ratio:175 / 192;
+  background:url("/game/deleuze-fullbody-hq.webp?v=4.12") 50% 100% / contain no-repeat;
+  image-rendering:auto;
+  transform-origin:50% 100%;
+  animation:none;
+  will-change:transform,filter;
+}
+.fighter-player.fighter-deleuze .fighter-sprite { transform:translateX(-50%); }
+.fighter-enemy.fighter-deleuze .fighter-sprite { transform:translateX(-50%) scaleX(-1); }
+.fighter-player.fighter-deleuze.idle .fighter-sprite { animation:deleuze-idle-player 2.15s ease-in-out infinite !important; }
+.fighter-enemy.fighter-deleuze.idle .fighter-sprite { animation:deleuze-idle-enemy 2.15s ease-in-out infinite !important; }
+.fighter-deleuze:is(.guard,.guard-hit,.jump,.hit,.knocked-out,.special-rhizome,.special-mille-plateaux) .fighter-sprite {
+  background-image:url("/game/deleuze-fullbody-hq.webp?v=4.12");
+  background-position:50% 100%;
+  background-size:contain;
+}
+.fighter-deleuze.victory .fighter-sprite {
+  background-image:url("/game/deleuze-victory-hq.webp?v=4.12");
+  background-position:50% 100%;
+  background-size:contain;
+  animation:deleuze-victory 980ms cubic-bezier(.2,.75,.2,1) both !important;
+}
+.fighter-deleuze.advance,
+.fighter-deleuze.retreat { animation:none; transition:left 760ms cubic-bezier(.32,.04,.64,.96); }
+.fighter-deleuze:is(.advance,.retreat) .fighter-sprite {
+  animation:none !important;
+  background-position:50% 100%;
+  background-size:contain;
+}
+.deleuze-walk-canvas { display:none; width:100%; height:100%; transform-origin:50% 100%; }
+.fighter-deleuze:is(.advance,.retreat) .deleuze-walk-canvas[data-ready="true"] { display:block; }
+.fighter-deleuze:is(.advance,.retreat) .fighter-sprite:has(.deleuze-walk-canvas[data-ready="true"]) { background-image:none; }
+.fighter-deleuze:is(.advance,.retreat) .deleuze-walk-canvas[data-ready="true"] { animation:deleuze-walk-weight 760ms ease-in-out both; }
+
+.fighter-deleuze:is(.attack-punch,.attack-kick,.attack-combo) .fighter-sprite {
+  background-position:50% 100%;
+  background-size:contain;
+  background-repeat:no-repeat;
+}
+.fighter-deleuze.attack-punch .fighter-sprite { background-image:url("/game/deleuze-punch-hq.webp?v=4.12"); }
+.fighter-deleuze.attack-kick .fighter-sprite { background-image:url("/game/deleuze-kick-hq.webp?v=4.12"); }
+.fighter-deleuze.attack-combo .fighter-sprite { animation:deleuze-combo-poses 980ms steps(1,end) both !important; }
+.fighter-deleuze.attack-punch { animation:deleuze-jab 540ms cubic-bezier(.12,.76,.2,1); }
+.fighter-deleuze.attack-kick { animation:deleuze-kick 680ms cubic-bezier(.12,.72,.2,1); }
+.fighter-deleuze.attack-combo { animation:deleuze-combo 980ms cubic-bezier(.12,.74,.2,1); }
+.fighter-deleuze.special-rhizome { animation:deleuze-channel 1550ms ease-out; }
+.fighter-deleuze.special-mille-plateaux { animation:deleuze-channel 1950ms ease-out; }
+.fighter-deleuze.hit .fighter-sprite { filter:brightness(1.2) saturate(.75); }
+.fighter-deleuze.knocked-out .fighter-sprite { transform:translateX(-50%) rotate(-74deg) translateY(10%); }
+.fighter-enemy.fighter-deleuze.knocked-out .fighter-sprite { transform:translateX(-50%) scaleX(-1) rotate(-74deg) translateY(10%); }
+.fighter-deleuze:is(.attack-punch,.attack-kick,.attack-combo)::after {
+  content:""; position:absolute; z-index:7; right:-4%; top:39%; width:28%; aspect-ratio:1; border-radius:50%;
+  background:radial-gradient(circle,#fff 0 8%,rgba(244,171,86,.92) 14%,rgba(74,194,158,.42) 43%,transparent 71%);
+  animation:deleuze-contact 560ms ease-out both;
+}
+.fighter-enemy.fighter-deleuze:is(.attack-punch,.attack-kick,.attack-combo)::after { right:auto; left:-4%; }
+.fighter-deleuze.attack-kick::after { top:48%; width:30%; animation-duration:680ms; }
+.fighter-deleuze.attack-combo::after { top:33%; width:34%; animation-duration:980ms; }
+
+.select-overlay.select-deleuze {
+  background:
+    linear-gradient(90deg,rgba(43,25,21,.95),rgba(117,75,46,.4),rgba(27,43,38,.9)),
+    url("/game/arena-vincennes.webp?v=4.12") center 55% / cover no-repeat;
+}
+.showcase-deleuze::after { background:linear-gradient(90deg,rgba(217,115,55,.26),rgba(58,171,140,.18)); }
+.showcase-deleuze .fighter-biography { border-left-color:#dc8a4d; }
+.portrait-deleuze img,
+.ending-deleuze img { object-fit:contain; object-position:50% 100%; }
+.dialogue-deleuze { height:108%; bottom:-18%; }
+.dialogue-deleuze > span { color:#f5d8b2; }
+
+.effect-deleuze-rhizome .special-colorwash {
+  background:radial-gradient(circle at 50% 62%,rgba(67,190,149,.34),rgba(180,100,52,.2) 46%,rgba(24,29,25,.64) 84%);
+  animation:deleuze-colorwash 1550ms ease-out;
+}
+.effect-deleuze-mille-plateaux .special-colorwash {
+  background:radial-gradient(circle at 50% 54%,rgba(230,139,69,.32),rgba(66,186,151,.26) 46%,rgba(19,27,25,.7) 84%);
+  animation:deleuze-colorwash 1950ms ease-out;
+}
+.deleuze-effect { position:absolute; inset:0; z-index:32; pointer-events:none; overflow:hidden; }
+.deleuze-effect > b {
+  position:absolute; z-index:24; left:50%; top:17%; transform:translateX(-50%);
+  color:#fff1dd; font-family:var(--font-display),Georgia,serif; font-size:clamp(1.1rem,2.25vw,2.25rem);
+  letter-spacing:.13em; text-align:center; text-shadow:0 2px 0 #392012,0 0 20px rgba(236,139,72,.82);
+  white-space:nowrap; animation:deleuze-title 1550ms ease-out both;
+}
+.deleuze-mille-plateaux > b { animation-duration:1950ms; }
+
+.deleuze-rhizome-ground {
+  position:absolute; z-index:11; left:var(--deleuze-target); bottom:5%; width:clamp(210px,24vw,380px); height:clamp(28px,4vw,58px);
+  transform:translateX(-50%) scale(.2); border-radius:50%; opacity:0;
+  background:radial-gradient(ellipse,rgba(245,183,101,.78),rgba(63,184,143,.48) 38%,transparent 72%);
+  box-shadow:0 0 34px rgba(71,194,153,.72); animation:deleuze-ground 1550ms ease-out both;
+}
+.deleuze-root {
+  --root-angle:0deg; --root-shift:0vw; --root-height:46%; --root-delay:0ms;
+  position:absolute; z-index:12; left:var(--deleuze-target); bottom:7%; width:7px; height:var(--root-height);
+  transform-origin:50% 100%; transform:translateX(var(--root-shift)) rotate(var(--root-angle)) scaleY(0);
+  border-left:4px solid rgba(84,210,164,.95); border-radius:70% 30% 55% 22%; opacity:0;
+  filter:drop-shadow(0 0 7px rgba(68,218,165,.9)); animation:deleuze-root-grow 1550ms cubic-bezier(.14,.75,.18,1) var(--root-delay) both;
+}
+.deleuze-root::before,.deleuze-root::after {
+  content:""; position:absolute; left:-2px; top:38%; width:36px; height:22%;
+  border-top:3px solid rgba(239,163,87,.9); border-radius:50%; transform:rotate(-34deg); transform-origin:0 50%;
+}
+.deleuze-root::after { top:61%; transform:rotate(31deg); border-color:rgba(103,225,180,.88); }
+.deleuze-root.root-1 { --root-angle:-23deg; --root-shift:-7vw; --root-height:40%; --root-delay:0ms; }
+.deleuze-root.root-2 { --root-angle:-16deg; --root-shift:-5vw; --root-height:48%; --root-delay:45ms; }
+.deleuze-root.root-3 { --root-angle:-10deg; --root-shift:-3.5vw; --root-height:52%; --root-delay:80ms; }
+.deleuze-root.root-4 { --root-angle:-5deg; --root-shift:-1.5vw; --root-height:45%; --root-delay:120ms; }
+.deleuze-root.root-5 { --root-angle:1deg; --root-shift:0vw; --root-height:55%; --root-delay:35ms; }
+.deleuze-root.root-6 { --root-angle:6deg; --root-shift:1.8vw; --root-height:47%; --root-delay:105ms; }
+.deleuze-root.root-7 { --root-angle:11deg; --root-shift:3.5vw; --root-height:51%; --root-delay:60ms; }
+.deleuze-root.root-8 { --root-angle:17deg; --root-shift:5.2vw; --root-height:43%; --root-delay:135ms; }
+.deleuze-root.root-9 { --root-angle:24deg; --root-shift:7vw; --root-height:38%; --root-delay:90ms; }
+.deleuze-rhizome-impact {
+  position:absolute; z-index:15; left:var(--deleuze-target); top:53%; width:clamp(105px,13vw,190px); aspect-ratio:1; border-radius:50%;
+  transform:translate(-50%,-50%); opacity:0; background:radial-gradient(circle,#fff 0 6%,#f4b16f 12%,rgba(72,205,160,.72) 34%,transparent 72%);
+  animation:deleuze-rhizome-impact 1550ms ease-out both;
+}
+
+.deleuze-guattari-assist {
+  position:absolute; z-index:14; left:var(--deleuze-assist); bottom:2.6%; width:clamp(215px,25vw,380px); height:auto;
+  transform:translateX(-50%) scaleX(var(--deleuze-facing)); transform-origin:50% 100%; object-fit:contain; opacity:0;
+  filter:drop-shadow(0 13px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(73,198,157,.45));
+  animation:deleuze-guattari-arrive 1950ms cubic-bezier(.13,.72,.18,1) both;
+}
+.deleuze-beam {
+  position:absolute; z-index:16; top:55%; height:5px; opacity:0; transform:scaleX(0); transform-origin:50% 50%;
+  background:linear-gradient(90deg,transparent,rgba(242,156,80,.95),#fff,rgba(73,215,168,.95),transparent);
+  box-shadow:0 0 10px rgba(79,219,172,.9),0 0 22px rgba(233,142,74,.72);
+  animation:deleuze-beam-cross 1950ms ease-out both;
+}
+.deleuze-beam.beam-assist { top:50%; animation-delay:90ms; }
+.deleuze-plateau-impact {
+  position:absolute; z-index:18; left:var(--deleuze-target); top:53%; width:clamp(120px,15vw,220px); aspect-ratio:1;
+  transform:translate(-50%,-50%); opacity:0; border:3px solid rgba(245,180,103,.9); border-radius:50%;
+  box-shadow:inset 0 0 32px rgba(67,211,164,.5),0 0 34px rgba(238,145,76,.78);
+  animation:deleuze-plateau-burst 1950ms ease-out both;
+}
+.deleuze-plateau-impact i {
+  position:absolute; left:50%; top:50%; width:26%; aspect-ratio:1; border-radius:50%;
+  transform:translate(-50%,-50%); background:#fff; box-shadow:0 0 15px #5be0b2;
+}
+.deleuze-plateau-impact i:nth-child(1){ transform:translate(-50%,-50%) translate(-120%,-85%); }
+.deleuze-plateau-impact i:nth-child(2){ transform:translate(-50%,-50%) translate(110%,-90%); }
+.deleuze-plateau-impact i:nth-child(3){ transform:translate(-50%,-50%) translate(-135%,95%); }
+.deleuze-plateau-impact i:nth-child(4){ transform:translate(-50%,-50%) translate(120%,90%); }
+.deleuze-plateau-impact i:nth-child(5){ transform:translate(-50%,-50%); }
+
+@keyframes deleuze-idle-player { 0%,100%{transform:translateX(-50%) translateY(0)} 30%{transform:translateX(-50%) translateY(-.3%) rotate(-.1deg)} 58%{transform:translateX(-50%) translateY(-.66%) rotate(.09deg)} 82%{transform:translateX(-50%) translateY(-.22%) rotate(.1deg)} }
+@keyframes deleuze-idle-enemy { 0%,100%{transform:translateX(-50%) scaleX(-1) translateY(0)} 30%{transform:translateX(-50%) scaleX(-1) translateY(-.3%) rotate(-.1deg)} 58%{transform:translateX(-50%) scaleX(-1) translateY(-.66%) rotate(.09deg)} 82%{transform:translateX(-50%) scaleX(-1) translateY(-.22%) rotate(.1deg)} }
+@keyframes deleuze-walk-weight { 0%,50%,100%{transform:translateY(0) rotate(0)} 25%{transform:translateY(-.32%) rotate(-.15deg)} 75%{transform:translateY(-.32%) rotate(.15deg)} }
+@keyframes deleuze-jab { 0%,100%{transform:translateX(-50%)} 21%{transform:translateX(-50%) translateX(var(--deleuze-recoil))} 59%{transform:translateX(-50%) translateX(var(--deleuze-lunge)) rotate(-2deg)} }
+@keyframes deleuze-kick { 0%,100%{transform:translateX(-50%)} 24%{transform:translateX(-50%) translateX(var(--deleuze-recoil))} 62%{transform:translateX(-50%) translateX(var(--deleuze-sweep)) rotate(-2.5deg)} }
+@keyframes deleuze-combo { 0%,100%{transform:translateX(-50%)} 18%,47%{transform:translateX(-50%) translateX(var(--deleuze-lunge)) rotate(-2deg)} 68%{transform:translateX(-50%) translateX(var(--deleuze-sweep)) rotate(3deg)} }
+@keyframes deleuze-combo-poses { 0%,17%,92%,100%{background-image:url("/game/deleuze-fullbody-hq.webp?v=4.12")} 18%,39%{background-image:url("/game/deleuze-punch-hq.webp?v=4.12")} 40%,64%{background-image:url("/game/deleuze-kick-hq.webp?v=4.12")} 65%,91%{background-image:url("/game/deleuze-combo-hq.webp?v=4.12")} }
+@keyframes deleuze-channel { 0%,100%{filter:brightness(1)} 67%{filter:brightness(1.2) drop-shadow(0 0 22px rgba(80,209,166,.85))} }
+@keyframes deleuze-victory { 0%{opacity:.7;transform:translateX(-50%) translateY(3%)} 62%,100%{opacity:1;transform:translateX(-50%) translateY(0);filter:drop-shadow(0 0 20px rgba(229,138,73,.52))} }
+@keyframes deleuze-contact { 0%,31%{opacity:0;transform:scale(.2)} 45%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(2.9)} }
+@keyframes deleuze-colorwash { 0%,100%{opacity:0} 17%,91%{opacity:1} }
+@keyframes deleuze-title { 0%,22%,100%{opacity:0;transform:translateX(-50%) translateY(14px)} 40%,90%{opacity:1;transform:translateX(-50%) translateY(0)} }
+@keyframes deleuze-ground { 0%,9%,100%{opacity:0;transform:translateX(-50%) scale(.2)} 28%,80%{opacity:1;transform:translateX(-50%) scale(1)} 92%{opacity:.45;transform:translateX(-50%) scale(1.3)} }
+@keyframes deleuze-root-grow { 0%,13%,100%{opacity:0;transform:translateX(var(--root-shift)) rotate(var(--root-angle)) scaleY(0)} 31%{opacity:1;transform:translateX(var(--root-shift)) rotate(var(--root-angle)) scaleY(.78)} 48%,80%{opacity:1;transform:translateX(var(--root-shift)) rotate(var(--root-angle)) scaleY(1)} 93%{opacity:.3;transform:translateX(var(--root-shift)) rotate(var(--root-angle)) scaleY(1.08)} }
+@keyframes deleuze-rhizome-impact { 0%,53%{opacity:0;transform:translate(-50%,-50%) scale(.12)} 66%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(4.6)} }
+@keyframes deleuze-guattari-arrive { 0%,10%{opacity:0;transform:translateX(-50%) scaleX(var(--deleuze-facing)) translateY(8%) scale(.8)} 27%,82%{opacity:1;transform:translateX(-50%) scaleX(var(--deleuze-facing)) translateY(0) scale(1)} 100%{opacity:0;transform:translateX(-50%) scaleX(var(--deleuze-facing)) translateY(-2%) scale(1.03)} }
+@keyframes deleuze-beam-cross { 0%,38%,100%{opacity:0;transform:scaleX(0)} 51%,76%{opacity:1;transform:scaleX(1)} 86%{opacity:.35;transform:scaleX(1.05)} }
+@keyframes deleuze-plateau-burst { 0%,50%{opacity:0;transform:translate(-50%,-50%) scale(.15) rotate(-18deg)} 63%,81%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0)} 100%{opacity:0;transform:translate(-50%,-50%) scale(2.5) rotate(36deg)} }
+
+@media (max-width:760px) {
+  .fighter-deleuze { width:clamp(210px,43vw,335px); height:78%; }
+  .deleuze-effect > b { letter-spacing:.05em; max-width:92%; white-space:normal; }
+  .deleuze-guattari-assist { width:clamp(190px,49vw,330px); }
+  .deleuze-rhizome-ground { width:clamp(190px,55vw,340px); }
+}
