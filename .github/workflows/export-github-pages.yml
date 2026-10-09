@@ -1,0 +1,81 @@
+name: Export Philo Kombat Beta for GitHub Pages
+
+on:
+  push:
+    branches:
+      - export/github-pages-beta
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export-static-site:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout original private source
+        uses: actions/checkout@v4
+
+      - name: Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify original source integrity
+        run: node scripts/verify-beta.mjs source
+
+      - name: Build standalone beta for GitHub Pages subpath
+        run: npx vite build --config vite.beta.config.ts --base /philo-kombat-beta/
+
+      - name: Verify exported assets and source integrity
+        run: node scripts/verify-beta.mjs dist
+
+      - name: Adjust game assets referenced by absolute paths
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { readdirSync, readFileSync, writeFileSync, statSync } from 'node:fs';
+          import { join } from 'node:path';
+          const root = 'beta-dist';
+          const extensions = /\.(?:html|css|js|json|svg|webmanifest)$/i;
+          const substitutions = [
+            ['/game/', '/philo-kombat-beta/game/'],
+            ['/audio/', '/philo-kombat-beta/audio/'],
+            ['/favicon.svg', '/philo-kombat-beta/favicon.svg'],
+          ];
+          let inspected = 0;
+          let updated = 0;
+          function visit(dir) {
+            for (const name of readdirSync(dir)) {
+              const path = join(dir, name);
+              if (statSync(path).isDirectory()) { visit(path); continue; }
+              if (!extensions.test(path)) continue;
+              inspected++;
+              const before = readFileSync(path, 'utf8');
+              let after = before;
+              for (const [from, to] of substitutions) {
+                // Do not double-prefix Vite's correctly rewritten asset paths.
+                const escaped = from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const re = new RegExp('(?<!/philo-kombat-beta)' + escaped, 'g');
+                after = after.replace(re, to);
+              }
+              if (after !== before) { writeFileSync(path, after); updated++; }
+            }
+          }
+          visit(root);
+          console.log('Checked', inspected, 'text assets; adjusted', updated, 'for /philo-kombat-beta/.');
+          NODE
+
+      - name: Upload ready-to-publish website only
+        uses: actions/upload-artifact@v4
+        with:
+          name: philo-kombat-pages-ready
+          path: beta-dist/
+          include-hidden-files: true
+          retention-days: 14
+          if-no-files-found: error
