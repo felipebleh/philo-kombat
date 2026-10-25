@@ -1,0 +1,794 @@
+[
+  {
+    "row": 0,
+    "col": 0,
+    "sourceBBox": [
+      85,
+      24,
+      170,
+      238
+    ],
+    "restoredBBox": [
+      248,
+      72,
+      518,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 0,
+    "col": 1,
+    "sourceBBox": [
+      79,
+      24,
+      176,
+      237
+    ],
+    "restoredBBox": [
+      225,
+      72,
+      541,
+      711
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 1,
+    "col": 0,
+    "sourceBBox": [
+      84,
+      45,
+      172,
+      238
+    ],
+    "restoredBBox": [
+      213,
+      135,
+      555,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 1,
+    "col": 1,
+    "sourceBBox": [
+      82,
+      46,
+      173,
+      237
+    ],
+    "restoredBBox": [
+      220,
+      138,
+      545,
+      711
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 0,
+    "col": 2,
+    "sourceBBox": [
+      83,
+      23,
+      174,
+      238
+    ],
+    "restoredBBox": [
+      230,
+      69,
+      541,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 0,
+    "col": 3,
+    "sourceBBox": [
+      77,
+      23,
+      178,
+      238
+    ],
+    "restoredBBox": [
+      218,
+      69,
+      547,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 1,
+    "col": 2,
+    "sourceBBox": [
+      69,
+      46,
+      187,
+      237
+    ],
+    "restoredBBox": [
+      174,
+      138,
+      595,
+      711
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 1,
+    "col": 3,
+    "sourceBBox": [
+      77,
+      44,
+      178,
+      237
+    ],
+    "restoredBBox": [
+      194,
+      132,
+      570,
+      711
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 0,
+    "col": 4,
+    "sourceBBox": [
+      85,
+      22,
+      170,
+      237
+    ],
+    "restoredBBox": [
+      248,
+      66,
+      518,
+      711
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 0,
+    "col": 5,
+    "sourceBBox": [
+      77,
+      23,
+      179,
+      238
+    ],
+    "restoredBBox": [
+      192,
+      69,
+      575,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 1,
+    "col": 4,
+    "sourceBBox": [
+      65,
+      44,
+      190,
+      237
+    ],
+    "restoredBBox": [
+      151,
+      132,
+      614,
+      711
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 1,
+    "col": 5,
+    "sourceBBox": [
+      70,
+      45,
+      186,
+      238
+    ],
+    "restoredBBox": [
+      152,
+      135,
+      616,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 2,
+    "col": 0,
+    "sourceBBox": [
+      55,
+      49,
+      201,
+      238
+    ],
+    "restoredBBox": [
+      140,
+      147,
+      628,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 2,
+    "col": 1,
+    "sourceBBox": [
+      63,
+      50,
+      192,
+      238
+    ],
+    "restoredBBox": [
+      154,
+      150,
+      610,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 3,
+    "col": 0,
+    "sourceBBox": [
+      70,
+      54,
+      184,
+      238
+    ],
+    "restoredBBox": [
+      196,
+      162,
+      566,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 3,
+    "col": 1,
+    "sourceBBox": [
+      54,
+      58,
+      202,
+      237
+    ],
+    "restoredBBox": [
+      143,
+      174,
+      625,
+      711
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 2,
+    "col": 2,
+    "sourceBBox": [
+      54,
+      48,
+      201,
+      238
+    ],
+    "restoredBBox": [
+      140,
+      144,
+      624,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 2,
+    "col": 3,
+    "sourceBBox": [
+      53,
+      51,
+      202,
+      237
+    ],
+    "restoredBBox": [
+      145,
+      153,
+      620,
+      711
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 3,
+    "col": 2,
+    "sourceBBox": [
+      52,
+      65,
+      204,
+      237
+    ],
+    "restoredBBox": [
+      130,
+      195,
+      639,
+      711
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 3,
+    "col": 3,
+    "sourceBBox": [
+      57,
+      63,
+      198,
+      237
+    ],
+    "restoredBBox": [
+      152,
+      189,
+      612,
+      711
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 2,
+    "col": 4,
+    "sourceBBox": [
+      67,
+      50,
+      188,
+      238
+    ],
+    "restoredBBox": [
+      156,
+      150,
+      609,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 2,
+    "col": 5,
+    "sourceBBox": [
+      55,
+      47,
+      201,
+      238
+    ],
+    "restoredBBox": [
+      122,
+      141,
+      645,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 3,
+    "col": 4,
+    "sourceBBox": [
+      34,
+      52,
+      223,
+      237
+    ],
+    "restoredBBox": [
+      94,
+      156,
+      677,
+      711
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 3,
+    "col": 5,
+    "sourceBBox": [
+      70,
+      54,
+      185,
+      238
+    ],
+    "restoredBBox": [
+      170,
+      162,
+      596,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 4,
+    "col": 0,
+    "sourceBBox": [
+      55,
+      80,
+      199,
+      238
+    ],
+    "restoredBBox": [
+      150,
+      240,
+      612,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 4,
+    "col": 1,
+    "sourceBBox": [
+      41,
+      81,
+      213,
+      237
+    ],
+    "restoredBBox": [
+      134,
+      243,
+      628,
+      711
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 5,
+    "col": 0,
+    "sourceBBox": [
+      39,
+      123,
+      212,
+      238
+    ],
+    "restoredBBox": [
+      15,
+      72,
+      738,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 5,
+    "col": 1,
+    "sourceBBox": [
+      52,
+      124,
+      196,
+      237
+    ],
+    "restoredBBox": [
+      6,
+      72,
+      747,
+      711
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 4,
+    "col": 2,
+    "sourceBBox": [
+      58,
+      79,
+      198,
+      237
+    ],
+    "restoredBBox": [
+      162,
+      237,
+      607,
+      711
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 4,
+    "col": 3,
+    "sourceBBox": [
+      60,
+      86,
+      195,
+      238
+    ],
+    "restoredBBox": [
+      161,
+      258,
+      604,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 5,
+    "col": 2,
+    "sourceBBox": [
+      53,
+      123,
+      192,
+      237
+    ],
+    "restoredBBox": [
+      42,
+      72,
+      693,
+      711
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 5,
+    "col": 3,
+    "sourceBBox": [
+      44,
+      123,
+      205,
+      238
+    ],
+    "restoredBBox": [
+      29,
+      72,
+      719,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 4,
+    "col": 4,
+    "sourceBBox": [
+      59,
+      79,
+      196,
+      238
+    ],
+    "restoredBBox": [
+      137,
+      237,
+      628,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 4,
+    "col": 5,
+    "sourceBBox": [
+      63,
+      79,
+      192,
+      237
+    ],
+    "restoredBBox": [
+      157,
+      237,
+      608,
+      711
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 5,
+    "col": 4,
+    "sourceBBox": [
+      60,
+      126,
+      200,
+      238
+    ],
+    "restoredBBox": [
+      63,
+      72,
+      717,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  },
+  {
+    "row": 5,
+    "col": 5,
+    "sourceBBox": [
+      53,
+      124,
+      200,
+      238
+    ],
+    "restoredBBox": [
+      45,
+      72,
+      714,
+      714
+    ],
+    "sourcePixels": [
+      1254,
+      1254
+    ],
+    "registeredCell": 768,
+    "footDriftPixels": 0
+  }
+]

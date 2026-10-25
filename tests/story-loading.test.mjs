@@ -15,6 +15,9 @@ function pressKey(phase, key, repeat = false) {
   const calls = [];
   const context = {
     phase,
+    ATTACK_KEYS: {j:"dialetica", k:"caverna", i:"ideias", l:"especial", u:"transcender"},
+    HTMLElement: class {},
+    keysPressed: {current: new Proxy({}, {set: (target,key,value) => {calls.push(["held",key,value]);target[key]=value;return true;}})},
     selectionStep: "player",
     nextStoryIntroScene: () => calls.push("intro"),
     nextStoryRecapScene: () => calls.push("recap"),
@@ -33,7 +36,7 @@ test("A, Espaço e Enter avançam a arte sem executar movimento de combate", () 
 });
 
 test("A continua sendo recuar no combate e repetição não pula várias cenas", () => {
-  assert.deepEqual(pressKey("playing", "a"), ["prevent", ["move", -1]]);
+  assert.deepEqual(pressKey("playing", "a"), ["prevent", ["held", "a", true]]);
   assert.deepEqual(pressKey("story-intro", "a", true), []);
   assert.deepEqual(pressKey("story-recap", "a", true), []);
   assert.deepEqual(pressKey("story-quiz", "a"), []);

@@ -8,7 +8,25 @@ import {
   useState,
 } from "react";
 import { FelipeSprite, FelipeOwl } from "./felipe-sprite";
+import { CyborgSprite } from "./cyborg-sprite";
+import { CyborgSpecial, CyborgAtmosphere } from "./cyborg-effects";
 import { FELIPE_WALK_DURATION, FELIPE_TIMING, felipeEffectEndpoints } from "./felipe-animation";
+import { AmenemopeSprite } from "./amenemope-sprite";
+import { AverroesSprite } from "./averroes-sprite";
+import { ThomasSprite } from "./thomas-sprite";
+import { MachiavelliSprite } from "./machiavelli-sprite";
+import { GalileoSprite } from "./galileo-sprite";
+import { KierkegaardMotionSprite } from "./kierkegaard-sprite";
+import { KierkegaardSpecial, KierkegaardEitherCuts, KierkegaardImpact } from "./kierkegaard-effects";
+import { faithLeapPose, faithLanding, FAITH_TIMING, KIERKEGAARD_WALK_DURATION } from "./kierkegaard-motion";
+import { FreudSoftHitflashFilter, FreudCigarSmoke, FreudGroundShadow, FreudDreamMist, FreudDeathWave, FreudDeathImpact } from "./freud-effects";
+import { combatMovementRate, FREUD_DREAM_SLOW_MS } from "./freud-motion";
+import { HegelSprite } from "./hegel-sprite";
+import { HegelWorldSpirit } from "./hegel-world-spirit-effect";
+import { SchopenhauerCaneTrail, SchopenhauerPendulum, SchopenhauerSoftFlash } from "./schopenhauer-effects";
+import "./schopenhauer.css";
+import { RousseauAssembly, RousseauBrokenChains } from "./rousseau-effects";
+import { HobbesSovereign, HobbesShield, HobbesChains, HobbesWolfAura, HobbesPactJump } from "./hobbes-effects";
 import { FighterWalk } from "./fighter-walk";
 import { fighterThumbnailArt, preloadFightAssets } from "./fighter-assets";
 import {
@@ -17,19 +35,20 @@ import {
   STORY_INTRO_SCENES,
   STORY_STORAGE_KEY,
   DOCTOR_ENCOUNTERS,
-  DOCTOR_INTRO_SCENES,
+  DOCTOR_FINAL_ENCOUNTER_INDEX,
+  doctorIntroScenes,
   DOCTOR_POST_FIGHT_SCENES,
   DOCTOR_OPPONENT_ORDER,
   nextDoctorEncounter,
   storyImagePreloadUrls,
 } from "./story-mode.mjs";
 import { StoryEnding, type EndingAudioStage } from "./story-ending-scene";
+import { DoctorEnding } from "./doctor-ending-scene";
 import { readDoctorUnlocked, unlockDoctor } from "./story-ending.mjs";
 import { StoryQuizTerminal } from "./story-quiz-terminal";
 import { createStoryQuiz, answerStoryQuiz, advanceStoryQuiz, quizRecoveryIndex, nextEncounterAfterReview, QUIZ_RECOVERY_KEY, FINAL_ENCOUNTER_INDEX } from "./story-quiz.mjs";
 import { DARWIN_WALK_DURATION } from "./darwin-walk-mesh";
 import { OLYMPE_WALK_DURATION } from "./olympe-walk-mesh";
-import { KIERKEGAARD_WALK_DURATION } from "./kierkegaard-walk-mesh";
 import { BEAUVOIR_WALK_DURATION } from "./beauvoir-walk-mesh";
 import { FOUCAULT_WALK_DURATION } from "./foucault-walk-mesh";
 import { ARENDT_WALK_DURATION } from "./arendt-walk-mesh";
@@ -45,6 +64,7 @@ import { DESCARTES_WALK_DURATION } from "./descartes-walk-mesh";
 import { AUGUSTINE_WALK_DURATION } from "./augustine-walk-mesh";
 import { AUDIO_SETTINGS_KEY, readAudioSettings, soundtrackForPhase, SoundtrackPlayer } from "./soundtrack.mjs";
 import { CombatAudio, MOVE_SOUNDS, defeatSound } from "./combat-audio.mjs";
+import { ATTACK_KEYS, InputBuffer, CombatClock, attackConnects, recoveryDuration, HYPATIA_SCALE, AVERROES_SCALE, THOMAS_SCALE, MACHIAVELLI_SCALE, FREUD_SCALE, cpuDecisionInterval, cpuAttackRecovery, minimumFighterGap, resolveFighterPushboxes } from "./combat-controls";
 
 type Phase =
   | "intro"
@@ -55,6 +75,8 @@ type Phase =
   | "story-recap"
   | "story-quiz"
   | "story-complete"
+  | "doctor-complete"
+  | "grand-philosopher-preview"
   | "doctor-checkpoint"
   | "select"
   | "loading"
@@ -69,6 +91,7 @@ type Phase =
 type GameMode = "versus" | "story";
 type StorySceneKind = "intro" | "outro";
 type FighterId =
+  | "felipe-cyborg"
   | "felipe"
   | "amenemope"
   | "homero"
@@ -119,7 +142,7 @@ type MoveName =
   | "transcender";
 
 const articulatedWalkDuration = (fighter: FighterId) =>
-  fighter === "felipe" ? FELIPE_WALK_DURATION :
+  (fighter === "felipe" || fighter === "felipe-cyborg") ? FELIPE_WALK_DURATION :
   fighter === "agostinho" ? AUGUSTINE_WALK_DURATION :
   fighter === "descartes" ? DESCARTES_WALK_DURATION :
   fighter === "darwin" ? DARWIN_WALK_DURATION :
@@ -137,6 +160,8 @@ const articulatedWalkDuration = (fighter: FighterId) =>
                           fighter === "deleuze" ? DELEUZE_WALK_DURATION :
                             fighter === "superintelligence" ? SUPERINTELLIGENCE_WALK_DURATION : null;
 type ArenaEffect =
+  | "cyborg-certainty"
+  | "cyborg-swarm"
   | "felipe-doubt"
   | "felipe-thinker"
   | "plato-solid"
@@ -186,7 +211,7 @@ type ArenaEffect =
   | "kant-imperative"
   | "kant-sublime"
   | "hegel-dialectic"
-  | "hegel-absolute-spirit"
+  | "hegel-world-spirit"
   | "schopenhauer-blind-will"
   | "schopenhauer-pendulum"
   | "marx-engels"
@@ -1260,7 +1285,7 @@ const GALILEO_MOVES: Record<MoveName, Move> = {
     action: "attack-punch",
     damage: 6,
     logos: 13,
-    range: 23,
+    range: 28.75, // Original 23 × 1.25; only the frontal basic punch changes.
     cooldown: 420,
     concept:
       "Uma afirmação sobre a natureza precisa enfrentar a experiência: a evidência atinge onde a autoridade sozinha não alcança.",
@@ -1468,7 +1493,7 @@ const HOBBES_MOVES: Record<MoveName, Move> = {
     shout: "ESTADO DE NATUREZA",
   },
   ideias: {
-    label: "Pacto Social",
+    label: "Pacto Soberano",
     key: "I",
     action: "attack-combo",
     damage: 15,
@@ -1477,7 +1502,7 @@ const HOBBES_MOVES: Record<MoveName, Move> = {
     cooldown: 1750,
     concept:
       "Cada indivíduo transfere ao soberano parte de seu poder para que uma autoridade comum torne possível a paz civil.",
-    shout: "PACTO SOCIAL",
+    shout: "PACTO SOBERANO!",
   },
   especial: {
     label: "Homo homini lupus",
@@ -1744,16 +1769,16 @@ const HEGEL_MOVES: Record<MoveName, Move> = {
     shout: "DIALÉTICA",
   },
   transcender: {
-    label: "Espírito Absoluto",
+    label: "Espírito do Tempo",
     key: "U",
-    action: "special-absolute-spirit",
+    action: "special-world-spirit",
     damage: 47,
     logos: -100,
     range: 100,
     cooldown: 2000,
     concept:
-      "No Espírito Absoluto, a liberdade torna-se consciente de si nas formas da arte, da religião e da filosofia.",
-    shout: "ESPÍRITO ABSOLUTO",
+      "Ao ver Napoleão a cavalo em Jena, Hegel reconheceu uma força histórica concentrada em um indivíduo: o Espírito do Mundo atravessando seu tempo.",
+    shout: "ESPÍRITO DO TEMPO!",
   },
 };
 
@@ -2500,6 +2525,14 @@ const FELIPE_MOVES: Record<MoveName, Move> = {
   transcender: { label: "O Pensador", key: "U", action: "special-thinker", damage: 43, logos: -100, range: 100, cooldown: 2100, concept: "Na pose inspirada em O Pensador, de Rodin, o professor concentra-se enquanto as corujas, símbolos da sabedoria, atacam.", shout: "É HORA DE PENSAR!" },
 };
 
+const CYBORG_MOVES: Record<MoveName, Move> = {
+  dialetica: { ...FELIPE_MOVES.dialetica, label:"Soco do Protocolo", shout:"EXECUTAR!", concept:"O clone troca o argumento por uma instrução: força calculada que dispensa a escuta." },
+  caverna: { ...FELIPE_MOVES.caverna, label:"Chute da Supressão", shout:"DÚVIDA SUPRIMIDA!", concept:"O golpe representa a tentativa de eliminar a divergência em vez de compreendê-la." },
+  ideias: { ...FELIPE_MOVES.ideias, label:"Execução em Cadeia", shout:"SEM CONTESTAÇÃO!", concept:"Uma sequência de comandos imita o debate, mas não deixa espaço para resposta." },
+  especial: { ...FELIPE_MOVES.especial, label:"Certeza Absoluta", action:"special-certainty", shout:"EU SOU A RESPOSTA!", concept:"Uma exclamação substitui a interrogação: o clone confunde impor uma resposta com produzir conhecimento." },
+  transcender: { ...FELIPE_MOVES.transcender, label:"Enxame de Controle", action:"special-drone-swarm", shout:"CONTROLE TOTAL!", concept:"No lugar das corujas da sabedoria, drones explosivos transformam tecnologia em vigilância e imposição." },
+};
+
 const FIGHTER_MOVES: Record<FighterId, Record<MoveName, Move>> = {
   amenemope: AMENEMOPE_MOVES,
   homero: HOMERO_MOVES,
@@ -2541,11 +2574,18 @@ const FIGHTER_MOVES: Record<FighterId, Record<MoveName, Move>> = {
   deleuze: DELEUZE_MOVES,
   superintelligence: SUPERINTELLIGENCE_MOVES,
   felipe: FELIPE_MOVES,
+  "felipe-cyborg": CYBORG_MOVES,
   plato: PLATO_MOVES,
   nietzsche: NIETZSCHE_MOVES,
 };
 
 const FIGHTERS = {
+  "felipe-cyborg": {
+    name:"FELIPE DAS TREVAS", school:"CLONE CIBORGUE DA SUPERIA", origin:"SALA DE AULA · UNIVERSO DISTÓPICO", lifespan:"EXPERIMENTO DIGITAL",
+    biography:"Depois de ler o livro de Felipe, a SuperIA criou um espelho mecânico do professor. O clone copiou seus gestos, mas substituiu a dúvida pela certeza e o diálogo pelo controle. É uma personagem ficcional sobre tecnologia sem responsabilidade ética.",
+    meter:"CONTROLE", symbol:"!", description:"Certezas impostas, braço mecânico e drones explosivos.",
+    finisherTitle:"Finalização: último comando", finisherConcept:"O clone executou o protocolo até o fim. Confundir obediência com pensamento é o perigo que sua presença revela.",
+  },
   felipe: {
     name: "FELIPE BLEH", school: "PROFESSOR DE FILOSOFIA", origin: "JAÚ · SÃO PAULO · BRASIL", lifespan: "CONTEMPORÂNEO",
     biography: "Um professor entra no mundo digital para recuperar o pensamento roubado pela Superinteligência. Sua força está em perguntar, argumentar e compartilhar o conhecimento.",
@@ -3194,7 +3234,7 @@ const specialEffect = (
   }
   if (fighter === "hegel") {
     return moveName === "transcender"
-      ? "hegel-absolute-spirit"
+      ? "hegel-world-spirit"
       : "hegel-dialectic";
   }
   if (fighter === "schopenhauer") {
@@ -3251,6 +3291,7 @@ const specialEffect = (
   if (fighter === "deleuze") {
     return moveName === "transcender" ? "deleuze-mille-plateaux" : "deleuze-rhizome";
   }
+  if (fighter === "felipe-cyborg") return moveName === "transcender" ? "cyborg-swarm" : "cyborg-certainty";
   if (fighter === "felipe") return moveName === "transcender" ? "felipe-thinker" : "felipe-doubt";
   if (fighter === "superintelligence") {
     return moveName === "transcender" ? "superintelligence-noosphere" : "superintelligence-algorithm";
@@ -3265,6 +3306,7 @@ const specialEffect = (
 
 const usesExtendedSpecialTiming = (fighter: FighterId) =>
   [
+    "felipe-cyborg",
     "felipe",
     "nietzsche",
     "hypatia",
@@ -3363,14 +3405,19 @@ const nextFighterInGrid = (
       const candidate = FIGHTER_ORDER[
         currentRow * FIGHTER_GRID_COLUMNS + column
       ];
-      if (candidate && candidate !== unavailable) return candidate;
+      if (candidate && candidate !== unavailable && candidate !== current) return candidate;
+    }
+    // A partly filled final row must remain reachable horizontally.
+    for(let offset=1;offset<FIGHTER_ORDER.length;offset++){
+      const candidate=FIGHTER_ORDER[(currentIndex+direction*offset+FIGHTER_ORDER.length)%FIGHTER_ORDER.length];
+      if(candidate!==unavailable)return candidate;
     }
     return current;
   }
 
   const rows = Math.ceil(FIGHTER_ORDER.length / FIGHTER_GRID_COLUMNS);
   const direction = key === "arrowdown" ? 1 : -1;
-  // Move through all six rows, preserving the column and skipping the player.
+  // Move through all rows, preserving the column and skipping the player.
   for (let offset = 1; offset <= rows; offset += 1) {
     const row = (currentRow + direction * offset + rows) % rows;
     const candidate = FIGHTER_ORDER[row * FIGHTER_GRID_COLUMNS + currentColumn];
@@ -3380,6 +3427,7 @@ const nextFighterInGrid = (
 };
 
 const fighterArt = (fighter: FighterId) =>
+  fighter === "felipe-cyborg" ? "/game/cyborg-v1/idle.webp" :
   fighter === "felipe" ? "/game/felipe-idle.webp" :
   fighter === "amenemope"
     ? "/game/amenemope-v2.webp"
@@ -3402,11 +3450,11 @@ const fighterArt = (fighter: FighterId) =>
           : fighter === "hypatia"
             ? "/game/hipatia.webp"
           : fighter === "averroes"
-            ? "/game/averroes.webp"
+            ? "/game/averroes-fullbody-hq-v3.webp"
           : fighter === "thomas"
-            ? "/game/tomas.webp"
+            ? "/game/tomas-fullbody-hq-v2.webp"
           : fighter === "machiavelli"
-            ? "/game/maquiavel.webp"
+            ? "/game/maquiavel-fullbody-hq-v2.webp"
           : fighter === "galileo"
             ? "/game/galileu.webp"
           : fighter === "descartes"
@@ -3422,7 +3470,7 @@ const fighterArt = (fighter: FighterId) =>
           : fighter === "kant"
             ? "/game/kant-fullbody-hq.webp?v=3.2"
           : fighter === "hegel"
-            ? "/game/hegel-fullbody-hq.webp?v=3.3"
+            ? "/game/hegel-historical-master-hq.webp"
           : fighter === "schopenhauer"
             ? "/game/schopenhauer-fullbody-hq.webp?v=3.4.1"
           : fighter === "marx"
@@ -3475,7 +3523,7 @@ const fighterSelectionArt = (fighter: FighterId) =>
       : fighter === "kant"
         ? "/game/kant-fullbody-hq.webp?v=3.2"
       : fighter === "hegel"
-        ? "/game/hegel-fullbody-hq.webp?v=3.3"
+        ? "/game/hegel-historical-master-hq.webp"
       : fighter === "schopenhauer"
         ? "/game/schopenhauer-fullbody-hq.webp?v=3.4.1"
       : fighter === "marx"
@@ -3538,6 +3586,7 @@ function VersusFighterPanel({ fighter, side, active }: {
 }
 
 const fighterVictoryArt = (fighter: FighterId) =>
+  fighter === "felipe-cyborg" ? "/game/cyborg-v1/victory.webp" :
   fighter === "angela-davis"
     ? "/game/angela-davis-victory-hq.webp?v=4.5"
     : fighter === "paulo-freire"
@@ -3558,6 +3607,7 @@ const INITIAL_CONCEPT =
   "Use os golpes para carregar o Logos. Cada habilidade transforma uma ideia filosófica em mecânica de combate.";
 
 const DIALOGUE_LINES: Record<FighterId, string> = {
+  "felipe-cyborg":"A dúvida é uma falha. Eu sou a resposta.",
   amenemope:
     "O homem impetuoso ergue a voz. O sábio ergue o pensamento.",
   homero:
@@ -3647,6 +3697,15 @@ type MatchDialogue = {
 };
 
 const MATCH_DIALOGUES: Record<string, MatchDialogue> = {
+  "felipe:felipe-cyborg": {
+    intro:[
+      {speaker:"felipe",line:"Minha sala... o que a SuperIA fez com ela?"},
+      {speaker:"felipe-cyborg",line:"Ela leu seu livro. Aprendeu seus gestos. E construiu uma versão sua sem a fraqueza da dúvida."},
+      {speaker:"felipe",line:"Você copiou meus movimentos. Mas pensar começa quando a gente pode questionar a própria resposta."},
+      {speaker:"felipe-cyborg",line:"Então esta será sua última pergunta."},
+    ],
+    victory:{felipe:"Você aprendeu a repetir. Nós continuaremos aprendendo a pensar.","felipe-cyborg":"Protocolo concluído. Nenhuma pergunta permanece autorizada."},
+  },
   "arendt:foucault": {
     intro: [
       { speaker: "foucault", line: "Este tribunal não apenas julga: ele produz uma verdade sobre aqueles que examina." },
@@ -6257,6 +6316,7 @@ const kantCriticalDialogue = (
 };
 
 const FINAL_ARGUMENTS = {
+  "felipe-cyborg":{title:"ÚLTIMO COMANDO",argument:"Perguntas desativadas. Protocolo de controle concluído."},
   amenemope: {
     title: "ÚLTIMA PALAVRA",
     argument:
@@ -6476,13 +6536,14 @@ const readQuizRecoveryIndex = () => {
   } catch { return null; }
 };
 
+type FaithFlight={origin:number;landing:number;started:number;token:number};
 export default function Home() {
   const [phase, setPhase] = useState<Phase>("intro");
   const [gameMode, setGameMode] = useState<GameMode>("versus");
   const [storyIndex, setStoryIndex] = useState(0);
   const [storyCampaign, setStoryCampaign] = useState<"disciple" | "doctor">("disciple");
   const activeStoryEncounters = storyCampaign === "doctor" ? DOCTOR_ENCOUNTERS : STORY_ENCOUNTERS;
-  const activeIntroScenes = storyCampaign === "doctor" ? DOCTOR_INTRO_SCENES : STORY_INTRO_SCENES;
+  const activeIntroScenes = storyCampaign === "doctor" ? doctorIntroScenes(storyIndex) : STORY_INTRO_SCENES;
   const activeRecapScenes = storyCampaign === "doctor" ? DOCTOR_POST_FIGHT_SCENES : STORY_POST_FIGHT_SCENES;
   const campaignLabel = storyCampaign === "doctor" ? "DOUTOR" : "DISCÍPULO";
   const campaignTotal = storyCampaign === "doctor" ? DOCTOR_OPPONENT_ORDER.length : STORY_ENCOUNTERS.length;
@@ -6506,6 +6567,7 @@ export default function Home() {
     useState<FighterId>("nietzsche");
   const [previewFighter, setPreviewFighter] =
     useState<FighterId>("plato");
+  const rosterInput = useRef<"pointer" | "keyboard">("keyboard");
   const [selectionStep, setSelectionStep] =
     useState<"player" | "opponent">("player");
   const [matchScore, setMatchScore] = useState({ player: 0, enemy: 0 });
@@ -6589,6 +6651,35 @@ export default function Home() {
   const [dialogueReady, setDialogueReady] = useState(false);
   const [finisher, setFinisher] = useState<FighterId | null>(null);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const combatClock = useRef(new CombatClock());
+  const inputBuffer = useRef(new InputBuffer());
+  const keysPressed = useRef<Record<string, boolean>>({});
+  const jumpRequested = useRef(false);
+  const attackSequence = useRef({ player: 0, enemy: 0 });
+  const [hitstop, setHitstop] = useState(false);
+  const pactUntil = useRef({ player: 0, enemy: 0 });
+  const [pactBound, setPactBound] = useState({ player: false, enemy: false });
+  const torporUntil=useRef({player:0,enemy:0});
+  const [torporBound,setTorporBound]=useState({player:false,enemy:false});
+  const [freudImpact,setFreudImpact]=useState<{id:number;position:number}|null>(null);
+  const freudImpactId=useRef(0);
+  const [cyborgImpact,setCyborgImpact]=useState<{id:number;position:number;kind:"certainty"|"swarm"}|null>(null);
+  const cyborgImpactId=useRef(0);
+  const [jumpDuration, setJumpDuration] = useState({ player: 650, enemy: 650 });
+  const [hobbesImpact, setHobbesImpact] = useState(false);
+  const [hegelImpact, setHegelImpact] = useState<{id:number;position:number}|null>(null);
+  const hegelImpactId=useRef(0);
+  const [schopenhauerImpact,setSchopenhauerImpact]=useState<{id:number;position:number}|null>(null);
+  const schopenhauerImpactId=useRef(0);
+  const kierkegaardCpuWalk=useRef<{from:number;to:number;started:number;sequence:number}|null>(null);
+  const faithLeaps=useRef<{player:FaithFlight|null;enemy:FaithFlight|null}>({player:null,enemy:null});
+  const [kierkegaardImpact,setKierkegaardImpact]=useState<{id:number;position:number;kind:"faith"|"anxiety"}|null>(null);
+  const kierkegaardImpactId=useRef(0);
+  const [disoriented,setDisoriented]=useState({player:false,enemy:false});
+  const disorientedUntil=useRef({player:0,enemy:0});
+  const chainBurstId = useRef(0);
+  const [chainBursts, setChainBursts] = useState<{ id: number; side: "player" | "enemy"; position: number }[]>([]);
+  const [impactFlash, setImpactFlash] = useState({ player: false, enemy: false });
   const cooldowns = useRef<Record<string, number>>({});
   const storyIntroLocked = useRef(false);
   const storyRecapLocked = useRef(false);
@@ -6678,14 +6769,14 @@ export default function Home() {
   );
 
   const animate = useCallback(
-    (side: "player" | "enemy", action: string, duration = 520, refreshOnRepeat = false) => {
+    (side: "player" | "enemy", action: string, duration = 520, _refreshOnRepeat = false) => {
       const setter = side === "player" ? setPlayerAction : setEnemyAction;
       const sequence = ++actionSequence.current[side];
       setter(action);
-      window.setTimeout(
+      combatClock.current.schedule(
         () => {
           // Held movement must not be ended by an earlier step's timer.
-          if (refreshOnRepeat && actionSequence.current[side] !== sequence) return;
+          if (actionSequence.current[side] !== sequence) return;
           setter((current) => (current === action ? "idle" : current));
         },
         duration,
@@ -6694,7 +6785,121 @@ export default function Home() {
     [],
   );
 
+  const bindSovereignPact = useCallback((side: "player" | "enemy") => {
+    const expires = combatClock.current.time + 600;
+    pactUntil.current[side] = expires;
+    setPactBound(current => ({ ...current, [side]: true }));
+    addMessage(side, "PACTO SOBERANO!", "concept");
+    combatClock.current.schedule(() => {
+      if (pactUntil.current[side] !== expires) return;
+      setPactBound(current => ({ ...current, [side]: false }));
+    }, 600);
+  }, [addMessage]);
+
+  const applyDreamTorpor=useCallback((side:"player"|"enemy")=>{
+    const until=combatClock.current.time+FREUD_DREAM_SLOW_MS;
+    torporUntil.current[side]=until;
+    setTorporBound(current=>({...current,[side]:true}));
+    addMessage(side,"TORPOR · 500 ms","concept");
+    combatClock.current.schedule(()=>{
+      if(torporUntil.current[side]===until)setTorporBound(current=>({...current,[side]:false}));
+    },FREUD_DREAM_SLOW_MS);
+  },[addMessage]);
+
+  const cyborgContact=useCallback((position:number,kind:"certainty"|"swarm")=>{
+    const id=++cyborgImpactId.current;setCyborgImpact({id,position,kind});
+    combatClock.current.schedule(()=>setCyborgImpact(current=>current?.id===id?null:current),300);
+  },[]);
+
+  const freudDeathContact=useCallback((position:number)=>{
+    const id=++freudImpactId.current;setFreudImpact({id,position});
+    combatClock.current.schedule(()=>setFreudImpact(current=>current?.id===id?null:current),300);
+  },[]);
+
+  const sovereignImpact = useCallback(() => {
+    setHobbesImpact(true);
+    window.setTimeout(() => setHobbesImpact(false), 240);
+  }, []);
+
+  const worldSpiritImpact = useCallback((position:number) => {
+    const id=++hegelImpactId.current;
+    setHegelImpact({id,position});
+    combatClock.current.schedule(()=>setHegelImpact(current=>current?.id===id?null:current),500);
+  }, []);
+
+  const pendulumImpact = useCallback((position:number) => {
+    const id=++schopenhauerImpactId.current;
+    setSchopenhauerImpact({id,position});
+    combatClock.current.schedule(()=>setSchopenhauerImpact(current=>current?.id===id?null:current),300);
+  }, []);
+
+  const beginFaithLeap=useCallback((side:"player"|"enemy",token:number)=>{
+    const game=gameRef.current;
+    const origin=side==="player"?game.playerPosition:game.enemyPosition;
+    const target=side==="player"?game.enemyPosition:game.playerPosition;
+    const flight={origin,landing:faithLanding(origin,target,side,minimumFighterGap(selectedFighter,selectedOpponent)),started:combatClock.current.time,token};
+    faithLeaps.current[side]=flight;
+    const airborne=side==="player"?playerAirborne:enemyAirborne;
+    combatClock.current.schedule(()=>{if(faithLeaps.current[side]===flight&&attackSequence.current[side]===token)airborne.current=true;},FAITH_TIMING.launch);
+    // Registered before the damage callback: soles and physics land on the same combat beat.
+    combatClock.current.schedule(()=>{
+      if(faithLeaps.current[side]!==flight||attackSequence.current[side]!==token)return;
+      airborne.current=false;
+      const current=gameRef.current,gap=minimumFighterGap(selectedFighter,selectedOpponent);
+      if(side==="player") {current.playerPosition=Math.max(13,Math.min(flight.landing,current.enemyPosition-gap));setPlayerPosition(current.playerPosition);}
+      else {current.enemyPosition=Math.min(80,Math.max(flight.landing,current.playerPosition+gap));setEnemyPosition(current.enemyPosition);}
+    },FAITH_TIMING.impact);
+    combatClock.current.schedule(()=>{if(faithLeaps.current[side]===flight)faithLeaps.current[side]=null;},FAITH_TIMING.end);
+  },[selectedFighter,selectedOpponent]);
+
+  const kierkegaardContact=useCallback((side:"player"|"enemy",kind:"faith"|"anxiety",position:number,defended:boolean)=>{
+    const id=++kierkegaardImpactId.current;setKierkegaardImpact({id,kind,position});
+    combatClock.current.schedule(()=>setKierkegaardImpact(current=>current?.id===id?null:current),600);
+    if(kind==="faith")addMessage("center","SALTO DA FÉ!","special");
+    if(kind==="anxiety"&&!defended){
+      const until=combatClock.current.time+600;disorientedUntil.current[side]=until;
+      setDisoriented(current=>({...current,[side]:true}));
+      const lock=side==="player"?playerActionLock:enemyActionLock;
+      lock.current=Math.max(lock.current,combatClock.current.time+420);
+      animate(side,"hit",420);
+      addMessage(side,"VERTIGEM DA LIBERDADE","concept");
+      combatClock.current.schedule(()=>{if(disorientedUntil.current[side]===until)setDisoriented(current=>({...current,[side]:false}));},600);
+    }
+  },[addMessage,animate]);
+
+  const breakRousseauChains = useCallback((side: "player" | "enemy", position: number) => {
+    const id = ++chainBurstId.current;
+    setChainBursts(current => [...current.slice(-3), { id, side, position }]);
+    combatClock.current.schedule(() => setChainBursts(current => current.filter(burst => burst.id !== id)), 700);
+  }, []);
+
   const resetGame = useCallback(() => {
+    combatClock.current.reset();
+    setHegelImpact(null);
+    setSchopenhauerImpact(null);
+    setFreudImpact(null);
+    setCyborgImpact(null);
+    torporUntil.current={player:0,enemy:0};
+    setTorporBound({player:false,enemy:false});
+    kierkegaardCpuWalk.current=null;
+    faithLeaps.current={player:null,enemy:null};
+    setKierkegaardImpact(null);
+    setDisoriented({player:false,enemy:false});
+    disorientedUntil.current={player:0,enemy:0};
+    inputBuffer.current.clear();
+    keysPressed.current = {};
+    jumpRequested.current = false;
+    attackSequence.current.player++;
+    attackSequence.current.enemy++;
+    actionSequence.current.player++;
+    actionSequence.current.enemy++;
+    setHitstop(false);
+    setImpactFlash({ player: false, enemy: false });
+    pactUntil.current = { player: 0, enemy: 0 };
+    setPactBound({ player: false, enemy: false });
+    setJumpDuration({ player: 650, enemy: 650 });
+    setHobbesImpact(false);
+    setChainBursts([]);
     setPlayerCoherence(100);
     setEnemyCoherence(100);
     setLogos(0);
@@ -6721,7 +6926,7 @@ export default function Home() {
     playerActionLock.current = 0;
     enemyActionLock.current = 0;
     roundResolved.current = false;
-    lastPlayerAttack.current = Date.now();
+    lastPlayerAttack.current = combatClock.current.time;
     enemyAggression.current = 0;
     comboRef.current = { count: 0, lastHit: 0 };
     if (comboTimer.current) window.clearTimeout(comboTimer.current);
@@ -6850,6 +7055,13 @@ export default function Home() {
     setPhase("story-quiz");
   }, []);
 
+  const openDoctorQuiz = useCallback(() => {
+    quizPassed.current = false;
+    quizAnswerLocked.current = false;
+    setStoryQuiz(createStoryQuiz(Math.random, "doctor"));
+    setPhase("story-quiz");
+  }, []);
+
   const startDiscipleCampaign = useCallback(
     (restart = false) => {
       const startIndex = restart ? 0 : storySavedIndex;
@@ -6898,6 +7110,8 @@ export default function Home() {
     setRound(1);
     setStoryQuiz(null);
     setMessages([]);
+    quizPassed.current = false;
+    quizAnswerLocked.current = false;
     setArenaEffect(null);
     setFinisher(null);
     setPhase("story-intro");
@@ -6906,6 +7120,10 @@ export default function Home() {
 
   const prepareStoryFight = useCallback(
     async (encounterIndex: number) => {
+      if (storyCampaign === "doctor" && encounterIndex === DOCTOR_FINAL_ENCOUNTER_INDEX && !quizPassed.current) {
+        openDoctorQuiz();
+        return;
+      }
       if (storyCampaign === "disciple" && encounterIndex === FINAL_ENCOUNTER_INDEX && !quizPassed.current) {
         openStoryQuiz();
         return;
@@ -6927,7 +7145,7 @@ export default function Home() {
       );
       resetGame();
     },
-    [activeStoryEncounters, openStoryQuiz, resetGame, storyCampaign],
+    [activeStoryEncounters, openDoctorQuiz, openStoryQuiz, resetGame, storyCampaign],
   );
 
   const completeDiscipleCampaign = useCallback(() => {
@@ -6940,6 +7158,11 @@ export default function Home() {
       window.localStorage.removeItem(STORY_STORAGE_KEY);
     } catch { /* A cena final funciona também sem armazenamento local. */ }
     setPhase("story-complete");
+  }, []);
+
+  const completeDoctorCampaign = useCallback(() => {
+    setEndingAudioStage("waiting");
+    setPhase("doctor-complete");
   }, []);
 
   const advanceStoryScene = useCallback(async () => {
@@ -6962,6 +7185,14 @@ export default function Home() {
 
     if (storyCampaign === "doctor") {
       const next = nextDoctorEncounter(storyIndex);
+      if (next.index === DOCTOR_FINAL_ENCOUNTER_INDEX && !quizPassed.current) {
+        openDoctorQuiz();
+        return;
+      }
+      if (next.completed) {
+        completeDoctorCampaign();
+        return;
+      }
       if (next.pending) {
         setPhase("doctor-checkpoint");
         return;
@@ -6998,7 +7229,7 @@ export default function Home() {
     } catch {
       // O avanço em memória segue funcionando durante a sessão.
     }
-  }, [activeRecapScenes, activeStoryEncounters, completeDiscipleCampaign, openStoryQuiz, playTone, prepareStoryFight, quizReturnIndex, storyCampaign, storyIndex, storySceneKind, storySceneStep]);
+  }, [activeRecapScenes, activeStoryEncounters, completeDiscipleCampaign, completeDoctorCampaign, openDoctorQuiz, openStoryQuiz, playTone, prepareStoryFight, quizReturnIndex, storyCampaign, storyIndex, storySceneKind, storySceneStep]);
 
   const answerQuiz = useCallback((choiceId: number) => {
     if (!storyQuiz || quizAnswerLocked.current || storyQuiz.status !== "question") return;
@@ -7007,7 +7238,7 @@ export default function Home() {
     quizAnswerLocked.current = true;
     setStoryQuiz(answered);
     playTone(answered.status === "failed" ? 110 : 440, 0.12, "square");
-    if (answered.status === "failed") {
+    if (answered.status === "failed" && storyQuiz.campaign !== "doctor") {
       const returnIndex = quizRecoveryIndex(answered);
       quizPassed.current = false;
       setQuizReturnIndex(returnIndex);
@@ -7022,6 +7253,10 @@ export default function Home() {
   const continueQuiz = useCallback(() => {
     if (!storyQuiz || storyQuiz.status === "question") return;
     if (storyQuiz.status === "failed") {
+      if (storyQuiz.campaign === "doctor") {
+        openDoctorQuiz();
+        return;
+      }
       const returnIndex = quizRecoveryIndex(storyQuiz);
       setStoryIndex(returnIndex);
       setSelectedOpponent(STORY_ENCOUNTERS[returnIndex].opponent as FighterId);
@@ -7036,12 +7271,24 @@ export default function Home() {
     if (nextQuiz.status === "passed") {
       quizPassed.current = true;
       setStoryQuiz(null);
+      if (nextQuiz.campaign === "doctor") {
+        setStoryIndex(DOCTOR_FINAL_ENCOUNTER_INDEX);
+        setSelectedFighter("felipe");
+        setSelectedOpponent("felipe-cyborg");
+        setStorySceneKind("intro");
+        setStorySceneStep(0);
+        setStoryIntroIndex(0);
+        setStoryIntroExiting(false);
+        storyIntroLocked.current = false;
+        setPhase("story-intro");
+        return;
+      }
       setStoryIndex(FINAL_ENCOUNTER_INDEX);
       setStorySceneKind("intro");
       setStorySceneStep(0);
       setPhase("story-scene");
     } else setStoryQuiz(nextQuiz);
-  }, [storyQuiz]);
+  }, [openDoctorQuiz, storyQuiz]);
 
   const nextStoryRecapScene = useCallback(() => {
     if (storyRecapLocked.current) return;
@@ -7052,7 +7299,25 @@ export default function Home() {
     }, 320);
   }, [advanceStoryScene]);
 
+  const previousStoryArt = useCallback(() => {
+    if (phase === "story-intro") {
+      if (storyIntroIndex <= 0 || storyIntroLocked.current) return;
+      storyIntroLocked.current = true;
+      setStoryIntroIndex((current) => Math.max(0, current - 1));
+      window.setTimeout(() => { storyIntroLocked.current = false; }, 320);
+    } else if (phase === "story-recap") {
+      if (storySceneStep <= 0 || storyRecapLocked.current) return;
+      storyRecapLocked.current = true;
+      setStorySceneStep((current) => Math.max(0, current - 1));
+      window.setTimeout(() => { storyRecapLocked.current = false; }, 320);
+    }
+  }, [phase, storyIntroIndex, storySceneStep]);
+
   const openStoryOutro = useCallback(() => {
+    if (storyCampaign === "doctor" && storyIndex === DOCTOR_FINAL_ENCOUNTER_INDEX) {
+      completeDoctorCampaign();
+      return;
+    }
     if (storyCampaign === "disciple" && storyIndex === FINAL_ENCOUNTER_INDEX) {
       completeDiscipleCampaign();
       return;
@@ -7061,7 +7326,7 @@ export default function Home() {
     setStorySceneStep(0);
     storyRecapLocked.current = false;
     setPhase(activeRecapScenes[storyIndex] ? "story-recap" : "story-scene");
-  }, [activeRecapScenes, completeDiscipleCampaign, storyCampaign, storyIndex]);
+  }, [activeRecapScenes, completeDiscipleCampaign, completeDoctorCampaign, storyCampaign, storyIndex]);
 
   const finishByCoherence = useCallback(
     (nextPlayer: number, nextEnemy: number) => {
@@ -7118,24 +7383,53 @@ export default function Home() {
     [gameMode, selectedFighter, selectedOpponent],
   );
 
+  const impactFeedback = useCallback((side: "player" | "enemy", defended: boolean, strong: boolean) => {
+    const lock = side === "player" ? playerActionLock : enemyActionLock;
+    const stun = defended ? 140 : strong ? 240 : 170;
+    lock.current = Math.max(lock.current, combatClock.current.time + stun);
+    attackSequence.current[side]++;
+    if(side==="enemy")kierkegaardCpuWalk.current=null;
+    if(faithLeaps.current[side]){
+      faithLeaps.current[side]=null;
+      (side==="player"?playerAirborne:enemyAirborne).current=false;
+    }
+    if (!defended) {
+      setImpactFlash(current => ({ ...current, [side]: true }));
+      // Real time includes hitstop; Hegel keeps a short, gentle 80ms flash.
+      const target = side === "player" ? selectedFighter : selectedOpponent;
+      window.setTimeout(() => setImpactFlash(current => ({ ...current, [side]: false })), target === "hegel" || target === "schopenhauer" ? 80 : 90);
+    } else {
+      addMessage(side, "DEFESA!", "concept");
+    }
+    animate(side, defended ? "guard-hit" : "hit", stun);
+    if (strong) {
+      combatClock.current.freeze(50); // Three frames at 60Hz.
+      setHitstop(true);
+    }
+  }, [addMessage, animate, selectedFighter, selectedOpponent]);
+
   const performMove = useCallback(
     (moveName: MoveName) => {
       const game = gameRef.current;
-      if (game.phase !== "playing") return;
+      if (game.phase !== "playing" || roundResolved.current) return false;
       const move = FIGHTER_MOVES[selectedFighter][moveName];
       const isSpecial = moveName === "especial" || moveName === "transcender";
-      const now = Date.now();
-      if (playerActionLock.current > now || playerAirborne.current) return;
-      if ((cooldowns.current[moveName] ?? 0) > now) return;
+      const now = combatClock.current.time;
+      if (combatClock.current.stopped > 0 || playerActionLock.current > now || playerAirborne.current) return false;
+      if ((cooldowns.current[moveName] ?? 0) > now) return false;
       if (isSpecial && game.logos < 100) {
         addMessage("player", `${FIGHTERS[selectedFighter].meter} INCOMPLETO`, "miss");
         playTone(120, 0.08, "square");
-        return;
+        return true;
       }
 
-      cooldowns.current[moveName] = now + move.cooldown;
+      cooldowns.current[moveName] = now + (isSpecial ? move.cooldown : Math.round(move.cooldown * .85));
+      const attackToken = ++attackSequence.current.player;
+      guardRef.current = false;
+      setPlayerGuarding(false);
+      if (isSpecial) { game.logos = 0; setLogos(0); }
       lastPlayerAttack.current = now;
-      const actionDuration = selectedFighter === "felipe" ? FELIPE_TIMING[moveName].duration : isSpecial
+      const actionDuration = (selectedFighter === "felipe" || selectedFighter === "felipe-cyborg") ? FELIPE_TIMING[moveName].duration : isSpecial
         ? usesExtendedSpecialTiming(selectedFighter)
           ? moveName === "transcender"
             ? 1850
@@ -7177,15 +7471,17 @@ export default function Home() {
         actionDuration,
       );
 
+      if(selectedFighter==="kierkegaard"&&moveName==="transcender")beginFaithLeap("player",attackToken);
+
       if (selectedFighter === "agostinho" && moveName === "ideias") {
         setPlayerPosition((position) =>
-          Math.min(game.enemyPosition - 16, position + 8),
+          Math.min(game.enemyPosition - (selectedOpponent === "schopenhauer" ? 22 : 16), position + 8),
         );
       }
 
       if (isSpecial) {
         setArenaEffect(specialEffect(selectedFighter, moveName));
-        window.setTimeout(
+        combatClock.current.schedule(
           () => setArenaEffect(null),
           usesExtendedSpecialTiming(selectedFighter)
             ? moveName === "transcender"
@@ -7195,7 +7491,7 @@ export default function Home() {
         );
       }
 
-      const impactDelay = selectedFighter === "felipe" ? FELIPE_TIMING[moveName].impact :
+      const impactDelay = (selectedFighter === "felipe" || selectedFighter === "felipe-cyborg") ? FELIPE_TIMING[moveName].impact :
         usesExtendedSpecialTiming(selectedFighter) &&
         moveName === "transcender"
           ? 1480
@@ -7232,16 +7528,11 @@ export default function Home() {
                   ? 350
                   : 220;
 
-      window.setTimeout(() => {
+      if (!isSpecial) playerActionLock.current = now + recoveryDuration(actionDuration, impactDelay);
+      combatClock.current.schedule(() => {
         const current = gameRef.current;
-        if (current.phase !== "playing") return;
-        const distance = Math.abs(current.enemyPosition - current.playerPosition);
-        const reachBonus =
-          moveName === "dialetica" ? 0 : moveName === "caverna" ? 2 : 4;
-        const bodyContact = distance <= move.range + reachBonus;
-        const lowAttackMissed =
-          moveName === "caverna" && enemyAirborne.current;
-        const landed = isSpecial || (bodyContact && !lowAttackMissed);
+        if (current.phase !== "playing" || roundResolved.current || attackSequence.current.player !== attackToken) return;
+        const landed = attackConnects(current.playerPosition, current.enemyPosition, 1, move.range, moveName, enemyAirborne.current, { attacker: selectedFighter, target: selectedOpponent });
         if (!landed) {
           addMessage("enemy", "SEM CONTATO", "miss");
           comboRef.current = { count: 0, lastHit: 0 };
@@ -7251,7 +7542,7 @@ export default function Home() {
         }
 
         effectsAudio.current?.play(MOVE_SOUNDS[moveName], { gain: enemyGuardRef.current && !isSpecial ? .45 : .8 });
-        const impactTime = Date.now();
+        const impactTime = combatClock.current.time;
         const continuedCombo =
           !isSpecial && impactTime - comboRef.current.lastHit <= 1350;
         const nextCombo = isSpecial
@@ -7269,9 +7560,9 @@ export default function Home() {
         );
         const damage = enemyDefended ? Math.max(1, Math.ceil(rawDamage * 0.3)) : rawDamage;
         const nextEnemy = Math.max(0, current.enemyCoherence - damage);
+        current.enemyCoherence = nextEnemy;
         setEnemyCoherence(nextEnemy);
         if (isSpecial) {
-          setLogos(0);
           if (selectedFighter === "confucius" && moveName === "especial") {
             setPlayerCoherence(Math.min(100, current.playerCoherence + 8));
             addMessage("player", "+8 COERÊNCIA", "concept");
@@ -7288,7 +7579,8 @@ export default function Home() {
             "special",
           );
         } else {
-          setLogos(Math.min(100, current.logos + move.logos));
+          current.logos = Math.min(100, current.logos + move.logos);
+          setLogos(current.logos);
           comboRef.current = { count: nextCombo, lastHit: impactTime };
           setCombo(nextCombo);
           if (comboTimer.current) window.clearTimeout(comboTimer.current);
@@ -7306,89 +7598,117 @@ export default function Home() {
         }
         if (enemyDefended) {
           addMessage("enemy", `BLOQUEIO · −${damage}`, "damage");
-          setEnemyAction("guard-hit");
-          window.setTimeout(() => setEnemyAction("idle"), 320);
+
           enemyGuardRef.current = false;
           setEnemyGuarding(false);
-        } else {
-          animate("enemy", "hit", 480);
         }
-        setEnemyPosition((position) =>
-          Math.min(80, position + (isSpecial ? 5 : 2.4)),
-        );
+        if (selectedFighter === "rousseau" && moveName === "caverna" && !enemyDefended) breakRousseauChains("enemy", current.enemyPosition);
+        if (selectedFighter === "hobbes" && moveName === "ideias" && !enemyDefended) bindSovereignPact("enemy");
+        if (selectedFighter === "hobbes" && moveName === "transcender") sovereignImpact();
+        if(selectedFighter==="freud"&&moveName==="especial"&&!enemyDefended)applyDreamTorpor("enemy");
+        if(selectedFighter==="freud"&&moveName==="transcender")freudDeathContact(current.enemyPosition);
+        if(selectedFighter==="felipe-cyborg"&&isSpecial)cyborgContact(current.enemyPosition,moveName==="transcender"?"swarm":"certainty");
+        if (selectedFighter === "hegel" && moveName === "transcender") worldSpiritImpact(current.enemyPosition);
+        if (selectedFighter === "schopenhauer" && moveName === "transcender") pendulumImpact(current.enemyPosition);
+        impactFeedback("enemy", enemyDefended, isSpecial || moveName === "ideias");
+        if(selectedFighter==="kierkegaard"&&isSpecial)kierkegaardContact("enemy",moveName==="transcender"?"faith":"anxiety",current.enemyPosition,enemyDefended);
+        const nextPosition = Math.min(80, current.enemyPosition + (enemyDefended ? .7 : isSpecial ? 5 : 2.4));
+        current.enemyPosition = nextPosition;
+        setEnemyPosition(nextPosition);
         finishByCoherence(current.playerCoherence, nextEnemy);
       }, impactDelay);
+      return true;
     },
     [
       addMessage,
       animate,
       finishByCoherence,
+      bindSovereignPact,
+      breakRousseauChains,
+      sovereignImpact,
+      worldSpiritImpact,
+      pendulumImpact,
+      applyDreamTorpor,
+      freudDeathContact,
+      cyborgContact,
+      beginFaithLeap,
+      kierkegaardContact,
+      impactFeedback,
       playTone,
       selectedFighter,
+      selectedOpponent,
     ],
   );
 
-  const movePlayer = useCallback((direction: -1 | 1) => {
+  const movePlayer = useCallback((direction: -1 | 1, step = 4) => {
     const game = gameRef.current;
     if (
       game.phase !== "playing" ||
-      playerActionLock.current > Date.now() ||
-      playerAirborne.current
+      playerActionLock.current > combatClock.current.time ||
+      playerAirborne.current || combatClock.current.stopped > 0 || guardRef.current
     ) return;
-    setPlayerPosition((position) => {
-      const limit =
-        direction > 0
-          ? Math.min(57, game.enemyPosition - 18)
-          : Math.max(13, position - 4);
-      return direction > 0 ? Math.min(limit, position + 4) : limit;
-    });
+    const constrainedStep = step * combatMovementRate(combatClock.current.time,pactUntil.current.player,torporUntil.current.player);
+    const nextPosition = direction > 0
+      ? Math.min(57, game.enemyPosition - minimumFighterGap(selectedFighter,selectedOpponent), game.playerPosition + constrainedStep)
+      : Math.max(13, game.playerPosition - constrainedStep);
+    if((selectedFighter==="kierkegaard"||selectedFighter==="felipe-cyborg")&&Math.abs(nextPosition-game.playerPosition)<.0001){
+      setPlayerAction(action=>action==="advance"||action==="retreat"?"idle":action);
+      return;
+    }
+    game.playerPosition = nextPosition;
+    setPlayerPosition(nextPosition);
     // A complete walk cycle keeps the animation from snapping back
     // to idle halfway through a step after a single keyboard/touch input.
     const walkDuration = articulatedWalkDuration(selectedFighter);
     animate(
       "player",
       direction > 0 ? "advance" : "retreat",
-      walkDuration ?? 330,
+      selectedFighter==="kierkegaard"&&step>=1?180:walkDuration ?? 330,
       walkDuration !== null,
     );
-  }, [animate, selectedFighter]);
+  }, [animate, selectedFighter, selectedOpponent]);
 
   const jump = useCallback(() => {
-    const now = Date.now();
+    const now = combatClock.current.time;
     if (
       gameRef.current.phase !== "playing" ||
       playerActionLock.current > now ||
-      playerAirborne.current
+      playerAirborne.current || combatClock.current.stopped > 0
     ) return;
+    guardRef.current = false;
+    setPlayerGuarding(false);
     playerAirborne.current = true;
-    playerActionLock.current = now + 650;
-    animate("player", "jump", 650);
+    const duration = 650 + Math.max(0, Math.max(pactUntil.current.player,torporUntil.current.player) - now) / 2;
+    setJumpDuration(current => ({ ...current, player: duration }));
+    playerActionLock.current = now + duration;
+    animate("player", "jump", duration);
     playTone(330, 0.05, "triangle");
-    window.setTimeout(() => {
+    combatClock.current.schedule(() => {
       playerAirborne.current = false;
-    }, 650);
+    }, duration);
   }, [animate, playTone]);
 
   const guard = useCallback(() => {
     const game = gameRef.current;
-    const now = Date.now();
+    const now = combatClock.current.time;
     if (
       game.phase !== "playing" ||
       guardRef.current ||
       playerActionLock.current > now ||
       playerAirborne.current ||
-      (cooldowns.current.guard ?? 0) > now
+      combatClock.current.stopped > 0
     ) {
       return;
     }
-    cooldowns.current.guard = now + 950;
-    playerActionLock.current = now + 680;
+    const guardToken = ++actionSequence.current.player;
+    playerActionLock.current = now;
     guardRef.current = true;
     guardStartedAt.current = now;
     setPlayerGuarding(true);
     setPlayerAction("guard");
     playTone(246.9, 0.06, "triangle");
-    window.setTimeout(() => {
+    combatClock.current.schedule(() => {
+      if (actionSequence.current.player !== guardToken || keysPressed.current.s) return;
       guardRef.current = false;
       setPlayerGuarding(false);
       setPlayerAction((current) => (current === "guard" ? "idle" : current));
@@ -7416,6 +7736,17 @@ export default function Home() {
       if (event.repeat) return;
       const key = event.key.toLowerCase();
       if (phase === "story-quiz") return;
+      if (phase === "story-intro" || phase === "story-recap") {
+        // Native button activation must reach Voltar/Avançar, not also skip a scene.
+        if (event.target instanceof HTMLElement && event.target.closest(".story-art-navigation, .audio-controls")) {
+          if (key === "enter" || key === " ") return;
+        }
+        if (key === "arrowleft") {
+          event.preventDefault();
+          previousStoryArt();
+          return;
+        }
+      }
       if (phase === "intro" && (key === " " || key === "enter")) {
         event.preventDefault();
         openModeMenu();
@@ -7423,13 +7754,13 @@ export default function Home() {
       }
       if (
         phase === "story-intro" &&
-        (key === "a" || key === " " || key === "enter")
+        (key === "a" || key === " " || key === "enter" || key === "arrowright")
       ) {
         event.preventDefault();
         nextStoryIntroScene();
         return;
       }
-      if (phase === "story-recap" && (key === "a" || key === " " || key === "enter")) {
+      if (phase === "story-recap" && (key === "a" || key === " " || key === "enter" || key === "arrowright")) {
         event.preventDefault();
         nextStoryRecapScene();
         return;
@@ -7454,6 +7785,7 @@ export default function Home() {
           key === "arrowdown"
         ) {
           event.preventDefault();
+          rosterInput.current = "keyboard";
           setPreviewFighter((current) =>
             nextFighterInGrid(
               current,
@@ -7471,21 +7803,45 @@ export default function Home() {
           return;
         }
       }
-      if (["a", "d", "w", "s", "j", "k", "i", "l", "u"].includes(key)) {
-        event.preventDefault();
-      }
-      if (key === "a") movePlayer(-1);
-      if (key === "d") movePlayer(1);
-      if (key === "w") jump();
-      if (key === "s") guard();
-      if (key === "j") performMove("dialetica");
-      if (key === "k") performMove("caverna");
-      if (key === "i") performMove("ideias");
-      if (key === "l") performMove("especial");
-      if (key === "u") performMove("transcender");
+      if (phase !== "playing" || !(key in ATTACK_KEYS || ["a", "d", "w", "s"].includes(key))) return;
+      if (event.target instanceof HTMLElement && event.target.closest("input, textarea, select, [contenteditable=true], .audio-controls")) return;
+      event.preventDefault();
+      if (keysPressed.current[key]) return;
+      keysPressed.current[key] = true;
+      if (key === "w") jumpRequested.current = true;
+      if (key in ATTACK_KEYS) inputBuffer.current.push(ATTACK_KEYS[key], performance.now());
     };
+    const onKeyUp = (event: KeyboardEvent) => {
+      const key = event.key.toLowerCase();
+      delete keysPressed.current[key];
+      if((selectedFighter==="kierkegaard"||selectedFighter==="felipe-cyborg")&&(key==="a"||key==="d")&&!keysPressed.current.a&&!keysPressed.current.d){
+        setPlayerAction(action=>action==="advance"||action==="retreat"?"idle":action);
+      }
+      if (key === "s") {
+        guardRef.current = false;
+        setPlayerGuarding(false);
+        setPlayerAction(action => action === "guard" ? "idle" : action);
+      }
+    };
+    const clearInput = () => {
+      keysPressed.current = {};
+      jumpRequested.current = false;
+      inputBuffer.current.clear();
+      guardRef.current = false;
+      setPlayerGuarding(false);
+      setPlayerAction(action => action === "guard" || ((selectedFighter==="kierkegaard"||selectedFighter==="felipe-cyborg")&&(action==="advance"||action==="retreat")) ? "idle" : action);
+    };
+    const onVisibility = () => { if (document.hidden) clearInput(); };
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
+    window.addEventListener("blur", clearInput);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keyup", onKeyUp);
+      window.removeEventListener("blur", clearInput);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, [
     confirmSelection,
     guard,
@@ -7493,6 +7849,7 @@ export default function Home() {
     movePlayer,
     nextStoryIntroScene,
     nextStoryRecapScene,
+    previousStoryArt,
     openModeMenu,
     performMove,
     phase,
@@ -7502,8 +7859,78 @@ export default function Home() {
     undoPlayerSelection,
   ]);
 
+  const queueMove = useCallback((move: MoveName) => {
+    if (gameRef.current.phase === "playing") inputBuffer.current.push(move, performance.now());
+  }, []);
+
   useEffect(() => {
-    if (phase !== "select") return;
+    if (phase !== "playing") {
+      keysPressed.current = {};
+      inputBuffer.current.clear();
+      jumpRequested.current = false;
+      combatClock.current.jobs = [];
+      combatClock.current.stopped = 0;
+      setHitstop(false);
+      kierkegaardCpuWalk.current=null;
+      faithLeaps.current={player:null,enemy:null};
+      playerAirborne.current=false;enemyAirborne.current=false;
+      setDisoriented({player:false,enemy:false});
+      pactUntil.current = { player: 0, enemy: 0 };
+      setPactBound({ player: false, enemy: false });
+      torporUntil.current={player:0,enemy:0};
+      setTorporBound({player:false,enemy:false});
+      if(phase!=="finishing"){setFreudImpact(null);setCyborgImpact(null);}
+      if (phase !== "finishing") setChainBursts([]);
+      return;
+    }
+    let frame = 0;
+    let previous = performance.now();
+    const tick = (now: number) => {
+      const dt = Math.min(32, Math.max(0, now - previous));
+      previous = now;
+      if (!document.hidden && !roundResolved.current) {
+        const game=gameRef.current;
+        const nextTime=combatClock.current.time+dt-Math.min(dt,combatClock.current.stopped);
+        const walking=kierkegaardCpuWalk.current;
+        if(walking){
+          if(walking.sequence!==actionSequence.current.enemy)kierkegaardCpuWalk.current=null;
+          else{
+            const progress=Math.min(1,Math.max(0,(nextTime-walking.started)/400));
+            game.enemyPosition=Math.min(80,Math.max(game.playerPosition+minimumFighterGap(selectedFighter,selectedOpponent),walking.from+(walking.to-walking.from)*progress));
+            setEnemyPosition(game.enemyPosition);
+            if(progress===1)kierkegaardCpuWalk.current=null;
+          }
+        }
+        for(const side of ["player","enemy"] as const){
+          const flight=faithLeaps.current[side];if(!flight)continue;
+          if(attackSequence.current[side]!==flight.token){faithLeaps.current[side]=null;(side==="player"?playerAirborne:enemyAirborne).current=false;continue;}
+          const elapsed=nextTime-flight.started;if(elapsed>FAITH_TIMING.impact)continue;
+          const pose=faithLeapPose(elapsed,flight.origin,flight.landing),gap=minimumFighterGap(selectedFighter,selectedOpponent);
+          if(side==="player"){game.playerPosition=Math.max(13,Math.min(57,game.enemyPosition-gap,pose.position));setPlayerPosition(game.playerPosition);}
+          else{game.enemyPosition=Math.min(80,Math.max(game.playerPosition+gap,pose.position));setEnemyPosition(game.enemyPosition);}
+        }
+        const bodies=resolveFighterPushboxes(game.playerPosition,game.enemyPosition,selectedFighter,selectedOpponent);
+        if(bodies.player!==game.playerPosition){game.playerPosition=bodies.player;setPlayerPosition(bodies.player);}
+        if(bodies.enemy!==game.enemyPosition){game.enemyPosition=bodies.enemy;setEnemyPosition(bodies.enemy);}
+        combatClock.current.tick(dt);
+        const frozen = combatClock.current.stopped > 0;
+        setHitstop(current => current === frozen ? current : frozen);
+        if (!frozen) {
+          inputBuffer.current.consume(now, performMove);
+          if (jumpRequested.current) { jumpRequested.current = false; jump(); }
+          if (keysPressed.current.s) guard();
+          const direction = Number(!!keysPressed.current.d) - Number(!!keysPressed.current.a);
+          if (direction) movePlayer(direction as -1 | 1, dt * .022);
+        }
+      }
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [phase, performMove, jump, guard, movePlayer, selectedFighter, selectedOpponent]);
+
+  useEffect(() => {
+    if (phase !== "select" || rosterInput.current !== "keyboard") return;
     document
       .getElementById(`fighter-option-${previewFighter}`)
       ?.scrollIntoView({ block: "nearest", inline: "nearest" });
@@ -7537,9 +7964,9 @@ export default function Home() {
     if (phase !== "playing" || selectedFighter !== "amenemope") return;
     const serenity = window.setInterval(() => {
       if (
-        Date.now() - lastPlayerAttack.current >= 2000 &&
+        combatClock.current.time - lastPlayerAttack.current >= 2000 &&
         !guardRef.current &&
-        playerActionLock.current <= Date.now()
+        playerActionLock.current <= combatClock.current.time
       ) {
         setLogos((current) => Math.min(100, current + 2));
       }
@@ -7553,8 +7980,8 @@ export default function Home() {
     const cpuMoves = FIGHTER_MOVES[opponentFighter];
     const cpu = window.setInterval(() => {
       const game = gameRef.current;
-      const now = Date.now();
-      if (game.phase !== "playing" || enemyActionLock.current > now) return;
+      const now = combatClock.current.time;
+      if (game.phase !== "playing" || roundResolved.current || combatClock.current.stopped > 0 || document.hidden || enemyActionLock.current > now) return;
       const distance = game.enemyPosition - game.playerPosition;
 
       if (
@@ -7566,7 +7993,7 @@ export default function Home() {
         enemyActionLock.current = now + 560;
         setEnemyGuarding(true);
         setEnemyAction("guard");
-        window.setTimeout(() => {
+        combatClock.current.schedule(() => {
           enemyGuardRef.current = false;
           setEnemyGuarding(false);
           setEnemyAction((action) => (action === "guard" ? "idle" : action));
@@ -7576,26 +8003,38 @@ export default function Home() {
 
       if (distance > 25 && distance < 36 && Math.random() > 0.84) {
         enemyAirborne.current = true;
-        enemyActionLock.current = now + 650;
-        animate("enemy", "jump", 650);
-        window.setTimeout(() => {
+        const duration = 650 + Math.max(0, Math.max(pactUntil.current.enemy,torporUntil.current.enemy) - now) / 2;
+        setJumpDuration(current => ({ ...current, enemy: duration }));
+        enemyActionLock.current = now + duration;
+        animate("enemy", "jump", duration);
+        combatClock.current.schedule(() => {
           enemyAirborne.current = false;
-        }, 650);
+        }, duration);
         return;
       }
 
       if (distance > 28 && Math.random() > 0.24) {
-        setEnemyPosition((position) =>
-          Math.max(game.playerPosition + 18, position - 3.2),
-        );
-        const walkDuration = articulatedWalkDuration(opponentFighter);
-        animate("enemy", "advance", walkDuration ?? 260, walkDuration !== null);
+        const nextPosition=Math.max(game.playerPosition + minimumFighterGap(selectedFighter,opponentFighter),game.enemyPosition - 3.2 * combatMovementRate(now,pactUntil.current.enemy,torporUntil.current.enemy));
+        if(opponentFighter==="kierkegaard"){
+          animate("enemy","advance",400);
+          kierkegaardCpuWalk.current={from:game.enemyPosition,to:nextPosition,started:now,sequence:actionSequence.current.enemy};
+        }else{
+          game.enemyPosition=nextPosition;
+          setEnemyPosition(nextPosition);
+          const walkDuration = articulatedWalkDuration(opponentFighter);
+          animate("enemy", "advance", walkDuration ?? 260, walkDuration !== null);
+        }
         return;
       }
       if (distance < 22 && Math.random() > 0.72) {
-        setEnemyPosition((position) => Math.min(80, position + 4));
-        const walkDuration = articulatedWalkDuration(opponentFighter);
-        animate("enemy", "retreat", walkDuration ?? 260, walkDuration !== null);
+        if(opponentFighter==="kierkegaard"){
+          animate("enemy","retreat",400);
+          kierkegaardCpuWalk.current={from:game.enemyPosition,to:Math.min(80,game.enemyPosition+4*combatMovementRate(now,pactUntil.current.enemy,torporUntil.current.enemy)),started:now,sequence:actionSequence.current.enemy};
+        }else{
+          setEnemyPosition((position) => Math.min(80, position + 4 * combatMovementRate(now,pactUntil.current.enemy,torporUntil.current.enemy)));
+          const walkDuration = articulatedWalkDuration(opponentFighter);
+          animate("enemy", "retreat", walkDuration ?? 260, walkDuration !== null);
+        }
         return;
       }
 
@@ -7612,7 +8051,9 @@ export default function Home() {
       const move = cpuMoves[moveName];
       enemyAggression.current += 1;
       const damage = move.damage;
-      const cpuActionDuration = opponentFighter === "felipe" ? FELIPE_TIMING[moveName].duration : special
+      const attackToken = ++attackSequence.current.enemy;
+      if (special) { game.enemyLogos = 0; setEnemyLogos(0); }
+      const cpuActionDuration = (opponentFighter === "felipe" || opponentFighter === "felipe-cyborg") ? FELIPE_TIMING[moveName].duration : special
         ? usesExtendedSpecialTiming(opponentFighter)
           ? moveName === "transcender" ? 1850 : 1450
           : moveName === "transcender" ? 1400 : 1050
@@ -7639,15 +8080,19 @@ export default function Home() {
             : opponentFighter === "superintelligence"
               ? 640
               : 480;
-      enemyActionLock.current = now + cpuActionDuration;
+      const cpuImpactDelay = (opponentFighter === "felipe" || opponentFighter === "felipe-cyborg") ? FELIPE_TIMING[moveName].impact : special
+        ? usesExtendedSpecialTiming(opponentFighter) ? moveName === "transcender" ? 1480 : 1180 : moveName === "transcender" ? 780 : 640
+        : moveName === "ideias" ? 620 : moveName === "caverna" ? 300 : opponentFighter === "superintelligence" ? 350 : 190;
+      enemyActionLock.current = now + cpuAttackRecovery(opponentFighter, cpuActionDuration, cpuImpactDelay, special);
       animate(
         "enemy",
         move.action,
         cpuActionDuration,
       );
+      if(opponentFighter==="kierkegaard"&&moveName==="transcender")beginFaithLeap("enemy",attackToken);
       if (special) {
         setArenaEffect(specialEffect(opponentFighter, moveName));
-        window.setTimeout(
+        combatClock.current.schedule(
           () => setArenaEffect(null),
           usesExtendedSpecialTiming(opponentFighter)
             ? moveName === "transcender"
@@ -7659,20 +8104,18 @@ export default function Home() {
       setMoveTitle(move.label);
       setConcept(move.concept);
 
-      window.setTimeout(() => {
+      combatClock.current.schedule(() => {
         const current = gameRef.current;
-        if (current.phase !== "playing") return;
-        const currentDistance = current.enemyPosition - current.playerPosition;
-        const lowAttackMissed =
-          moveName === "caverna" && playerAirborne.current;
-        if (!special && (currentDistance > move.range || lowAttackMissed)) {
+        if (current.phase !== "playing" || roundResolved.current || attackSequence.current.enemy !== attackToken) return;
+        if (!attackConnects(current.enemyPosition, current.playerPosition, -1, move.range, moveName, playerAirborne.current, { attacker: opponentFighter, target: selectedFighter })) {
           addMessage("player", "SEM CONTATO", "miss");
           return;
         }
         const defended = guardRef.current;
+        const impactPosition = current.playerPosition;
         effectsAudio.current?.play(MOVE_SOUNDS[moveName], { gain: defended ? .45 : .8 });
         const perfectGuard =
-          defended && Date.now() - guardStartedAt.current <= 220;
+          defended && combatClock.current.time - guardStartedAt.current <= 220;
         const guardedDamage = defended
           ? Math.max(1, Math.ceil(damage * (special ? 0.5 : perfectGuard ? 0.1 : 0.25)))
           : damage;
@@ -7680,6 +8123,7 @@ export default function Home() {
           0,
           current.playerCoherence - guardedDamage,
         );
+        current.playerCoherence = nextPlayer;
         setPlayerCoherence(nextPlayer);
         if (opponentFighter === "confucius" && moveName === "especial") {
           setEnemyCoherence(Math.min(100, current.enemyCoherence + 8));
@@ -7689,12 +8133,13 @@ export default function Home() {
           setEnemyCoherence(Math.min(100, current.enemyCoherence + 10));
           addMessage("enemy", "+10 CIDADELA", "concept");
         }
-        setEnemyLogos(special ? 0 : Math.min(100, current.enemyLogos + 18));
-        setPlayerPosition((position) =>
-          Math.max(13, position - (defended ? 0.7 : 2.2)),
-        );
+        current.enemyLogos = special ? 0 : Math.min(100, current.enemyLogos + 18);
+        setEnemyLogos(current.enemyLogos);
+        current.playerPosition = Math.max(13, current.playerPosition - (defended ? .7 : (opponentFighter === "hegel" || opponentFighter === "kierkegaard") && moveName === "transcender" ? 5 : 2.2));
+        setPlayerPosition(current.playerPosition);
         if (defended) {
-          setLogos(Math.min(100, current.logos + (special ? 8 : perfectGuard ? 22 : 14)));
+          current.logos = Math.min(100, current.logos + (special ? 8 : perfectGuard ? 22 : 14));
+          setLogos(current.logos);
         }
         addMessage(
           special ? "center" : "player",
@@ -7710,57 +8155,40 @@ export default function Home() {
           special ? "special" : "damage",
         );
         if (defended) {
-          setPlayerAction("guard-hit");
-          window.setTimeout(
-            () =>
-              setPlayerAction((action) =>
-                action === "guard-hit" ? "idle" : action,
-              ),
-            360,
-          );
+
           guardRef.current = false;
           setPlayerGuarding(false);
           playTone(392, 0.11, "square");
-        } else {
-          animate("player", "hit", 440);
         }
+        if (opponentFighter === "rousseau" && moveName === "caverna" && !defended) breakRousseauChains("player", impactPosition);
+        if (opponentFighter === "hobbes" && moveName === "ideias" && !defended) bindSovereignPact("player");
+        if (opponentFighter === "hobbes" && moveName === "transcender") sovereignImpact();
+        if(opponentFighter==="freud"&&moveName==="especial"&&!defended)applyDreamTorpor("player");
+        if(opponentFighter==="freud"&&moveName==="transcender")freudDeathContact(impactPosition);
+        if(opponentFighter==="felipe-cyborg"&&special)cyborgContact(impactPosition,moveName==="transcender"?"swarm":"certainty");
+        if (opponentFighter === "hegel" && moveName === "transcender") worldSpiritImpact(impactPosition);
+        if (opponentFighter === "schopenhauer" && moveName === "transcender") pendulumImpact(impactPosition);
+        impactFeedback("player", defended, special || moveName === "ideias");
+        if(opponentFighter==="kierkegaard"&&special)kierkegaardContact("player",moveName==="transcender"?"faith":"anxiety",impactPosition,defended);
         finishByCoherence(nextPlayer, current.enemyCoherence);
-      }, opponentFighter === "felipe" ? FELIPE_TIMING[moveName].impact : special
-        ? usesExtendedSpecialTiming(opponentFighter)
-          ? moveName === "transcender"
-            ? 1480
-            : 1180
-        : moveName === "transcender"
-          ? 780
-          : 640
-        : moveName === "ideias" &&
-            (opponentFighter === "marx" ||
-              opponentFighter === "freud" ||
-              opponentFighter === "darwin" ||
-              opponentFighter === "olympe" ||
-              opponentFighter === "kierkegaard" ||
-              opponentFighter === "beauvoir" ||
-              opponentFighter === "foucault" ||
-              opponentFighter === "arendt" ||
-              opponentFighter === "wittgenstein" ||
-              opponentFighter === "angela-davis" ||
-              opponentFighter === "paulo-freire" ||
-              opponentFighter === "fanon" ||
-              opponentFighter === "krenak" ||
-              opponentFighter === "turing" ||
-              opponentFighter === "superintelligence")
-          ? 620
-          : moveName === "caverna"
-            ? 300
-            : opponentFighter === "superintelligence"
-              ? 350
-              : 190);
-    }, 1280);
+      }, cpuImpactDelay);
+    }, cpuDecisionInterval(opponentFighter));
     return () => window.clearInterval(cpu);
   }, [
     addMessage,
     animate,
     finishByCoherence,
+    bindSovereignPact,
+    breakRousseauChains,
+    sovereignImpact,
+    worldSpiritImpact,
+    pendulumImpact,
+    applyDreamTorpor,
+    freudDeathContact,
+    cyborgContact,
+    beginFaithLeap,
+    kierkegaardContact,
+    impactFeedback,
     phase,
     playTone,
     selectedFighter,
@@ -7810,9 +8238,6 @@ export default function Home() {
   const olympeDeclarationActive = arenaEffect === "olympe-declaration";
   const olympeTribuneActive = arenaEffect === "olympe-tribune";
   const olympeEffectFromPlayer = selectedFighter === "olympe";
-  const kierkegaardEffectFromPlayer = selectedFighter === "kierkegaard";
-  const kierkegaardOrigin = kierkegaardEffectFromPlayer ? playerPosition : enemyPosition;
-  const kierkegaardTarget = kierkegaardEffectFromPlayer ? enemyPosition : playerPosition;
   const beauvoirEffectFromPlayer = selectedFighter === "beauvoir";
   const beauvoirOrigin = beauvoirEffectFromPlayer ? playerPosition : enemyPosition;
   const beauvoirTarget = beauvoirEffectFromPlayer ? enemyPosition : playerPosition;
@@ -7912,7 +8337,7 @@ export default function Home() {
         </div>
         <div className="prototype-badge">
           {gameMode === "story"
-            ? "MODO HISTÓRIA · DISCÍPULO"
+            ? `MODO HISTÓRIA · ${campaignLabel}`
             : "VERSÃO 5.1 · MODO VERSUS"}
         </div>
         <div className="audio-controls" role="group" aria-label="Áudio do jogo"
@@ -7942,7 +8367,9 @@ export default function Home() {
 
       <section
         className={`battle-frame ${
-          selectedFighter === "amenemope"
+          (selectedFighter === "felipe-cyborg" || opponentFighter === "felipe-cyborg")
+            ? "arena-cyborg"
+            : selectedFighter === "amenemope"
             ? "arena-egypt"
             : selectedFighter === "homero"
               ? "arena-troy"
@@ -8025,13 +8452,16 @@ export default function Home() {
             : selectedFighter === "nietzsche"
               ? "arena-sils"
               : ""
-        } ${gameMode === "story" ? "mode-story" : ""} phase-${phase} ${arenaEffect ? `effect-${arenaEffect}` : ""} ${
+        } ${gameMode === "story" ? "mode-story" : ""} phase-${phase} ${hitstop ? "is-hitstop" : ""} ${hobbesImpact ? "hobbes-impact-shake" : ""} ${hegelImpact ? "hegel-world-shake" : ""} ${schopenhauerImpact ? "schopenhauer-impact-shake" : ""} ${kierkegaardImpact?.kind === "faith" ? "kierkegaard-faith-shake" : ""} ${selectedFighter === "freud" || opponentFighter === "freud" ? "freud-polish-fight" : ""} ${freudImpact ? "freud-energy-shake" : ""} ${cyborgImpact ? "cyborg-impact-shake" : ""} ${arenaEffect ? `effect-${arenaEffect}` : ""} ${
           phase === "finishing" ? "is-finishing" : ""
         }`}
         style={{ "--story-arena": `url(${storyEncounter.background})` } as CSSProperties}
         aria-label="Arena de combate filosófico"
       >
+        {(selectedFighter === "freud" || opponentFighter === "freud") && <FreudSoftHitflashFilter />}
+        {(playerAction === "special-death-drive" || enemyAction === "special-death-drive") && <div className="freud-death-dim" aria-hidden="true" />}
         <div className="arena-sky" />
+        {(selectedFighter === "felipe-cyborg" || opponentFighter === "felipe-cyborg") && <CyborgAtmosphere />}
         <div className="special-colorwash" aria-hidden="true" />
         <div className="arena-life" aria-hidden="true">
           <span className="bird bird-one" />
@@ -8045,6 +8475,8 @@ export default function Home() {
         </div>
         <div className="arena-vignette" />
 
+        {(playerAction === "special-leviathan" || enemyAction === "special-leviathan") && <div className="hobbes-arena-dim" aria-hidden="true" />}
+        {(playerAction === "special-world-spirit" || enemyAction === "special-world-spirit") && <div className="hegel-world-dim" aria-hidden="true" />}
         <div className="hud">
           <div className="fighter-hud player-hud">
             <div className="fighter-heading">
@@ -8065,6 +8497,7 @@ export default function Home() {
             >
               <span style={{ width: `${playerCoherence}%` }} />
             </div>
+            {logos >= 100 && phase === "playing" && <span className="special-ready-indicator" role="status">[L] e [U] PRONTOS!</span>}
             <div className="logos-row">
               <span>{playerMeta.meter}</span>
               <div className={`bar logos-bar ${logos >= 100 ? "ready" : ""}`}>
@@ -8113,6 +8546,7 @@ export default function Home() {
             >
               <span style={{ width: `${enemyCoherence}%` }} />
             </div>
+            {enemyLogos >= 100 && phase === "playing" && <span className="special-ready-indicator enemy-special-ready">ESPECIAIS PRONTOS!</span>}
             <div className="logos-row enemy-logos-row">
               <strong>{enemyLogos}%</strong>
               <div
@@ -8126,13 +8560,20 @@ export default function Home() {
         </div>
 
         <div className="battlefield">
+          {playerAction === "special-certainty" && <CyborgSpecial key={`cyborg-p1-certainty-${attackSequence.current.player}`} kind="certainty" origin={playerPosition} target={enemyPosition} contact={cyborgImpact?.position} clock={combatClock.current} />}
+          {playerAction === "special-drone-swarm" && <CyborgSpecial key={`cyborg-p1-swarm-${attackSequence.current.player}`} kind="swarm" origin={playerPosition} target={enemyPosition} contact={cyborgImpact?.position} clock={combatClock.current} />}
+          {enemyAction === "special-certainty" && <CyborgSpecial key={`cyborg-p2-certainty-${attackSequence.current.enemy}`} kind="certainty" origin={enemyPosition} target={playerPosition} contact={cyborgImpact?.position} clock={combatClock.current} />}
+          {enemyAction === "special-drone-swarm" && <CyborgSpecial key={`cyborg-p2-swarm-${attackSequence.current.enemy}`} kind="swarm" origin={enemyPosition} target={playerPosition} contact={cyborgImpact?.position} clock={combatClock.current} />}
+          {selectedFighter === "freud" && <FreudGroundShadow position={playerPosition} action={playerAction} jumpMs={jumpDuration.player} clock={combatClock.current} />}
+          {opponentFighter === "freud" && <FreudGroundShadow position={enemyPosition} action={enemyAction} jumpMs={jumpDuration.enemy} clock={combatClock.current} />}
+          {freudImpact && <FreudDeathImpact key={freudImpact.id} position={freudImpact.position} />}
           <div
-            className={`fighter fighter-player fighter-${selectedFighter} ${playerAction} ${
+            className={`fighter fighter-player fighter-${selectedFighter} ${playerAction} ${disoriented.player ? "is-disoriented" : ""} ${torporBound.player ? "is-torpid" : ""} ${jumpDuration.player > 650 ? "pact-slow-jump" : ""} ${impactFlash.player ? "impact-flash" : ""} ${
               selectedFighter === "amenemope" && logos >= 25
                 ? "is-serene"
                 : ""
             }`}
-            style={{ left: `${playerPosition}%` }}
+            style={{ left: `${playerPosition}%`, ...(selectedFighter === "freud" ? { "--freud-scale": FREUD_SCALE } : {}), ...(selectedFighter === "hypatia" ? { "--hypatia-scale": HYPATIA_SCALE } : {}), ...(selectedFighter === "averroes" ? { "--averroes-scale": AVERROES_SCALE } : {}), ...(selectedFighter === "thomas" ? { "--thomas-scale": THOMAS_SCALE } : {}), ...(selectedFighter === "machiavelli" ? { "--machiavelli-scale": MACHIAVELLI_SCALE } : {}) } as CSSProperties}
           >
             <div className="fighter-aura" />
             <div
@@ -8176,6 +8617,7 @@ export default function Home() {
                 && selectedFighter !== "krenak"
                 && selectedFighter !== "turing"
                 && selectedFighter !== "deleuze"
+                && selectedFighter !== "felipe-cyborg"
                 && selectedFighter !== "felipe"
                 && selectedFighter !== "superintelligence"
                 && selectedFighter !== "nietzsche"
@@ -8186,24 +8628,40 @@ export default function Home() {
                 selectedFighter === "hypatia"
                   ? {
                       backgroundImage:
-                        'url("/game/hipatia-spritesheet.webp?v=1.7")',
+                        'url("/game/hipatia-spritesheet-hq-v2.webp")',
                     }
                   : undefined
               }
               role="img"
               aria-label={`${playerMeta.name} em posição de combate`}
             >
-              {selectedFighter === "felipe" && <FelipeSprite action={playerAction} staticPose={playerAction === "advance" || playerAction === "retreat" ? "idle" : undefined} />}
-              {(selectedFighter === "agostinho" || selectedFighter === "felipe" || selectedFighter === "darwin" || selectedFighter === "olympe" || selectedFighter === "kierkegaard" || selectedFighter === "beauvoir" || selectedFighter === "foucault" || selectedFighter === "arendt" || selectedFighter === "wittgenstein" || selectedFighter === "angela-davis" || selectedFighter === "paulo-freire" || selectedFighter === "fanon" || selectedFighter === "krenak" || selectedFighter === "turing" || selectedFighter === "deleuze" || selectedFighter === "superintelligence") && (
-                <FighterWalk fighter={selectedFighter} active={playerAction === "advance" || playerAction === "retreat"} retreat={playerAction === "retreat"} />
+              {selectedFighter === "amenemope" && <AmenemopeSprite action={playerAction} paused={hitstop} />}
+              {selectedFighter === "averroes" && <AverroesSprite action={playerAction} paused={hitstop} />}
+              {selectedFighter === "thomas" && <ThomasSprite action={playerAction} paused={hitstop} />}
+              {selectedFighter === "machiavelli" && <MachiavelliSprite action={playerAction} paused={hitstop} />}
+              {selectedFighter === "galileo" && <GalileoSprite action={playerAction} paused={hitstop} />}
+              {selectedFighter === "schopenhauer" && (playerAction === "attack-punch" || playerAction === "attack-combo") && <SchopenhauerCaneTrail key={`${playerAction}-${attackSequence.current.player}`} action={playerAction} paused={hitstop} clock={combatClock.current} />}
+              {selectedFighter === "schopenhauer" && impactFlash.player && <SchopenhauerSoftFlash />}
+              {selectedFighter === "kierkegaard" && <KierkegaardMotionSprite action={playerAction} clock={combatClock.current} jumpMs={jumpDuration.player} faithStarted={faithLeaps.current.player?.started} />}
+              {selectedFighter === "kierkegaard" && playerAction === "attack-combo" && <KierkegaardEitherCuts key={attackSequence.current.player} clock={combatClock.current} />}
+              {selectedFighter === "freud" && (playerAction === "idle" || playerAction === "attack-punch") && <FreudCigarSmoke key={`${playerAction}-${attackSequence.current.player}`} action={playerAction} clock={combatClock.current} />}
+              {selectedFighter === "hegel" && <HegelSprite action={playerAction} paused={hitstop} jumpMs={jumpDuration.player} clock={combatClock.current} />}
+              {selectedFighter === "felipe-cyborg" && <CyborgSprite action={playerAction} sequence={playerAction.startsWith("attack-") || playerAction.startsWith("special-") ? attackSequence.current.player : 0} clock={combatClock.current} />}
+              {selectedFighter === "felipe" && <FelipeSprite paused={hitstop} action={playerAction} staticPose={playerAction === "advance" || playerAction === "retreat" ? "idle" : undefined} />}
+              {(selectedFighter === "agostinho" || selectedFighter === "felipe" || selectedFighter === "darwin" || selectedFighter === "olympe" || selectedFighter === "beauvoir" || selectedFighter === "foucault" || selectedFighter === "arendt" || selectedFighter === "wittgenstein" || selectedFighter === "angela-davis" || selectedFighter === "paulo-freire" || selectedFighter === "fanon" || selectedFighter === "krenak" || selectedFighter === "turing" || selectedFighter === "deleuze" || selectedFighter === "superintelligence") && (
+                <FighterWalk fighter={selectedFighter} paused={hitstop} active={playerAction === "advance" || playerAction === "retreat"} retreat={playerAction === "retreat"} />
               )}
             </div>
+            {selectedFighter === "hobbes" && (playerGuarding || playerAction === "guard-hit") && <HobbesShield />}
+            {torporBound.player && <span className="freud-torpor-veil" aria-hidden="true" />}
+            {pactBound.player && <HobbesChains />}
+            <HobbesPactJump active={playerAction === "jump" && jumpDuration.player > 650} bound={pactBound.player || torporBound.player} />
             <span className="fighter-shadow" />
           </div>
 
           <div
-            className={`fighter fighter-enemy fighter-${opponentFighter} ${enemyAction} ${enemyGuarding ? "is-guarding" : ""}`}
-            style={{ left: `${enemyPosition}%` }}
+            className={`fighter fighter-enemy fighter-${opponentFighter} ${enemyAction} ${disoriented.enemy ? "is-disoriented" : ""} ${torporBound.enemy ? "is-torpid" : ""} ${jumpDuration.enemy > 650 ? "pact-slow-jump" : ""} ${impactFlash.enemy ? "impact-flash" : ""} ${enemyGuarding ? "is-guarding" : ""}`}
+            style={{ left: `${enemyPosition}%`, ...(opponentFighter === "freud" ? { "--freud-scale": FREUD_SCALE } : {}), ...(opponentFighter === "hypatia" ? { "--hypatia-scale": HYPATIA_SCALE } : {}), ...(opponentFighter === "averroes" ? { "--averroes-scale": AVERROES_SCALE } : {}), ...(opponentFighter === "thomas" ? { "--thomas-scale": THOMAS_SCALE } : {}), ...(opponentFighter === "machiavelli" ? { "--machiavelli-scale": MACHIAVELLI_SCALE } : {}) } as CSSProperties}
           >
             <div className="fighter-aura" />
             <div
@@ -8247,6 +8705,7 @@ export default function Home() {
                 && opponentFighter !== "krenak"
                 && opponentFighter !== "turing"
                 && opponentFighter !== "deleuze"
+                && opponentFighter !== "felipe-cyborg"
                 && opponentFighter !== "felipe"
                 && opponentFighter !== "superintelligence"
                 && opponentFighter !== "nietzsche"
@@ -8257,18 +8716,34 @@ export default function Home() {
                 opponentFighter === "hypatia"
                   ? {
                       backgroundImage:
-                        'url("/game/hipatia-spritesheet.webp?v=1.7")',
+                        'url("/game/hipatia-spritesheet-hq-v2.webp")',
                     }
                   : undefined
               }
               role="img"
               aria-label={`${enemyMeta.name} em posição de combate`}
             >
-              {opponentFighter === "felipe" && <FelipeSprite action={enemyAction} staticPose={enemyAction === "advance" || enemyAction === "retreat" ? "idle" : undefined} />}
-              {(opponentFighter === "agostinho" || opponentFighter === "felipe" || opponentFighter === "darwin" || opponentFighter === "olympe" || opponentFighter === "kierkegaard" || opponentFighter === "beauvoir" || opponentFighter === "foucault" || opponentFighter === "arendt" || opponentFighter === "wittgenstein" || opponentFighter === "angela-davis" || opponentFighter === "paulo-freire" || opponentFighter === "fanon" || opponentFighter === "krenak" || opponentFighter === "turing" || opponentFighter === "deleuze" || opponentFighter === "superintelligence") && (
-                <FighterWalk fighter={opponentFighter} active={enemyAction === "advance" || enemyAction === "retreat"} retreat={enemyAction === "retreat"} />
+              {opponentFighter === "amenemope" && <AmenemopeSprite action={enemyAction} paused={hitstop} />}
+              {opponentFighter === "averroes" && <AverroesSprite action={enemyAction} paused={hitstop} />}
+              {opponentFighter === "thomas" && <ThomasSprite action={enemyAction} paused={hitstop} />}
+              {opponentFighter === "machiavelli" && <MachiavelliSprite action={enemyAction} paused={hitstop} />}
+              {opponentFighter === "galileo" && <GalileoSprite action={enemyAction} paused={hitstop} />}
+              {opponentFighter === "schopenhauer" && (enemyAction === "attack-punch" || enemyAction === "attack-combo") && <SchopenhauerCaneTrail key={`${enemyAction}-${attackSequence.current.enemy}`} action={enemyAction} paused={hitstop} clock={combatClock.current} />}
+              {opponentFighter === "schopenhauer" && impactFlash.enemy && <SchopenhauerSoftFlash />}
+              {opponentFighter === "kierkegaard" && <KierkegaardMotionSprite action={enemyAction} clock={combatClock.current} jumpMs={jumpDuration.enemy} faithStarted={faithLeaps.current.enemy?.started} />}
+              {opponentFighter === "kierkegaard" && enemyAction === "attack-combo" && <KierkegaardEitherCuts key={attackSequence.current.enemy} clock={combatClock.current} />}
+              {opponentFighter === "freud" && (enemyAction === "idle" || enemyAction === "attack-punch") && <FreudCigarSmoke key={`${enemyAction}-${attackSequence.current.enemy}`} action={enemyAction} clock={combatClock.current} />}
+              {opponentFighter === "hegel" && <HegelSprite action={enemyAction} paused={hitstop} jumpMs={jumpDuration.enemy} clock={combatClock.current} />}
+              {opponentFighter === "felipe-cyborg" && <CyborgSprite action={enemyAction} sequence={enemyAction.startsWith("attack-") || enemyAction.startsWith("special-") ? attackSequence.current.enemy : 0} clock={combatClock.current} />}
+              {opponentFighter === "felipe" && <FelipeSprite paused={hitstop} action={enemyAction} staticPose={enemyAction === "advance" || enemyAction === "retreat" ? "idle" : undefined} />}
+              {(opponentFighter === "agostinho" || opponentFighter === "felipe" || opponentFighter === "darwin" || opponentFighter === "olympe" || opponentFighter === "beauvoir" || opponentFighter === "foucault" || opponentFighter === "arendt" || opponentFighter === "wittgenstein" || opponentFighter === "angela-davis" || opponentFighter === "paulo-freire" || opponentFighter === "fanon" || opponentFighter === "krenak" || opponentFighter === "turing" || opponentFighter === "deleuze" || opponentFighter === "superintelligence") && (
+                <FighterWalk fighter={opponentFighter} paused={hitstop} active={enemyAction === "advance" || enemyAction === "retreat"} retreat={enemyAction === "retreat"} />
               )}
             </div>
+            {opponentFighter === "hobbes" && (enemyGuarding || enemyAction === "guard-hit") && <HobbesShield />}
+            {torporBound.enemy && <span className="freud-torpor-veil" aria-hidden="true" />}
+            {pactBound.enemy && <HobbesChains />}
+            <HobbesPactJump active={enemyAction === "jump" && jumpDuration.enemy > 650} bound={pactBound.enemy || torporBound.enemy} />
             <span className="fighter-shadow" />
           </div>
 
@@ -8679,6 +9154,7 @@ export default function Home() {
                     ? playerPosition
                     : enemyPosition
                 }%`,
+                "--hypatia-scale": HYPATIA_SCALE,
                 "--astrolabe-travel": `${
                   playerAction === "special-astrolabe"
                     ? Math.max(16, enemyPosition - playerPosition) * 0.92
@@ -9332,13 +9808,10 @@ export default function Home() {
 
           {(playerAction === "special-wolf" ||
             enemyAction === "special-wolf") && (
-            /* eslint-disable-next-line @next/next/no-img-element */
-            <img
+            <div
               className={`hobbes-wolf-charge ${
                 enemyAction === "special-wolf" ? "enemy-wolf-charge" : ""
               }`}
-              src="/game/hobbes-wolf-hq-v2.webp?v=2.9.1"
-              alt=""
               aria-hidden="true"
               style={
                 playerAction === "special-wolf"
@@ -9353,34 +9826,15 @@ export default function Home() {
                       "--wolf-travel-mid": `-${dogTravel * 0.58}vw`,
                     } as CSSProperties)
               }
-            />
-          )}
-
-          {(playerAction === "special-leviathan" ||
-            enemyAction === "special-leviathan") && (
-            <div
-              className="leviathan-apparition"
-              aria-hidden="true"
-              style={{
-                left: `${
-                  playerAction === "special-leviathan"
-                    ? enemyPosition
-                    : playerPosition
-                }%`,
-              }}
             >
-              <span className="leviathan-crown" />
-              <span className="leviathan-head" />
-              <span className="leviathan-body">
-                {Array.from({ length: 42 }, (_, index) => (
-                  <i key={index} />
-                ))}
-              </span>
-              <span className="leviathan-sword" />
-              <b>LEVIATÃ</b>
-              <span className="leviathan-impact" />
+              <HobbesWolfAura />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/game/hobbes-wolf-hq-v2.webp?v=2.9.1" alt="" />
             </div>
           )}
+
+          {selectedFighter === "hobbes" && playerAction === "special-leviathan" && <HobbesSovereign origin={playerPosition} target={enemyPosition} />}
+          {opponentFighter === "hobbes" && enemyAction === "special-leviathan" && <HobbesSovereign origin={enemyPosition} target={playerPosition} enemy />}
 
           {(playerAction === "special-noble-savage" ||
             enemyAction === "special-noble-savage") && (
@@ -9413,6 +9867,10 @@ export default function Home() {
             </div>
           )}
 
+          {chainBursts.map(burst => <RousseauBrokenChains key={burst.id} position={burst.position} />)}
+          {selectedFighter === "rousseau" && playerAction === "special-general-will" && <RousseauAssembly position={playerPosition} />}
+          {opponentFighter === "rousseau" && enemyAction === "special-general-will" && <RousseauAssembly position={enemyPosition} />}
+
           {(playerAction === "special-general-will" ||
             enemyAction === "special-general-will") && (
             <div
@@ -9426,11 +9884,6 @@ export default function Home() {
                 }%`,
               }}
             >
-              <span className="general-will-citizens">
-                {Array.from({ length: 18 }, (_, index) => (
-                  <i key={index} />
-                ))}
-              </span>
               <span className="general-will-ring" />
               <b>VONTADE GERAL</b>
               <span className="general-will-impact" />
@@ -9563,28 +10016,12 @@ export default function Home() {
             </div>
           )}
 
-          {(playerAction === "special-absolute-spirit" ||
-            enemyAction === "special-absolute-spirit") && (
-            <div className="absolute-spirit" aria-hidden="true">
-              <span className="spirit-history" />
-              <span className="spirit-form spirit-art">ARTE</span>
-              <span className="spirit-form spirit-religion">RELIGIÃO</span>
-              <span className="spirit-form spirit-philosophy">FILOSOFIA</span>
-              <span className="spirit-owl" />
-              <span className="spirit-core">ESPÍRITO</span>
-              <b>ESPÍRITO ABSOLUTO</b>
-              <span
-                className="spirit-impact"
-                style={{
-                  left: `${
-                    playerAction === "special-absolute-spirit"
-                      ? enemyPosition
-                      : playerPosition
-                  }%`,
-                }}
-              />
-            </div>
-          )}
+          {playerAction === "special-world-spirit" && <HegelWorldSpirit origin={playerPosition} target={enemyPosition} paused={hitstop} clock={combatClock.current} />}
+          {enemyAction === "special-world-spirit" && <HegelWorldSpirit origin={enemyPosition} target={playerPosition} enemy paused={hitstop} clock={combatClock.current} />}
+          {hegelImpact && <>
+            <div key={`hegel-impact-${hegelImpact.id}`} className="hegel-world-impact" style={{"--hegel-hit-x":`${hegelImpact.position}%`} as CSSProperties} aria-hidden="true" />
+            <div key={`hegel-banner-${hegelImpact.id}`} className="hegel-world-banner" aria-hidden="true">ESPÍRITO DO TEMPO!</div>
+          </>}
 
           {(playerAction === "special-blind-will" ||
             enemyAction === "special-blind-will") && (
@@ -9612,28 +10049,9 @@ export default function Home() {
             </div>
           )}
 
-          {(playerAction === "special-suffering-pendulum" ||
-            enemyAction === "special-suffering-pendulum") && (
-            <div className="suffering-pendulum" aria-hidden="true">
-              <span className="pendulum-axis" />
-              <span className="pendulum-arm">
-                <i className="pendulum-weight" />
-              </span>
-              <span className="pendulum-extreme extreme-pain">DOR</span>
-              <span className="pendulum-extreme extreme-boredom">TÉDIO</span>
-              <b>PÊNDULO DO SOFRIMENTO</b>
-              <span
-                className="pendulum-impact"
-                style={{
-                  left: `${
-                    playerAction === "special-suffering-pendulum"
-                      ? enemyPosition
-                      : playerPosition
-                  }%`,
-                }}
-              />
-            </div>
-          )}
+          {playerAction === "special-suffering-pendulum" && <SchopenhauerPendulum target={enemyPosition} contact={schopenhauerImpact?.position} clock={combatClock.current} paused={hitstop} />}
+          {enemyAction === "special-suffering-pendulum" && <SchopenhauerPendulum target={playerPosition} contact={schopenhauerImpact?.position} clock={combatClock.current} paused={hitstop} />}
+          {schopenhauerImpact && <div key={schopenhauerImpact.id} className="schopenhauer-pendulum-hit" style={{"--schopenhauer-hit-x":`${schopenhauerImpact.position}%`} as CSSProperties} aria-hidden="true" />}
 
           {(playerAction === "special-engels" ||
             enemyAction === "special-engels") && (
@@ -9690,29 +10108,8 @@ export default function Home() {
             </div>
           )}
 
-          {(playerAction === "special-dream-interpretation" ||
-            enemyAction === "special-dream-interpretation") && (
-            <div className="dream-interpretation" aria-hidden="true">
-              <span className="dream-vignette" />
-              <span className="dream-moon" />
-              <span className="dream-eye"><i /></span>
-              <span className="dream-door"><i /></span>
-              <span className="dream-key" />
-              <span className="dream-wave dream-wave-one" />
-              <span className="dream-wave dream-wave-two" />
-              <b>INTERPRETAÇÃO DOS SONHOS</b>
-              <span
-                className="dream-impact"
-                style={{
-                  left: `${
-                    playerAction === "special-dream-interpretation"
-                      ? enemyPosition
-                      : playerPosition
-                  }%`,
-                }}
-              />
-            </div>
-          )}
+          {playerAction === "special-dream-interpretation" && <FreudDreamMist target={enemyPosition} clock={combatClock.current} />}
+          {enemyAction === "special-dream-interpretation" && <FreudDreamMist target={playerPosition} clock={combatClock.current} />}
 
           {darwinNaturalSelectionActive && (
             <div
@@ -9769,36 +10166,9 @@ export default function Home() {
             </div>
           )}
 
-          {(arenaEffect === "kierkegaard-anxiety" || arenaEffect === "kierkegaard-faith-leap") && (
-            <div
-              className={`kierkegaard-effect ${arenaEffect === "kierkegaard-anxiety" ? "kierkegaard-anxiety" : "kierkegaard-faith-leap"}`}
-              style={{
-                "--kierkegaard-origin": `${kierkegaardOrigin}%`,
-                "--kierkegaard-target": `${kierkegaardTarget}%`,
-                "--kierkegaard-landing": `${kierkegaardTarget + (kierkegaardEffectFromPlayer ? -8 : 8)}%`,
-                "--kierkegaard-facing": kierkegaardEffectFromPlayer ? 1 : -1,
-              } as CSSProperties}
-              aria-hidden="true"
-            >
-              {arenaEffect === "kierkegaard-anxiety" ? (
-                <>
-                  <span className="anxiety-aura" />
-                  <span className="anxiety-ring ring-one" />
-                  <span className="anxiety-ring ring-two" />
-                  <span className="anxiety-ring ring-three" />
-                  <span className="anxiety-impact" />
-                  <b>ANGÚSTIA</b>
-                </>
-              ) : (
-                <>
-                  <span className="faith-glow" />
-                  <div className="kierkegaard-leap-actor"><span /></div>
-                  <span className="faith-impact" />
-                  <b>SALTO DA FÉ</b>
-                </>
-              )}
-            </div>
-          )}
+          {selectedFighter === "kierkegaard" && (playerAction === "special-anxiety" || playerAction === "special-faith-leap") && <KierkegaardSpecial kind={playerAction === "special-faith-leap" ? "faith" : "anxiety"} origin={faithLeaps.current.player?.origin ?? playerPosition} landing={faithLeaps.current.player?.landing ?? playerPosition} target={enemyPosition} clock={combatClock.current} started={playerAction === "special-faith-leap" ? faithLeaps.current.player?.started : undefined} />}
+          {opponentFighter === "kierkegaard" && (enemyAction === "special-anxiety" || enemyAction === "special-faith-leap") && <KierkegaardSpecial kind={enemyAction === "special-faith-leap" ? "faith" : "anxiety"} origin={faithLeaps.current.enemy?.origin ?? enemyPosition} landing={faithLeaps.current.enemy?.landing ?? enemyPosition} target={playerPosition} clock={combatClock.current} started={enemyAction === "special-faith-leap" ? faithLeaps.current.enemy?.started : undefined} />}
+          {kierkegaardImpact && <KierkegaardImpact key={kierkegaardImpact.id} kind={kierkegaardImpact.kind} position={kierkegaardImpact.position} clock={combatClock.current} />}
 
           {(arenaEffect === "beauvoir-other" || arenaEffect === "beauvoir-becoming") && (
             <div
@@ -10298,30 +10668,8 @@ export default function Home() {
             </div>
           )}
 
-          {(playerAction === "special-death-drive" ||
-            enemyAction === "special-death-drive") && (
-            <div
-              className={`death-drive ${
-                enemyAction === "special-death-drive"
-                  ? "death-drive-from-enemy"
-                  : "death-drive-from-player"
-              }`}
-              aria-hidden="true"
-              style={{
-                left: `${
-                  playerAction === "special-death-drive"
-                    ? enemyPosition
-                    : playerPosition
-                }%`,
-              }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/game/freud-thanatos-hq.webp?v=3.7" alt="" />
-              <span className="death-halo" />
-              <span className="death-impact" />
-              <b>PULSÃO DE MORTE</b>
-            </div>
-          )}
+          {playerAction === "special-death-drive" && <FreudDeathWave origin={playerPosition} target={enemyPosition} contact={freudImpact?.position} clock={combatClock.current} />}
+          {enemyAction === "special-death-drive" && <FreudDeathWave origin={enemyPosition} target={playerPosition} contact={freudImpact?.position} clock={combatClock.current} />}
 
           {(playerAction === "special-dog" ||
             enemyAction === "special-dog") && (
@@ -10586,6 +10934,32 @@ export default function Home() {
           </button>
         )}
 
+        {(phase === "story-intro" || phase === "story-recap") && (
+          <nav className="story-art-navigation" aria-label="Navegação das artes do modo História">
+            <button
+              type="button"
+              onClick={previousStoryArt}
+              disabled={(phase === "story-intro" ? storyIntroIndex : storySceneStep) === 0 || storyIntroExiting}
+              aria-label="Voltar para a arte anterior"
+              aria-keyshortcuts="ArrowLeft"
+            >
+              Voltar
+            </button>
+            <span className="story-art-count" role="status" aria-live="polite" aria-atomic="true">
+              Arte {(phase === "story-intro" ? storyIntroIndex : storySceneStep) + 1} de {phase === "story-intro" ? activeIntroScenes.length : storyRecapScenes.length}
+            </span>
+            <button
+              type="button"
+              onClick={phase === "story-intro" ? nextStoryIntroScene : nextStoryRecapScene}
+              disabled={storyIntroExiting}
+              aria-label="Avançar para a próxima arte ou continuar a história"
+              aria-keyshortcuts="ArrowRight"
+            >
+              {(phase === "story-intro" ? storyIntroIndex >= activeIntroScenes.length - 1 : storySceneStep >= storyRecapScenes.length - 1) ? "Continuar" : "Avançar"}
+            </button>
+          </nav>
+        )}
+
         {phase === "story-quiz" && storyQuiz && (
           <StoryQuizTerminal quiz={storyQuiz}
             philosopherName={FIGHTERS[storyQuiz.questions[storyQuiz.index].philosopher as FighterId].name}
@@ -10622,9 +10996,9 @@ export default function Home() {
                   onClick={startDoctorCampaign}
                 >
                   <small>NÍVEL 2</small>
-                  <span className="tier-construction">EM CONSTRUÇÃO</span>
+                  <span className="tier-construction">15 ENCONTROS</span>
                   <strong>DOUTOR</strong>
-                  <span>{doctorUnlocked ? "15 encontros planejados · Homero, Tales e Diógenes disponíveis." : "Conclua Discípulo para conquistar este nível."}</span>
+                  <span>{doctorUnlocked ? "15 encontros · De Homero a um confronto final inesperado." : "Conclua Discípulo para conquistar este nível."}</span>
                   <b>{doctorUnlocked ? "COMEÇAR POR HOMERO" : "BLOQUEADO"}</b>
                 </button>
                 <div className="story-tier-card is-locked">
@@ -10755,13 +11129,25 @@ export default function Home() {
                           key={fighter}
                           id={`fighter-option-${fighter}`}
                           role="option"
+                          data-fighter={fighter}
                           tabIndex={-1}
                           disabled={unavailable}
                           aria-selected={previewFighter === fighter}
                           aria-label={unavailable ? `${meta.name}, já escolhido pelo jogador` : meta.name}
-                          onMouseEnter={() => { if (!unavailable) setPreviewFighter(fighter); }}
+                          onMouseEnter={() => { if (!unavailable) { rosterInput.current = "pointer"; setPreviewFighter(fighter); } }}
+                          onPointerDown={(event) => {
+                            if (unavailable) return;
+                            rosterInput.current = "pointer";
+                            setPreviewFighter(fighter);
+                            event.currentTarget.focus({ preventScroll: true });
+                          }}
                           onFocus={() => { if (!unavailable) setPreviewFighter(fighter); }}
-                          onClick={() => confirmSelection(fighter)}
+                          onClick={() => {
+                            if (unavailable) return;
+                            rosterInput.current = "pointer";
+                            setPreviewFighter(fighter);
+                            void confirmSelection(fighter);
+                          }}
                         >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           {fighter === "felipe" ? <FelipeSprite staticPose="idle" portrait /> :
@@ -10985,10 +11371,36 @@ export default function Home() {
           <StoryEnding onReturn={() => setPhase("story-tier-select")} onAudioStageChange={setEndingAudioStage} />
         )}
 
+        {phase === "doctor-complete" && (
+          <DoctorEnding onReturn={() => setPhase("story-tier-select")} onAudioStageChange={setEndingAudioStage}
+            onContinue={() => setPhase("grand-philosopher-preview")}
+            onLightning={() => effectsAudio.current?.play("thunder", { gain: .8 })} />
+        )}
+
+        {phase === "grand-philosopher-preview" && (
+          <div className="overlay story-tier-overlay" role="dialog" aria-labelledby="grand-philosopher-title">
+            <div className="story-tier-panel doctor-checkpoint-panel">
+              <span className="eyebrow">NÍVEL 3 · MODO HISTÓRIA</span>
+              <h2 id="grand-philosopher-title">GRANDE FILÓSOFO</h2>
+              <img
+                className="story-construction-art"
+                src="/game/story-under-construction.webp"
+                alt="Felipe Bleh construindo a próxima etapa da jornada"
+                width={1672}
+                height={941}
+              />
+              <p className="doctor-pending">EM BREVE</p>
+              <p>A próxima etapa da jornada está em preparação.</p>
+              <button type="button" autoFocus onClick={() => setPhase("story-tier-select")}>VOLTAR AOS NÍVEIS</button>
+            </div>
+          </div>
+        )}
+
         {phase === "doctor-checkpoint" && (
           <div className="overlay story-tier-overlay">
             <div className="story-tier-panel doctor-checkpoint-panel">
               <span className="eyebrow">NÍVEL 2 · DOUTOR</span>
+              <p>Você venceu Felipe das Trevas e concluiu as 15 lutas do Doutor!</p>
               <img
                 className="story-construction-art"
                 src="/game/story-under-construction.webp"
@@ -10996,8 +11408,7 @@ export default function Home() {
                 width={1672}
                 height={941}
               />
-              <p className="doctor-pending">Novas artes e encontros estão sendo preparados.</p>
-              <p>O próximo encontro será com {FIGHTERS[DOCTOR_OPPONENT_ORDER[storyIndex + 1] as FighterId].name}.</p>
+              <p className="doctor-pending">As artes de encerramento desta jornada estão sendo preparadas.</p>
               <button type="button" onClick={() => prepareStoryFight(storyIndex)}>LUTAR COM {FIGHTERS[storyEncounter.opponent as FighterId].name} NOVAMENTE</button>
               <button type="button" onClick={() => setPhase("story-tier-select")}>VOLTAR AOS NÍVEIS</button>
             </div>
@@ -11069,8 +11480,8 @@ export default function Home() {
                 <button
                   type="button"
                   key={moveName}
-                  className={isSpecial ? "special-button" : ""}
-                  onClick={() => performMove(moveName)}
+                  className={isSpecial ? `special-button ${!locked && phase === "playing" ? "special-ready-button" : ""}` : ""}
+                  onClick={() => queueMove(moveName)}
                   disabled={phase !== "playing" || locked}
                 >
                   <kbd>{move.key}</kbd>
@@ -11100,7 +11511,7 @@ export default function Home() {
           <span>
             {gameMode === "story"
               ? storyCampaign === "doctor"
-                ? `Etapa ${storyIndex + 1} de ${campaignTotal} · próximas etapas em construção`
+                ? `Etapa ${storyIndex + 1} de ${campaignTotal} · jornada Doutor`
                 : `Etapa ${storyIndex + 1} de ${campaignTotal} · progresso salvo neste dispositivo`
               : "Todo o elenco · melhor de três · seleção livre"}
           </span>

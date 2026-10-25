@@ -1,0 +1,722 @@
+[
+  {
+    "row": 0,
+    "col": 2,
+    "sourceBBox": [
+      136,
+      30,
+      282,
+      400
+    ],
+    "restoredBBox": [
+      240,
+      55,
+      527,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": 0.19138755980861788,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": -0.5
+  },
+  {
+    "row": 0,
+    "col": 3,
+    "sourceBBox": [
+      136,
+      30,
+      283,
+      400
+    ],
+    "restoredBBox": [
+      237,
+      56,
+      532,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": -0.8086124401913821,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": -0.4186602870813658
+  },
+  {
+    "row": 1,
+    "col": 2,
+    "sourceBBox": [
+      98,
+      44,
+      322,
+      400
+    ],
+    "restoredBBox": [
+      157,
+      81,
+      613,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": -0.0861244019138212,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": -0.8373205741626748
+  },
+  {
+    "row": 1,
+    "col": 3,
+    "sourceBBox": [
+      97,
+      43,
+      319,
+      400
+    ],
+    "restoredBBox": [
+      145,
+      79,
+      620,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": 0.07655502392344715,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": 0.3373205741626748
+  },
+  {
+    "row": 0,
+    "col": 4,
+    "sourceBBox": [
+      125,
+      26,
+      293,
+      400
+    ],
+    "restoredBBox": [
+      221,
+      48,
+      547,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": -0.15789473684208133,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": 0.0
+  },
+  {
+    "row": 0,
+    "col": 5,
+    "sourceBBox": [
+      117,
+      30,
+      299,
+      400
+    ],
+    "restoredBBox": [
+      209,
+      55,
+      556,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": 0.19138755980861788,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": 0.3373205741626748
+  },
+  {
+    "row": 1,
+    "col": 4,
+    "sourceBBox": [
+      95,
+      44,
+      323,
+      400
+    ],
+    "restoredBBox": [
+      151,
+      81,
+      617,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": -0.0861244019138212,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": 0.0
+  },
+  {
+    "row": 1,
+    "col": 5,
+    "sourceBBox": [
+      98,
+      44,
+      320,
+      400
+    ],
+    "restoredBBox": [
+      162,
+      81,
+      606,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": -0.0861244019138212,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": 0.0
+  },
+  {
+    "row": 0,
+    "col": 0,
+    "sourceBBox": [
+      137,
+      30,
+      280,
+      400
+    ],
+    "restoredBBox": [
+      238,
+      55,
+      529,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": 0.19138755980861788,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": 0.4186602870813658
+  },
+  {
+    "row": 0,
+    "col": 1,
+    "sourceBBox": [
+      134,
+      30,
+      282,
+      400
+    ],
+    "restoredBBox": [
+      231,
+      55,
+      534,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": 0.19138755980861788,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": 0.3373205741626748
+  },
+  {
+    "row": 1,
+    "col": 0,
+    "sourceBBox": [
+      101,
+      42,
+      317,
+      400
+    ],
+    "restoredBBox": [
+      142,
+      77,
+      625,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": 0.2392344497607155,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": -0.5
+  },
+  {
+    "row": 1,
+    "col": 1,
+    "sourceBBox": [
+      97,
+      43,
+      321,
+      400
+    ],
+    "restoredBBox": [
+      135,
+      79,
+      633,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": 0.07655502392344715,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": 0.0
+  },
+  {
+    "row": 2,
+    "col": 2,
+    "sourceBBox": [
+      60,
+      36,
+      357,
+      399
+    ],
+    "restoredBBox": [
+      95,
+      66,
+      671,
+      733
+    ],
+    "cell": 768,
+    "heightDrift": 0.05263157894739834,
+    "floorDrift": -0.09090909090912191,
+    "centerDrift": -0.08133971291863418
+  },
+  {
+    "row": 2,
+    "col": 3,
+    "sourceBBox": [
+      60,
+      36,
+      358,
+      399
+    ],
+    "restoredBBox": [
+      99,
+      66,
+      669,
+      733
+    ],
+    "cell": 768,
+    "heightDrift": 0.05263157894739834,
+    "floorDrift": -0.09090909090912191,
+    "centerDrift": 0.0
+  },
+  {
+    "row": 3,
+    "col": 2,
+    "sourceBBox": [
+      49,
+      50,
+      368,
+      400
+    ],
+    "restoredBBox": [
+      74,
+      92,
+      693,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": -0.06220095693777239,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": 0.4186602870813658
+  },
+  {
+    "row": 3,
+    "col": 3,
+    "sourceBBox": [
+      49,
+      46,
+      369,
+      400
+    ],
+    "restoredBBox": [
+      74,
+      85,
+      695,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": -0.4114832535884716,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": 0.5
+  },
+  {
+    "row": 2,
+    "col": 4,
+    "sourceBBox": [
+      58,
+      36,
+      362,
+      400
+    ],
+    "restoredBBox": [
+      95,
+      66,
+      676,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": 0.2153110047846667,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": -0.3373205741626748
+  },
+  {
+    "row": 2,
+    "col": 5,
+    "sourceBBox": [
+      108,
+      40,
+      308,
+      400
+    ],
+    "restoredBBox": [
+      176,
+      74,
+      589,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": -0.4354066985646341,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": 0.3373205741626748
+  },
+  {
+    "row": 3,
+    "col": 4,
+    "sourceBBox": [
+      80,
+      52,
+      338,
+      400
+    ],
+    "restoredBBox": [
+      122,
+      97,
+      646,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": -1.3875598086124228,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": 0.0
+  },
+  {
+    "row": 3,
+    "col": 5,
+    "sourceBBox": [
+      108,
+      50,
+      309,
+      400
+    ],
+    "restoredBBox": [
+      179,
+      92,
+      587,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": -0.06220095693777239,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": -0.08133971291863418
+  },
+  {
+    "row": 2,
+    "col": 0,
+    "sourceBBox": [
+      107,
+      34,
+      311,
+      398
+    ],
+    "restoredBBox": [
+      184,
+      62,
+      583,
+      731
+    ],
+    "cell": 768,
+    "heightDrift": 0.2153110047846667,
+    "floorDrift": -0.25358851674639027,
+    "centerDrift": -0.5
+  },
+  {
+    "row": 2,
+    "col": 1,
+    "sourceBBox": [
+      96,
+      35,
+      322,
+      398
+    ],
+    "restoredBBox": [
+      159,
+      64,
+      609,
+      731
+    ],
+    "cell": 768,
+    "heightDrift": 0.05263157894739834,
+    "floorDrift": -0.25358851674639027,
+    "centerDrift": 0.0
+  },
+  {
+    "row": 3,
+    "col": 0,
+    "sourceBBox": [
+      77,
+      44,
+      339,
+      400
+    ],
+    "restoredBBox": [
+      104,
+      81,
+      661,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": -0.0861244019138212,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": 0.3373205741626748
+  },
+  {
+    "row": 3,
+    "col": 1,
+    "sourceBBox": [
+      97,
+      40,
+      321,
+      400
+    ],
+    "restoredBBox": [
+      156,
+      74,
+      611,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": -0.4354066985646341,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": -0.5
+  },
+  {
+    "row": 4,
+    "col": 0,
+    "sourceBBox": [
+      66,
+      48,
+      351,
+      399
+    ],
+    "restoredBBox": [
+      108,
+      88,
+      659,
+      733
+    ],
+    "cell": 768,
+    "heightDrift": 0.10047846889949597,
+    "floorDrift": -0.09090909090912191,
+    "centerDrift": 0.4186602870813658
+  },
+  {
+    "row": 4,
+    "col": 1,
+    "sourceBBox": [
+      73,
+      16,
+      345,
+      398
+    ],
+    "restoredBBox": [
+      122,
+      29,
+      645,
+      731
+    ],
+    "cell": 768,
+    "heightDrift": 0.14354066985640657,
+    "floorDrift": -0.25358851674639027,
+    "centerDrift": -0.5
+  },
+  {
+    "row": 5,
+    "col": 0,
+    "sourceBBox": [
+      75,
+      103,
+      344,
+      400
+    ],
+    "restoredBBox": [
+      118,
+      189,
+      651,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": 0.31578947368416266,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": -0.4186602870813658
+  },
+  {
+    "row": 5,
+    "col": 1,
+    "sourceBBox": [
+      75,
+      98,
+      343,
+      400
+    ],
+    "restoredBBox": [
+      112,
+      180,
+      657,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": 0.1291866028708455,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": 0.5
+  },
+  {
+    "row": 4,
+    "col": 2,
+    "sourceBBox": [
+      92,
+      38,
+      325,
+      400
+    ],
+    "restoredBBox": [
+      165,
+      70,
+      601,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": -0.1100478468899837,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": -0.08133971291863418
+  },
+  {
+    "row": 4,
+    "col": 3,
+    "sourceBBox": [
+      100,
+      38,
+      318,
+      400
+    ],
+    "restoredBBox": [
+      182,
+      70,
+      586,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": -0.1100478468899837,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": 0.0
+  },
+  {
+    "row": 5,
+    "col": 2,
+    "sourceBBox": [
+      40,
+      190,
+      378,
+      398
+    ],
+    "restoredBBox": [
+      56,
+      349,
+      713,
+      731
+    ],
+    "cell": 768,
+    "heightDrift": -0.1626794258373252,
+    "floorDrift": -0.25358851674639027,
+    "centerDrift": 0.5
+  },
+  {
+    "row": 5,
+    "col": 3,
+    "sourceBBox": [
+      60,
+      185,
+      355,
+      398
+    ],
+    "restoredBBox": [
+      106,
+      340,
+      656,
+      731
+    ],
+    "cell": 768,
+    "heightDrift": -0.3492822966506992,
+    "floorDrift": -0.25358851674639027,
+    "centerDrift": -0.24401913875595937
+  },
+  {
+    "row": 4,
+    "col": 4,
+    "sourceBBox": [
+      107,
+      15,
+      311,
+      400
+    ],
+    "restoredBBox": [
+      191,
+      28,
+      576,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": -0.368421052631561,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": -0.5
+  },
+  {
+    "row": 4,
+    "col": 5,
+    "sourceBBox": [
+      102,
+      36,
+      317,
+      400
+    ],
+    "restoredBBox": [
+      186,
+      66,
+      584,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": 0.2153110047846667,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": 0.08133971291863418
+  },
+  {
+    "row": 5,
+    "col": 4,
+    "sourceBBox": [
+      115,
+      98,
+      301,
+      400
+    ],
+    "restoredBBox": [
+      195,
+      180,
+      570,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": 0.1291866028708455,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": 0.3373205741626748
+  },
+  {
+    "row": 5,
+    "col": 5,
+    "sourceBBox": [
+      106,
+      26,
+      314,
+      400
+    ],
+    "restoredBBox": [
+      192,
+      48,
+      580,
+      735
+    ],
+    "cell": 768,
+    "heightDrift": -0.15789473684208133,
+    "floorDrift": 0.07177033492826013,
+    "centerDrift": 0.1626794258373252
+  }
+]

@@ -1,0 +1,151 @@
+{
+  "mode": "built-in image_gen edit",
+  "assets": {
+    "atlas": "/game/maquiavel-spritesheet-hq-v2.webp",
+    "portrait": "/game/maquiavel-fullbody-hq-v2.webp"
+  },
+  "invariants": [
+    "Original 36 poses and timings",
+    "Stable registered shoe baseline",
+    "Machiavelli identity and Renaissance costume",
+    "Other fighters unchanged"
+  ],
+  "jobs": [
+    {
+      "id": "11",
+      "r": 1,
+      "c": 1,
+      "prompt": "Use case: identity-preserve. Asset type: high-definition PhiloKombat 2D arcade fighter animation restoration. Image 1 is the EDIT TARGET containing exactly four Niccolo Machiavelli full-body poses in a 2-by-2 arrangement. Image 2 is his face/costume identity reference. Image 3 is Felipe, a QUALITY REFERENCE ONLY for crisp realistic arcade anatomy and texture, never copy his face, clothing, tattoos, or magenta background. Restore Machiavelli with comparable sharp realistic digitized detail: mature lean clean-shaven Italian face, short dark hair, burgundy red Renaissance cap, long black Renaissance robe/tunic with narrow burgundy-red trim, dark leggings, brown leather shoes. Preserve EXACTLY the four input poses, pose order, facing direction, limb angles, hand gestures, clothing silhouette and relative body proportions. Maintain consistent identity and outfit in all four cells. Resolve face, fingers, cloth folds, cap seams and shoe leather with fine natural sharp detail, not pixel art, blur or painterly smears. Exactly two arms, two hands and two legs per figure. Keep whole head, hands and both shoes visible, with generous transparent padding around each pose, clear transparent gutters between all four cells, no overlapping sprites. REAL TRANSPARENT RGBA BACKGROUND. Clean neutral alpha edges, no yellow/green matte halos. No floor, shadow, grid, cell borders, text, watermark, extra props or characters. Do not invent new moves. This is source block row 1, column 1 of the animation; reproduce its specific four poses unchanged.",
+      "referenced_image_paths": [
+        "/workspace/scratch/6fb9ed9b9b4d/machiavelli-hq/source-r1c1.png",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/maquiavel.webp",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/felipe-idle.webp"
+      ]
+    },
+    {
+      "id": "12",
+      "r": 1,
+      "c": 2,
+      "prompt": "Use case: identity-preserve. Asset type: high-definition PhiloKombat 2D arcade fighter animation restoration. Image 1 is the EDIT TARGET containing exactly four Niccolo Machiavelli full-body poses in a 2-by-2 arrangement. Image 2 is his face/costume identity reference. Image 3 is Felipe, a QUALITY REFERENCE ONLY for crisp realistic arcade anatomy and texture, never copy his face, clothing, tattoos, or magenta background. Restore Machiavelli with comparable sharp realistic digitized detail: mature lean clean-shaven Italian face, short dark hair, burgundy red Renaissance cap, long black Renaissance robe/tunic with narrow burgundy-red trim, dark leggings, brown leather shoes. Preserve EXACTLY the four input poses, pose order, facing direction, limb angles, hand gestures, clothing silhouette and relative body proportions. Maintain consistent identity and outfit in all four cells. Resolve face, fingers, cloth folds, cap seams and shoe leather with fine natural sharp detail, not pixel art, blur or painterly smears. Exactly two arms, two hands and two legs per figure. Keep whole head, hands and both shoes visible, with generous transparent padding around each pose, clear transparent gutters between all four cells, no overlapping sprites. REAL TRANSPARENT RGBA BACKGROUND. Clean neutral alpha edges, no yellow/green matte halos. No floor, shadow, grid, cell borders, text, watermark, extra props or characters. Do not invent new moves. This is source block row 1, column 2 of the animation; reproduce its specific four poses unchanged.",
+      "referenced_image_paths": [
+        "/workspace/scratch/6fb9ed9b9b4d/machiavelli-hq/source-r1c2.png",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/maquiavel.webp",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/felipe-idle.webp"
+      ]
+    },
+    {
+      "id": "13",
+      "r": 1,
+      "c": 3,
+      "prompt": "Use case: identity-preserve. Asset type: high-definition PhiloKombat 2D arcade fighter animation restoration. Image 1 is the EDIT TARGET containing exactly four Niccolo Machiavelli full-body poses in a 2-by-2 arrangement. Image 2 is his face/costume identity reference. Image 3 is Felipe, a QUALITY REFERENCE ONLY for crisp realistic arcade anatomy and texture, never copy his face, clothing, tattoos, or magenta background. Restore Machiavelli with comparable sharp realistic digitized detail: mature lean clean-shaven Italian face, short dark hair, burgundy red Renaissance cap, long black Renaissance robe/tunic with narrow burgundy-red trim, dark leggings, brown leather shoes. Preserve EXACTLY the four input poses, pose order, facing direction, limb angles, hand gestures, clothing silhouette and relative body proportions. Maintain consistent identity and outfit in all four cells. Resolve face, fingers, cloth folds, cap seams and shoe leather with fine natural sharp detail, not pixel art, blur or painterly smears. Exactly two arms, two hands and two legs per figure. Keep whole head, hands and both shoes visible, with generous transparent padding around each pose, clear transparent gutters between all four cells, no overlapping sprites. REAL TRANSPARENT RGBA BACKGROUND. Clean neutral alpha edges, no yellow/green matte halos. No floor, shadow, grid, cell borders, text, watermark, extra props or characters. Do not invent new moves. This is source block row 1, column 3 of the animation; reproduce its specific four poses unchanged.",
+      "referenced_image_paths": [
+        "/workspace/scratch/6fb9ed9b9b4d/machiavelli-hq/source-r1c3.png",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/maquiavel.webp",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/felipe-idle.webp"
+      ]
+    },
+    {
+      "id": "21",
+      "r": 2,
+      "c": 1,
+      "prompt": "Use case: identity-preserve. Asset type: high-definition PhiloKombat 2D arcade fighter animation restoration. Image 1 is the EDIT TARGET containing exactly four Niccolo Machiavelli full-body poses in a 2-by-2 arrangement. Image 2 is his face/costume identity reference. Image 3 is Felipe, a QUALITY REFERENCE ONLY for crisp realistic arcade anatomy and texture, never copy his face, clothing, tattoos, or magenta background. Restore Machiavelli with comparable sharp realistic digitized detail: mature lean clean-shaven Italian face, short dark hair, burgundy red Renaissance cap, long black Renaissance robe/tunic with narrow burgundy-red trim, dark leggings, brown leather shoes. Preserve EXACTLY the four input poses, pose order, facing direction, limb angles, hand gestures, clothing silhouette and relative body proportions. Maintain consistent identity and outfit in all four cells. Resolve face, fingers, cloth folds, cap seams and shoe leather with fine natural sharp detail, not pixel art, blur or painterly smears. Exactly two arms, two hands and two legs per figure. Keep whole head, hands and both shoes visible, with generous transparent padding around each pose, clear transparent gutters between all four cells, no overlapping sprites. REAL TRANSPARENT RGBA BACKGROUND. Clean neutral alpha edges, no yellow/green matte halos. No floor, shadow, grid, cell borders, text, watermark, extra props or characters. Do not invent new moves. This is source block row 2, column 1 of the animation; reproduce its specific four poses unchanged.",
+      "referenced_image_paths": [
+        "/workspace/scratch/6fb9ed9b9b4d/machiavelli-hq/source-r2c1.png",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/maquiavel.webp",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/felipe-idle.webp"
+      ]
+    },
+    {
+      "id": "22",
+      "r": 2,
+      "c": 2,
+      "prompt": "Use case: identity-preserve. Asset type: high-definition PhiloKombat 2D arcade fighter animation restoration. Image 1 is the EDIT TARGET containing exactly four Niccolo Machiavelli full-body poses in a 2-by-2 arrangement. Image 2 is his face/costume identity reference. Image 3 is Felipe, a QUALITY REFERENCE ONLY for crisp realistic arcade anatomy and texture, never copy his face, clothing, tattoos, or magenta background. Restore Machiavelli with comparable sharp realistic digitized detail: mature lean clean-shaven Italian face, short dark hair, burgundy red Renaissance cap, long black Renaissance robe/tunic with narrow burgundy-red trim, dark leggings, brown leather shoes. Preserve EXACTLY the four input poses, pose order, facing direction, limb angles, hand gestures, clothing silhouette and relative body proportions. Maintain consistent identity and outfit in all four cells. Resolve face, fingers, cloth folds, cap seams and shoe leather with fine natural sharp detail, not pixel art, blur or painterly smears. Exactly two arms, two hands and two legs per figure. Keep whole head, hands and both shoes visible, with generous transparent padding around each pose, clear transparent gutters between all four cells, no overlapping sprites. REAL TRANSPARENT RGBA BACKGROUND. Clean neutral alpha edges, no yellow/green matte halos. No floor, shadow, grid, cell borders, text, watermark, extra props or characters. Do not invent new moves. This is source block row 2, column 2 of the animation; reproduce its specific four poses unchanged.",
+      "referenced_image_paths": [
+        "/workspace/scratch/6fb9ed9b9b4d/machiavelli-hq/source-r2c2.png",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/maquiavel.webp",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/felipe-idle.webp"
+      ]
+    },
+    {
+      "id": "23",
+      "r": 2,
+      "c": 3,
+      "prompt": "Use case: identity-preserve. Asset type: high-definition PhiloKombat 2D arcade fighter animation restoration. Image 1 is the EDIT TARGET containing exactly four Niccolo Machiavelli full-body poses in a 2-by-2 arrangement. Image 2 is his face/costume identity reference. Image 3 is Felipe, a QUALITY REFERENCE ONLY for crisp realistic arcade anatomy and texture, never copy his face, clothing, tattoos, or magenta background. Restore Machiavelli with comparable sharp realistic digitized detail: mature lean clean-shaven Italian face, short dark hair, burgundy red Renaissance cap, long black Renaissance robe/tunic with narrow burgundy-red trim, dark leggings, brown leather shoes. Preserve EXACTLY the four input poses, pose order, facing direction, limb angles, hand gestures, clothing silhouette and relative body proportions. Maintain consistent identity and outfit in all four cells. Resolve face, fingers, cloth folds, cap seams and shoe leather with fine natural sharp detail, not pixel art, blur or painterly smears. Exactly two arms, two hands and two legs per figure. Keep whole head, hands and both shoes visible, with generous transparent padding around each pose, clear transparent gutters between all four cells, no overlapping sprites. REAL TRANSPARENT RGBA BACKGROUND. Clean neutral alpha edges, no yellow/green matte halos. No floor, shadow, grid, cell borders, text, watermark, extra props or characters. Do not invent new moves. This is source block row 2, column 3 of the animation; reproduce its specific four poses unchanged.",
+      "referenced_image_paths": [
+        "/workspace/scratch/6fb9ed9b9b4d/machiavelli-hq/source-r2c3.png",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/maquiavel.webp",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/felipe-idle.webp"
+      ]
+    },
+    {
+      "id": "31",
+      "r": 3,
+      "c": 1,
+      "prompt": "Use case: identity-preserve. Asset type: high-definition PhiloKombat 2D arcade fighter animation restoration. Image 1 is the EDIT TARGET containing exactly four Niccolo Machiavelli full-body poses in a 2-by-2 arrangement. Image 2 is his face/costume identity reference. Image 3 is Felipe, a QUALITY REFERENCE ONLY for crisp realistic arcade anatomy and texture, never copy his face, clothing, tattoos, or magenta background. Restore Machiavelli with comparable sharp realistic digitized detail: mature lean clean-shaven Italian face, short dark hair, burgundy red Renaissance cap, long black Renaissance robe/tunic with narrow burgundy-red trim, dark leggings, brown leather shoes. Preserve EXACTLY the four input poses, pose order, facing direction, limb angles, hand gestures, clothing silhouette and relative body proportions. Maintain consistent identity and outfit in all four cells. Resolve face, fingers, cloth folds, cap seams and shoe leather with fine natural sharp detail, not pixel art, blur or painterly smears. Exactly two arms, two hands and two legs per figure. Keep whole head, hands and both shoes visible, with generous transparent padding around each pose, clear transparent gutters between all four cells, no overlapping sprites. REAL TRANSPARENT RGBA BACKGROUND. Clean neutral alpha edges, no yellow/green matte halos. No floor, shadow, grid, cell borders, text, watermark, extra props or characters. Do not invent new moves. This is source block row 3, column 1 of the animation; reproduce its specific four poses unchanged.",
+      "referenced_image_paths": [
+        "/workspace/scratch/6fb9ed9b9b4d/machiavelli-hq/source-r3c1.png",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/maquiavel.webp",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/felipe-idle.webp"
+      ]
+    },
+    {
+      "id": "32",
+      "r": 3,
+      "c": 2,
+      "prompt": "Use case: identity-preserve. Asset type: high-definition PhiloKombat 2D arcade fighter animation restoration. Image 1 is the EDIT TARGET containing exactly four Niccolo Machiavelli full-body poses in a 2-by-2 arrangement. Image 2 is his face/costume identity reference. Image 3 is Felipe, a QUALITY REFERENCE ONLY for crisp realistic arcade anatomy and texture, never copy his face, clothing, tattoos, or magenta background. Restore Machiavelli with comparable sharp realistic digitized detail: mature lean clean-shaven Italian face, short dark hair, burgundy red Renaissance cap, long black Renaissance robe/tunic with narrow burgundy-red trim, dark leggings, brown leather shoes. Preserve EXACTLY the four input poses, pose order, facing direction, limb angles, hand gestures, clothing silhouette and relative body proportions. Maintain consistent identity and outfit in all four cells. Resolve face, fingers, cloth folds, cap seams and shoe leather with fine natural sharp detail, not pixel art, blur or painterly smears. Exactly two arms, two hands and two legs per figure. Keep whole head, hands and both shoes visible, with generous transparent padding around each pose, clear transparent gutters between all four cells, no overlapping sprites. REAL TRANSPARENT RGBA BACKGROUND. Clean neutral alpha edges, no yellow/green matte halos. No floor, shadow, grid, cell borders, text, watermark, extra props or characters. Do not invent new moves. This is source block row 3, column 2 of the animation; reproduce its specific four poses unchanged.",
+      "referenced_image_paths": [
+        "/workspace/scratch/6fb9ed9b9b4d/machiavelli-hq/source-r3c2.png",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/maquiavel.webp",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/felipe-idle.webp"
+      ]
+    },
+    {
+      "id": "33",
+      "r": 3,
+      "c": 3,
+      "prompt": "Use case: identity-preserve. Asset type: high-definition PhiloKombat 2D arcade fighter animation restoration. Image 1 is the EDIT TARGET containing exactly four Niccolo Machiavelli full-body poses in a 2-by-2 arrangement. Image 2 is his face/costume identity reference. Image 3 is Felipe, a QUALITY REFERENCE ONLY for crisp realistic arcade anatomy and texture, never copy his face, clothing, tattoos, or magenta background. Restore Machiavelli with comparable sharp realistic digitized detail: mature lean clean-shaven Italian face, short dark hair, burgundy red Renaissance cap, long black Renaissance robe/tunic with narrow burgundy-red trim, dark leggings, brown leather shoes. Preserve EXACTLY the four input poses, pose order, facing direction, limb angles, hand gestures, clothing silhouette and relative body proportions. Maintain consistent identity and outfit in all four cells. Resolve face, fingers, cloth folds, cap seams and shoe leather with fine natural sharp detail, not pixel art, blur or painterly smears. Exactly two arms, two hands and two legs per figure. Keep whole head, hands and both shoes visible, with generous transparent padding around each pose, clear transparent gutters between all four cells, no overlapping sprites. REAL TRANSPARENT RGBA BACKGROUND. Clean neutral alpha edges, no yellow/green matte halos. No floor, shadow, grid, cell borders, text, watermark, extra props or characters. Do not invent new moves. This is source block row 3, column 3 of the animation; reproduce its specific four poses unchanged.",
+      "referenced_image_paths": [
+        "/workspace/scratch/6fb9ed9b9b4d/machiavelli-hq/source-r3c3.png",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/maquiavel.webp",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/felipe-idle.webp"
+      ]
+    },
+    {
+      "id": "portrait",
+      "prompt": "Use case: identity-preserve. Asset type: PhiloKombat pre-fight and champion full-body character cutout. Image 1 is the Machiavelli portrait EDIT TARGET; image 2 supplies his complete Renaissance costume and brown shoes in the neutral stance; image 3 is Felipe, QUALITY REFERENCE ONLY for crisp realistic arcade finish, never copy Felipe's face, tattoos, clothes or background. Extend/restore Machiavelli from the red cap to BOTH brown leather shoes, complete full body in a portrait 2:3 composition. Preserve the exact mature lean clean-shaven Italian face and short dark hair of image 1, burgundy cap, black long Renaissance robe with narrow burgundy trim, dark leggings, brown leather shoes matching image 2. Confident relaxed fighting presentation, hands visible, natural anatomy with exactly two arms and legs. Entire body centered, cap and soles fully inside frame with 5% clear padding above and below, no cropped feet or cap. Fine sharp facial traits, realistic cloth folds, subtle detailed black fabric and cap seams, same high-definition digitized arcade finish as Felipe. REAL TRANSPARENT RGBA background, no yellow or green halo, no stage, floor, cast shadow, border, book, text, watermark or extra character.",
+      "referenced_image_paths": [
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/maquiavel.webp",
+        "/workspace/scratch/6fb9ed9b9b4d/machiavelli-hq/source-r1c1.png",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/felipe-idle.webp"
+      ]
+    }
+  ],
+  "rendering": {
+    "nativeCell": [
+      768,
+      768
+    ],
+    "atlas": [
+      4608,
+      4608
+    ],
+    "minimumBufferDPR": 2,
+    "scale": 1.2155,
+    "targetFelipeHeightRatio": 0.92,
+    "shoeBaseline": 744,
+    "supportFootAnchor": 384,
+    "cpuExtraRecoveryMs": 260,
+    "cpuWaitsForEffectTail": true,
+    "portraitTransparentPadding": {
+      "size": [
+        1152,
+        1728
+      ],
+      "sourcePosition": [
+        64,
+        96
+      ],
+      "resampled": false
+    }
+  }
+}

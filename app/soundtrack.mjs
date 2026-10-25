@@ -20,7 +20,7 @@ const medieval = new Set(["agostinho", "averroes", "thomas"]);
 const modern = new Set(["machiavelli", "galileo", "descartes", "locke", "hobbes", "rousseau", "smith", "kant", "hegel", "olympe"]);
 
 export function battleTrack(gameMode, fighter, opponent) {
-  if (fighter === "superintelligence" || opponent === "superintelligence") return SOUNDTRACK.boss;
+  if (fighter === "superintelligence" || opponent === "superintelligence" || fighter === "felipe-cyborg" || opponent === "felipe-cyborg") return SOUNDTRACK.boss;
   // Versus arenas belong to the player's fighter; Story arenas belong to the encounter.
   const arenaFighter = gameMode === "story" || fighter === "felipe" ? opponent : fighter;
   if (ancient.has(arenaFighter)) return SOUNDTRACK.ancient;
@@ -36,7 +36,7 @@ export function soundtrackForPhase(phase, gameMode, fighter, opponent, sceneKind
   if (phase === "playing" || phase === "finishing") return battleTrack(gameMode, fighter, opponent);
   // Only the champion screen contains both the winner and final phrase.
   if (phase === "won" || phase === "lost") return SOUNDTRACK.result;
-  if (phase === "story-complete") {
+  if (phase === "story-complete" || phase === "doctor-complete") {
     if (endingStage === "celebration") return SOUNDTRACK.applause;
     if (endingStage === "threat") return SOUNDTRACK.boss;
   }

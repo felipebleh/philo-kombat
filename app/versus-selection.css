@@ -160,3 +160,6 @@
 .portrait-thomas { --crop-left: 135; --crop-top: 20; --crop-size: 135; }
 .portrait-turing { --crop-left: 100; --crop-top: 0; --crop-size: 150; }
 .portrait-wittgenstein { --crop-left: 110; --crop-top: 0; --crop-size: 135; }
+
+.versus-machiavelli .versus-panel-art { overflow: visible; }
+.versus-machiavelli .versus-panel-art img { object-fit: contain; object-position: center bottom; }

@@ -1,4 +1,5 @@
 export const FIGHTER_THUMBNAILS: Record<string, string> = {
+  "felipe-cyborg": "/game/thumb-felipe-cyborg.webp",
   felipe: "/game/thumb-felipe.webp",
   amenemope: "/game/thumb-amenemope.webp",
   homero: "/game/thumb-homero.webp",
@@ -21,7 +22,7 @@ export const FIGHTER_THUMBNAILS: Record<string, string> = {
   rousseau: "/game/thumb-rousseau.webp",
   smith: "/game/thumb-smith.webp",
   kant: "/game/thumb-kant.webp",
-  hegel: "/game/thumb-hegel.webp",
+  hegel: "/game/thumb-hegel-historical.webp",
   schopenhauer: "/game/thumb-schopenhauer.webp",
   marx: "/game/thumb-marx.webp",
   freud: "/game/thumb-freud.webp",
@@ -44,6 +45,7 @@ export const FIGHTER_THUMBNAILS: Record<string, string> = {
 };
 
 const FIGHTER_ARENAS: Record<string, string> = {
+  "felipe-cyborg": "/game/arena-felipe-dystopia-v1.webp",
   felipe: "/game/arena-felipe-classroom.webp",
   amenemope: "/game/arena-egito.webp",
   homero: "/game/arena-troia.webp",
@@ -89,6 +91,7 @@ const FIGHTER_ARENAS: Record<string, string> = {
 };
 
 const FIGHTER_ASSETS: Record<string, readonly string[]> = {
+  "felipe-cyborg": ["/game/cyborg-drone-v1.webp","/game/cyborg-v1/idle.webp","/game/cyborg-v1/walk0.webp","/game/cyborg-v1/walk1.webp","/game/cyborg-v1/walk2.webp","/game/cyborg-v1/walk3.webp","/game/cyborg-v1/windup.webp","/game/cyborg-v1/punch.webp","/game/cyborg-v1/kick.webp","/game/cyborg-v1/hook.webp","/game/cyborg-v1/guard.webp","/game/cyborg-v1/jump.webp","/game/cyborg-v1/cast.webp","/game/cyborg-v1/hit.webp","/game/cyborg-v1/fallen.webp","/game/cyborg-v1/rise.webp","/game/cyborg-v1/victory.webp","/game/cyborg-v1/charge.webp"],
   felipe: [
     "/game/felipe-idle.webp", "/game/felipe-movement.webp", "/game/felipe-specials.webp",
     "/game/felipe-jump.webp", "/game/felipe-hit.webp", "/game/felipe-fallen.webp",
@@ -135,7 +138,7 @@ const FIGHTER_ASSETS: Record<string, readonly string[]> = {
   ],
   hypatia: [
     "/game/hipatia.webp",
-    "/game/hipatia-spritesheet.webp",
+    "/game/hipatia-spritesheet-hq-v2.webp",
   ],
   agostinho: [
     "/game/agostinho-fullbody-hq.webp",
@@ -144,22 +147,22 @@ const FIGHTER_ASSETS: Record<string, readonly string[]> = {
     "/game/agostinho-cast-hq-v2.webp",
   ],
   averroes: [
-    "/game/averroes.webp",
-    "/game/averroes-spritesheet-hq.webp?v=2.2",
+    "/game/averroes-fullbody-hq-v3.webp",
+    "/game/averroes-spritesheet-hq-v3.webp",
   ],
   thomas: [
-    "/game/tomas.webp",
-    "/game/tomas-spritesheet.webp",
+    "/game/tomas-fullbody-hq-v2.webp",
+    "/game/tomas-spritesheet-hq-v2.webp",
     "/game/boi-mudo.webp",
   ],
   machiavelli: [
-    "/game/maquiavel.webp",
-    "/game/maquiavel-spritesheet.webp",
+    "/game/maquiavel-fullbody-hq-v2.webp",
+    "/game/maquiavel-spritesheet-hq-v2.webp",
     "/game/principe.webp",
   ],
   galileo: [
     "/game/galileu.webp",
-    "/game/galileu-spritesheet-hq-v3.webp?v=2.6",
+    "/game/galileu-spritesheet-hq-v4.webp",
   ],
   descartes: [
     "/game/descartes.webp",
@@ -212,8 +215,25 @@ const FIGHTER_ASSETS: Record<string, readonly string[]> = {
     "/game/kant-categorical-sigil.webp?v=3.2",
   ],
   hegel: [
-    "/game/hegel-fullbody-hq.webp?v=3.3",
-    "/game/hegel-spritesheet-hq.webp?v=3.3",
+    "/game/hegel-historical-master-hq.webp",
+    "/game/hegel-poses-v2/punch.webp",
+    "/game/hegel-poses-v2/kick.webp",
+    "/game/hegel-poses-v2/idle.webp",
+    "/game/hegel-poses-v2/windup.webp",
+    "/game/hegel-poses-v2/jump.webp",
+    "/game/hegel-poses-v2/guard.webp",
+    "/game/hegel-poses-v2/cast.webp",
+    "/game/hegel-poses-v2/summon.webp",
+    "/game/hegel-poses-v2/victory.webp",
+    "/game/hegel-poses-v2/hook.webp",
+    "/game/hegel-poses-v2/hit.webp",
+    "/game/hegel-poses-v2/fallen.webp",
+    "/game/hegel-poses-v2/rise.webp",
+    "/game/hegel-poses-v2/walkA.webp",
+    "/game/hegel-poses-v2/walkPassA.webp",
+    "/game/hegel-poses-v2/walkB.webp",
+    "/game/hegel-poses-v2/walkPassB.webp",
+    "/game/hegel-world-spirit-horse.webp",
   ],
   schopenhauer: [
     "/game/schopenhauer-fullbody-hq.webp?v=3.4.1",
@@ -255,6 +275,21 @@ const FIGHTER_ASSETS: Record<string, readonly string[]> = {
     "/game/olympe-tribune-vfx.webp?v=3.9",
   ],
   kierkegaard: [
+    "/game/kierkegaard-combo-v3/combo-ready.webp",
+    "/game/kierkegaard-combo-v3/combo-thrust.webp",
+    "/game/kierkegaard-combo-v3/combo-reload.webp",
+    "/game/kierkegaard-combo-v3/combo-cut.webp",
+
+    "/game/kierkegaard-walk-v3/walk-0.webp",
+    "/game/kierkegaard-walk-v3/walk-1.webp",
+    "/game/kierkegaard-walk-v3/walk-2.webp",
+    "/game/kierkegaard-walk-v3/walk-3.webp",
+    "/game/kierkegaard-walk-v3/walk-4.webp",
+    "/game/kierkegaard-walk-v3/walk-5.webp",
+    "/game/kierkegaard-walk-v3/walk-6.webp",
+    "/game/kierkegaard-walk-v3/walk-7.webp",
+    "/game/kierkegaard-motion-v2/crouch.webp",
+    "/game/kierkegaard-motion-v2/air.webp",
     "/game/kierkegaard-fullbody-hq.webp?v=4.0",
     "/game/kierkegaard-guard-frame.webp?v=4.0",
     "/game/kierkegaard-punch-hq.webp?v=4.0",
@@ -368,7 +403,7 @@ const FIGHTER_ASSETS: Record<string, readonly string[]> = {
 export const fighterThumbnailArt = (fighter: string) =>
   FIGHTER_THUMBNAILS[fighter] ?? FIGHTER_THUMBNAILS.plato;
 
-export const fightAssetUrls = (player: string, opponent: string, arena = FIGHTER_ARENAS[player]) =>
+export const fightAssetUrls = (player: string, opponent: string, arena = (player === "felipe-cyborg" || opponent === "felipe-cyborg") ? FIGHTER_ARENAS["felipe-cyborg"] : FIGHTER_ARENAS[player]) =>
   Array.from(
     new Set([
       ...(FIGHTER_ASSETS[player] ?? []),

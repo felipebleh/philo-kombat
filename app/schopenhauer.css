@@ -1,0 +1,22 @@
+/* Preserve the approved sprite artwork, dimensions, baseline and native colors. */
+.fighter.fighter-schopenhauer { filter:none !important; }
+.fighter.fighter-schopenhauer.hit > .fighter-sprite,
+.fighter.fighter-schopenhauer.impact-flash > .fighter-sprite { filter:none !important; opacity:1 !important; }
+.schopenhauer-soft-flash {
+ position:absolute;inset:0;pointer-events:none;z-index:5;background:#fff;
+ mask:url('/game/schopenhauer-fullbody-hq.webp?v=3.4.1') 50% 100%/contain no-repeat;
+ -webkit-mask:url('/game/schopenhauer-fullbody-hq.webp?v=3.4.1') 50% 100%/contain no-repeat;
+}
+.schopenhauer-cane-trail { position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none; }
+.schopenhauer-pendulum-effect { position:absolute;inset:0;z-index:29;pointer-events:none;overflow:hidden;background:radial-gradient(ellipse at 50% 25%,#1b142b33,#08071155 85%); }
+.schopenhauer-pendulum-effect canvas { position:absolute;inset:0;width:100%;height:100%; }
+.schopenhauer-desire,.schopenhauer-boredom { position:absolute;top:14%;padding:7px 12px;font:bold clamp(13px,2.3vw,31px)/1.2 Georgia,serif;letter-spacing:.1em;text-shadow:0 2px 4px #000;background:#100e14b8;border-block:1px solid #a88a5380; }
+.schopenhauer-desire { left:5%;color:#d3b88e; }
+.schopenhauer-boredom { right:8%;color:#adb6c0; }
+.schopenhauer-pendulum-effect>b { position:absolute;bottom:5%;left:0;width:100%;text-align:center;font:bold clamp(14px,2.4vw,33px)/1.2 Georgia,serif;letter-spacing:.08em;color:#ddc89e;text-shadow:0 2px 5px #000; }
+/* The contact burst is mounted by the real damage callback, never by a timer. */
+.schopenhauer-pendulum-hit { position:absolute;z-index:39;left:var(--schopenhauer-hit-x);top:30%;height:45%;width:5px;pointer-events:none;transform:translateX(-50%) rotate(28deg);background:linear-gradient(transparent,#aaa1b5,#20142e 45%,#b8acbd,transparent);box-shadow:0 0 14px 8px #22122e99;animation:schopenhauer-dark-cut 300ms ease-out both; }
+.schopenhauer-impact-shake { animation:schopenhauer-shake 240ms linear; }
+@keyframes schopenhauer-dark-cut { from{opacity:.9;scale:1.8 .55;} to{opacity:0;scale:.3 1.5;} }
+@keyframes schopenhauer-shake { 0%,100%{translate:0;} 15%{translate:-6px 2px;} 30%{translate:6px -3px;} 50%{translate:-5px 2px;} 70%{translate:4px -1px;} 85%{translate:-2px 1px;} }
+@media(prefers-reduced-motion:reduce){.schopenhauer-impact-shake{animation:none;}}

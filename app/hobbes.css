@@ -1,0 +1,29 @@
+/* Hobbes keeps his existing root size, sprite density and foot baseline. */
+.fighter-hobbes:is(.attack-combo,.special-wolf,.special-leviathan) {
+  animation: none; transform: translateX(-50%);
+}
+.fighter-hobbes.hit .fighter-sprite { animation: none; background-position: 40% 0%; }
+.fighter-hobbes:is(.guard,.guard-hit) .fighter-sprite { background-position: 40% 0% !important; }
+.fighter-hobbes:is(.guard,.guard-hit)::before { display: none; }
+.hobbes-guard-shield { position: absolute; z-index: 12; top: 27%; right: 1%; width: 37%; height: 47%; filter: drop-shadow(0 0 9px #e6bd6477); pointer-events: none; }
+.fighter-enemy .hobbes-guard-shield { right: auto; left: 1%; transform: scaleX(-1); }
+.hobbes-arena-dim { position: absolute; inset: 0; z-index: 4; pointer-events: none; background: #000; opacity: .45; }
+.effect-hobbes-leviathan .special-colorwash { display: none; }
+.hobbes-sovereign { position: absolute; z-index: 4; bottom: 11%; height: 125%; width: clamp(360px,67vw,940px); transform: translateX(-50%); pointer-events: none; animation: hobbes-imperial-rise 1850ms ease-out both; }
+.hobbes-sovereign-art { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 0 13px #ffd67d88); }
+.sovereign-enemy .hobbes-sovereign-art { transform: scaleX(-1); }
+.hobbes-sovereign-blade { transform-origin: 116px 326px; animation: hobbes-imperial-strike 1850ms ease-in-out both; }
+.hobbes-sovereign-cut { position: absolute; z-index: 7; top: 3%; height: 94%; overflow: visible; pointer-events: none; filter: drop-shadow(0 0 10px #ffdb6a); animation: hobbes-cut-flash 1850ms linear both; }
+.hobbes-sovereign-cut.cut-enemy { transform: scaleX(-1); }
+.hobbes-impact-shake { animation: hobbes-heavy-shake 240ms linear; }
+.hobbes-pact-chains { position: absolute; z-index: 12; left: 50%; bottom: -1%; width: 65%; height: 24%; transform: translateX(-50%); pointer-events: none; filter: drop-shadow(0 2px 3px #000); animation: hobbes-chain-flicker 150ms steps(2,end) infinite; }
+.fighter.pact-slow-jump.jump { animation: jump 650ms cubic-bezier(.2,.6,.35,1) !important; }
+.hobbes-wolf-charge { overflow: visible; }
+.hobbes-wolf-charge > img { position: relative; width: 100%; height: 100%; object-fit: contain; filter: contrast(1.08) drop-shadow(0 0 9px #8b162b); }
+.hobbes-wolf-aura { position: absolute; inset: -22% -12%; width: 124%; height: 144%; filter: drop-shadow(0 0 12px #d23154); }
+@keyframes hobbes-imperial-rise { 0% { opacity: 0; transform: translateX(-50%) translateY(25%) scale(.85); } 20%,85% { opacity: 1; transform: translateX(-50%); } 100% { opacity: 0; transform: translateX(-50%) translateY(-3%); } }
+@keyframes hobbes-imperial-strike { 0%,65% { transform: rotate(-12deg); } 78%,90% { transform: rotate(104deg); } 100% { transform: rotate(110deg); } }
+@keyframes hobbes-cut-flash { 0%,76% { opacity: 0; stroke-dasharray: 1400; stroke-dashoffset: 1400; } 80%,86% { opacity: 1; stroke-dashoffset: 0; } 100% { opacity: 0; stroke-dashoffset: 0; } }
+@keyframes hobbes-heavy-shake { 0%,100% { translate: 0; } 15% { translate: -8px 4px; } 30% { translate: 7px -6px; } 45% { translate: -6px 3px; } 60% { translate: 6px -4px; } 80% { translate: -3px 2px; } }
+@keyframes hobbes-chain-flicker { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
+@media (prefers-reduced-motion: reduce) { .hobbes-impact-shake { animation: none; } .hobbes-pact-chains { animation: none; } }

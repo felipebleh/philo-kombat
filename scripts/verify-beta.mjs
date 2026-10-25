@@ -21,6 +21,6 @@ if (process.argv[2] === "dist") {
   const files = walk(resolve(root, "beta-dist"));
   if (files.some((path) => statSync(path).size > 25 * 1024 * 1024)) throw new Error("Asset exceeds Cloudflare Pages limit");
   if (!existsSync(resolve(root, "beta-dist/index.html"))) throw new Error("Missing index.html");
-  console.log(`Export verified: ${files.length} files, all 405 original public resources identical.`);
+  console.log(`Export verified: ${files.length} files, all ${Object.keys(manifest.files).filter(path => path.startsWith("public/")).length} original public resources identical.`);
 }
 console.log(`Version ${manifest.sites_version}: ${Object.keys(manifest.files).length} original files verified by SHA-256.`);

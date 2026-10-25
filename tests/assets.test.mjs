@@ -92,3 +92,12 @@ test("the previous all-roster preloader is gone", () => {
   assert.match(page, /preloadFightAssets\(selectedFighter, fighter, setLoadingProgress\)/);
   assert.match(page, /phase === "loading"/);
 });
+
+test('the clone preloads its complete pose pack and dystopian classroom on either side',()=>{
+ for(const sides of [['felipe-cyborg','felipe'],['felipe','felipe-cyborg']]){
+  const urls=fightAssetUrls(...sides);assert.ok(urls.includes('/game/arena-felipe-dystopia-v1.webp'));assert.ok(urls.includes('/game/cyborg-drone-v1.webp'));
+  for(const name of ['idle','walk0','walk1','walk2','walk3','punch','kick','hook','guard','jump','cast','hit','fallen','rise','victory','charge'])assert.ok(urls.includes(`/game/cyborg-v1/${name}.webp`));
+  assert.ok(!urls.includes('/game/arena-felipe-classroom.webp'));
+ }
+ assert.ok(fightAssetUrls('felipe','socrates').includes('/game/arena-felipe-classroom.webp'));
+});

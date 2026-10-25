@@ -1,4 +1,5 @@
 export const COMBAT_SOUNDS = Object.freeze({
+  thunder: "/audio/sfx_trovao_doutor.mp3",
   punch: "/audio/sfx_soco.mp3",
   kick: "/audio/sfx_chute.mp3",
   combo: "/audio/sfx_combo.mp3",
@@ -12,7 +13,7 @@ export const COMBAT_SOUNDS = Object.freeze({
 export const MOVE_SOUNDS = Object.freeze({ dialetica: "punch", caverna: "kick", ideias: "combo", especial: "special1", transcender: "special2" });
 const femaleFighters = new Set(["hypatia", "olympe", "beauvoir", "arendt", "angela-davis"]);
 export function defeatSound(fighter) {
-  return fighter === "superintelligence" ? "defeatComputer" : femaleFighters.has(fighter) ? "defeatFemale" : "defeatMale";
+  return (fighter === "superintelligence" || fighter === "felipe-cyborg") ? "defeatComputer" : femaleFighters.has(fighter) ? "defeatFemale" : "defeatMale";
 }
 
 // A shared effects bus reuses decoded samples. Only valid, landed combat moves

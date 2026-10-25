@@ -1,4 +1,5 @@
 import { STORY_ENCOUNTERS, nextDiscipleEncounter } from "./story-mode.mjs";
+import { DOCTOR_QUIZ_BANK } from "./doctor-quiz.mjs";
 
 export const QUIZ_RECOVERY_KEY = "philo-kombat-disciple-quiz-recovery-v1";
 export const FINAL_ENCOUNTER_INDEX = STORY_ENCOUNTERS.length - 1;
@@ -27,18 +28,18 @@ function shuffled(items, random) {
   return result;
 }
 
-export function createStoryQuiz(random = Math.random) {
+export function createStoryQuiz(random = Math.random, campaign = "disciple") {
   // Cada tentativa também contempla três filósofos diferentes.
   const philosophers = new Set();
-  const questions = shuffled(STORY_QUIZ_BANK, random).filter((question) => {
+  const questions = shuffled(campaign === "doctor" ? DOCTOR_QUIZ_BANK : STORY_QUIZ_BANK, random).filter((question) => {
     if (philosophers.has(question.philosopher)) return false;
     philosophers.add(question.philosopher);
     return true;
-  }).slice(0, 3).map((question) => ({
+  }).slice(0, campaign === "doctor" ? 4 : 3).map((question) => ({
     ...question,
     choices: shuffled(question.options.map((text, id) => ({ id, text })), random),
   }));
-  return { questions, index: 0, selected: null, status: "question" };
+  return { campaign, questions, index: 0, selected: null, status: "question" };
 }
 
 export function answerStoryQuiz(quiz, choiceId) {

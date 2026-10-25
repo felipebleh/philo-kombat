@@ -1,0 +1,29 @@
+/* Hegel's arena uses real sheet poses, at one uniform native-pixel scale. */
+.fighter.fighter-hegel {
+  bottom: 2.8%; height: 82%; width: clamp(225px, 28vw, 420px);
+  animation: none; transform: translateX(-50%); opacity: 1; filter: none;
+}
+.fighter.fighter-hegel .fighter-sprite.hegel-sheet {
+  inset: auto auto 0 50%; width: auto; height: 100%; aspect-ratio: 75/64;
+  background: none !important; animation: none !important;
+  transform: translateX(-50%); opacity: 1; filter: none;
+}
+.fighter.fighter-enemy.fighter-hegel .fighter-sprite.hegel-sheet { transform: translateX(-50%) scaleX(-1); }
+.hegel-frame-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; pointer-events: none; }
+/* The roster's hit animation must not flatten or whiten a sheet frame. */
+.fighter.fighter-hegel.impact-flash > .fighter-sprite { filter: brightness(1.12) !important; opacity: 1 !important; }
+.fighter.fighter-hegel .fighter-shadow { bottom: 0; width: 58%; left: 21%; height: 5%; opacity: .85; }
+.fighter.fighter-hegel.jump, .fighter.fighter-hegel.pact-slow-jump.jump { animation: none !important; }
+.is-finishing .fighter.fighter-hegel:not(.victory) { opacity: 1; filter: none; }
+.fighter.fighter-hegel .fighter-shadow { transform: scale(var(--hegel-shadow-width,1),var(--hegel-shadow-height,1)); opacity: calc(.85 * var(--hegel-shadow-opacity,1)); }
+.hegel-world-dim { position:absolute; inset:0; z-index:4; background:#000; opacity:.35; pointer-events:none; }
+.effect-hegel-world-spirit .special-colorwash { display:none; }
+.hegel-world-spirit-canvas { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+.hegel-world-impact { position:absolute; z-index:40; left:var(--hegel-hit-x); bottom:18%; width:clamp(90px,18vw,240px); aspect-ratio:1; pointer-events:none; transform:translateX(-50%); border-radius:50%; background:radial-gradient(circle,#f6ffff .5%,#d4faff99 12%,#a1e7ff44 35%,#7dceff00 68%); animation:hegel-ghost-impact 240ms ease-out both; }
+.hegel-world-impact::after { content:""; position:absolute; inset:5%; border:3px solid #d3faff; border-radius:50%; }
+.hegel-world-banner { position:absolute; z-index:41; top:23%; left:50%; width:max-content; max-width:95%; padding:8px 20px; transform:translateX(-50%); color:#efffff; font:bold clamp(17px,3.3vw,40px)/1.15 Georgia,serif; letter-spacing:.09em; text-align:center; text-shadow:0 0 9px #94eaff,0 2px 4px #00101c; background:linear-gradient(90deg,#061c3000,#133c50dd 18%,#133c50dd 82%,#061c3000); pointer-events:none; animation:hegel-banner 500ms ease-out both; }
+.hegel-world-shake { animation:hegel-world-shake 240ms linear; }
+@keyframes hegel-world-shake { 0%,100%{translate:0;} 15%{translate:-6px 3px;} 30%{translate:6px -3px;} 45%{translate:-5px 2px;} 60%{translate:4px -2px;} 80%{translate:-2px 1px;} }
+@keyframes hegel-ghost-impact { from{opacity:1;scale:.5;} to{opacity:0;scale:2.2;} }
+@keyframes hegel-banner { 0%{opacity:0;translate:0 10px;} 12%,78%{opacity:1;translate:0;} 100%{opacity:0;translate:0 -7px;} }
+@media(prefers-reduced-motion:reduce){.hegel-world-shake{animation:none;}}

@@ -17,7 +17,7 @@
     "dev:beta": "vite --config vite.beta.config.ts",
     "build:beta": "node scripts/verify-beta.mjs source && vite build --config vite.beta.config.ts && node scripts/verify-beta.mjs dist",
     "preview:beta": "vite preview --config vite.beta.config.ts",
-    "test:beta": "node --test tests/angela-davis.test.mjs tests/arendt.test.mjs tests/assets.test.mjs tests/augustine-walk.test.mjs tests/beauvoir.test.mjs tests/combat-audio.test.mjs tests/darwin-walk.test.mjs tests/deleuze.test.mjs tests/doctor-story.test.mjs tests/fanon.test.mjs tests/felipe.test.mjs tests/foucault.test.mjs tests/kierkegaard.test.mjs tests/krenak.test.mjs tests/olympe-walk.test.mjs tests/paulo-freire.test.mjs tests/soundtrack.test.mjs tests/story-loading.test.mjs tests/story-mode.test.mjs tests/superintelligence.test.mjs tests/versus-selection.test.mjs tests/wittgenstein.test.mjs",
+    "test:beta": "node --test tests/angela-davis.test.mjs tests/arendt.test.mjs tests/assets.test.mjs tests/augustine-walk.test.mjs tests/averroes.test.mjs tests/beauvoir.test.mjs tests/combat-audio.test.mjs tests/combat-controls.test.mjs tests/combat-integration.test.mjs tests/cyborg.test.mjs tests/darwin-walk.test.mjs tests/deleuze.test.mjs tests/doctor-ending.test.mjs tests/doctor-quiz.test.mjs tests/doctor-story.test.mjs tests/fanon.test.mjs tests/felipe.test.mjs tests/foucault.test.mjs tests/freud-effects.test.mjs tests/galileo.test.mjs tests/hegel-animation.test.mjs tests/hegel-identity.test.mjs tests/hobbes-art.test.mjs tests/kierkegaard.test.mjs tests/krenak.test.mjs tests/machiavelli.test.mjs tests/olympe-walk.test.mjs tests/paulo-freire.test.mjs tests/schopenhauer-effects.test.mjs tests/soundtrack.test.mjs tests/story-loading.test.mjs tests/story-mode.test.mjs tests/superintelligence.test.mjs tests/thomas.test.mjs tests/versus-selection.test.mjs tests/wittgenstein.test.mjs",
     "dev:sites": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vite",
     "build:sites": "bash scripts/build-verified.sh",
     "start:sites": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
@@ -48,5 +48,5 @@
     "wrangler": "4.92.0"
   },
   "type": "module",
-  "displayName": "Philo Kombat \u2014 Uma batalha de ideias"
+  "displayName": "Philo Kombat — Uma batalha de ideias"
 }

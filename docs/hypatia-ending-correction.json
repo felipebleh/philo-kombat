@@ -1,0 +1,8 @@
+{
+  "tool": "Built-in image_gen",
+  "target": "public/game/doctor-ending-corridor-v1.webp",
+  "characterReference": "public/game/hipatia.webp",
+  "prompt": "Use case: identity-preserve. Image 1 is the EDIT TARGET: the existing PhiloKombat ending corridor. Image 2 is the EXACT CHARACTER APPEARANCE REFERENCE: the game's Hypatia. Make only one localized correction to Image 1: the woman at the extreme foreground LEFT, applauding beside the lantern-holding Diogenes, is Hypatia and must look like the reference Hypatia in Image 2. Give her the same distinctly medium-dark warm brown skin tone on her face, neck, arms and hands, the same facial features, dark brown eyes and black curly hair gathered with a narrow gold headband. Match the reference identity, not a pale or white European woman. Keep her existing applauding pose, position, size and cheerful expression. Preserve the ivory tunic, royal/navy blue drape and gold trim, with the hair and face closer to the reference. Do not add the astrolabe or any new prop. Keep EVERY OTHER PART of Image 1 unchanged: all other thirteen historical philosophers, their faces, skin and clothing, flags reading FELIPE, both exact Portuguese placards O CONHECIMENTO SALVA and ENSINAR É LIBERTAR, lantern, architecture, golden sunlight, floor, empty center aisle, composition, original 1672x941 landscape dimensions. Do not add a central hero, confetti, speech bubbles or new text. This is a precise character correction within the existing artwork, not a new composition.",
+  "output": "public/game/doctor-ending-corridor-v2.webp",
+  "generatedFile": "generated_images/exec-13e8b35b-4eb5-4552-bc6d-8cb91629a12d.png"
+}

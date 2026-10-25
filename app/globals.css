@@ -1140,7 +1140,7 @@ button {
 }
 
 .fighter.attack-combo .fighter-sprite {
-  animation: sprite-combo 780ms linear 1 both;
+  animation: sprite-combo 780ms steps(1, end) 1 both;
 }
 
 .fighter.hit .fighter-sprite {
@@ -5812,10 +5812,10 @@ footer p {
   animation: hypatia-conics-colorwash 1.7s ease-out;
 }
 
-.fighter-hypatia {
-  bottom: 3.5%;
-  width: clamp(170px, 22.5vw, 334px);
-  height: 77%;
+.fighter.fighter-hypatia {
+  bottom: 2.8%;
+  width: clamp(225px, 28vw, 420px);
+  height: 82%;
 }
 
 .fighter-hypatia .fighter-aura {
@@ -5823,18 +5823,30 @@ footer p {
 }
 
 .hypatia-sheet {
-  background-image: url("/game/hipatia-spritesheet.webp");
+  background-image: url("/game/hipatia-spritesheet-hq-v2.webp");
 }
 
 .fighter-hypatia .hypatia-sheet {
-  inset: auto auto 0 50%;
-  width: min(104%, 334px);
-  height: auto;
+  /* Match Felipe's visible idle height: 92% of the same 82% fighter container.
+   * The HQ body occupies 642/768px: .92 / (642/768) = 1.10056075.
+   * Size from arena height so wide and narrow screens share the same scale.
+   * Retain the 54/768 foot compensation and the 1% floor anchor. */
+  inset: auto auto 1% 50%;
+  width: auto;
+  height: 110.056075%;
   aspect-ratio: 1;
   background-size: 600% 600%;
   background-position: 0% 0%;
-  transform: translateX(-50%);
+  transform: translate(-50%, 7.03125%);
+  filter: contrast(1.08) saturate(1.05) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.45));
+  image-rendering: auto;
   opacity: 1;
+}
+
+.fighter-hypatia .fighter-shadow {
+  bottom: -2.5%;
+  width: 70%;
+  left: 15%;
 }
 
 .fighter-hypatia.attack-punch,
@@ -5862,7 +5874,7 @@ footer p {
 }
 
 .fighter-enemy.fighter-hypatia .fighter-sprite {
-  transform: translateX(-50%) scaleX(-1);
+  transform: translate(-50%, 7.03125%) scaleX(-1);
 }
 
 .select-overlay.select-hypatia {
@@ -5906,8 +5918,8 @@ footer p {
 
 .celestial-astrolabe {
   --astrolabe-travel: 36vw;
-  bottom: 22%;
-  width: clamp(92px, 12vw, 176px);
+  bottom: calc(22% * var(--hypatia-scale, 1));
+  width: calc(clamp(92px, 12vw, 176px) * var(--hypatia-scale, 1));
   aspect-ratio: 1;
   border-radius: 50%;
   opacity: 0;
@@ -7728,8 +7740,8 @@ footer p {
   animation: averroes-commentator-colorwash 1.9s ease-out;
 }
 
-.fighter-averroes {
-  bottom: 3.5%;
+.fighter.fighter-averroes {
+  bottom: 2.8%;
   width: clamp(170px, 22.5vw, 334px);
   height: 77%;
   --averroes-lunge: 12%;
@@ -7744,22 +7756,45 @@ footer p {
 }
 
 .averroes-sheet {
-  background-image: url("/game/averroes-spritesheet-hq.webp?v=2.2");
+  background-image: url("/game/averroes-spritesheet-hq-v3.webp");
 }
 
 .fighter-averroes .averroes-sheet {
-  inset: auto auto 0 50%;
+  /* Native 405/418 foot line; keep the enlarged sprite fixed to the floor. */
+  inset: auto auto 1% 50%;
   width: auto;
-  height: 100%;
+  height: calc(100% * var(--averroes-scale, 1.15));
   aspect-ratio: 1;
   background-size: 600% 600%;
   background-position: 0% 0%;
-  transform: translateX(-50%);
+  transform: translate(-50%, 3.11004785%);
   opacity: 1;
 }
 
 .fighter-enemy.fighter-averroes .fighter-sprite {
-  transform: translateX(-50%) scaleX(-1);
+  transform: translate(-50%, 3.11004785%) scaleX(-1);
+}
+
+.averroes-frame-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+  transform-origin: 50% 96.88995215%;
+}
+.averroes-frame-canvas[data-ready="true"] { visibility: visible; }
+.fighter-averroes .averroes-sheet:has(> .averroes-frame-canvas[data-ready="true"]) {
+  background-image: none;
+  animation: none !important;
+}
+/* Lift only the body: the ground shadow stays at the same floor anchor. */
+.fighter-averroes.jump { animation: none; }
+.fighter-averroes .fighter-shadow {
+  bottom: -2.5%;
+  width: calc(70% * var(--averroes-scale, 1.15));
+  left: calc((100% - 70% * var(--averroes-scale, 1.15)) / 2);
+  transform: scale(var(--averroes-shadow-width, 1), var(--averroes-shadow-height, 1));
+  opacity: var(--averroes-shadow-opacity, 1);
 }
 
 .fighter-enemy.fighter-averroes {
@@ -8022,20 +8057,20 @@ footer p {
 
 @keyframes averroes-punch {
   0%, 100% { transform: translateX(-50%) translateY(0); }
-  30% { transform: translateX(-50%) translateX(var(--averroes-recoil)) translateY(1%); }
-  58% { transform: translateX(-50%) translateX(var(--averroes-lunge)) translateY(-1%); }
+  30% { transform: translateX(-50%) translateX(var(--averroes-recoil)); }
+  58% { transform: translateX(-50%) translateX(var(--averroes-lunge)); }
 }
 
 @keyframes averroes-kick {
   0%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
-  27% { transform: translateX(-50%) translateX(var(--averroes-recoil)) translateY(2%) scale(0.98); }
-  61% { transform: translateX(-50%) translateX(var(--averroes-lunge-far)) translateY(-4%) scale(1.035); }
+  27% { transform: translateX(-50%) translateX(var(--averroes-recoil)) scale(0.98); }
+  61% { transform: translateX(-50%) translateX(var(--averroes-lunge-far)) scale(1.035); }
 }
 
 @keyframes averroes-combo-body {
   0%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
-  26% { transform: translateX(-50%) translateX(var(--averroes-combo-step)) translateY(-1%); }
-  66% { transform: translateX(-50%) translateX(var(--averroes-combo-finish)) translateY(-3%) scale(1.025); }
+  26% { transform: translateX(-50%) translateX(var(--averroes-combo-step)); }
+  66% { transform: translateX(-50%) translateX(var(--averroes-combo-finish)) scale(1.025); }
 }
 
 @keyframes averroes-punch-sprite {
@@ -8220,10 +8255,13 @@ footer p {
   animation: thomas-mover-colorwash 1.9s ease-out;
 }
 
-.fighter-thomas {
-  bottom: 3.5%;
+.fighter.fighter-thomas {
+  bottom: 2.8%;
   width: clamp(180px, 23vw, 344px);
   height: 78%;
+  /* Felipe's 15/1536 canvas floor gap, expressed in this 78% root. */
+  --thomas-floor-gap: 1.02664263%;
+  transform-origin: 50% calc(100% - var(--thomas-floor-gap));
   --thomas-lunge: 12%;
   --thomas-kick-lunge: 15%;
   --thomas-recoil: -3%;
@@ -8240,22 +8278,47 @@ footer p {
 }
 
 .thomas-sheet {
-  background-image: url("/game/tomas-spritesheet.webp?v=2.3");
+  background-image: url("/game/tomas-spritesheet-hq-v2.webp");
 }
 
 .fighter-thomas .thomas-sheet {
-  inset: auto auto 0 50%;
+  /* All native shoe lines register to 405/418; scale about that baseline. */
+  inset: auto auto var(--thomas-floor-gap) 50%;
   width: auto;
-  height: 100%;
+  height: calc(100% * var(--thomas-scale, 1.15));
   aspect-ratio: 1;
   background-size: 600% 600%;
   background-position: 0% 0%;
-  transform: translateX(-50%);
+  transform: translate(-50%, 3.11004785%);
   opacity: 1;
 }
 
 .fighter-enemy.fighter-thomas .fighter-sprite {
-  transform: translateX(-50%) scaleX(-1);
+  transform: translate(-50%, 3.11004785%) scaleX(-1);
+}
+
+.thomas-frame-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+  transform-origin: 50% 96.88995215%;
+}
+.thomas-frame-canvas[data-ready="true"] { visibility: visible; }
+.fighter-thomas .thomas-sheet:not(:has(> .thomas-frame-canvas[data-ready="true"])) {
+  filter: contrast(1.14) saturate(1.06) drop-shadow(0px 2px 4px rgba(0,0,0,0.65));
+}
+.fighter-thomas .thomas-sheet:has(> .thomas-frame-canvas[data-ready="true"]) {
+  background-image: none;
+  animation: none !important;
+}
+.fighter-thomas.jump { animation: none; }
+.fighter-thomas .fighter-shadow {
+  bottom: calc(var(--thomas-floor-gap) - 3.5%);
+  width: calc(70% * var(--thomas-scale, 1.15));
+  left: calc((100% - 70% * var(--thomas-scale, 1.15)) / 2);
+  transform: scale(var(--thomas-shadow-width, 1), var(--thomas-shadow-height, 1));
+  opacity: var(--thomas-shadow-opacity, 1);
 }
 
 .fighter-thomas.attack-punch {
@@ -8514,21 +8577,21 @@ footer p {
 }
 
 @keyframes thomas-punch-body {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  30% { transform: translateX(-50%) translateX(var(--thomas-recoil)) translateY(1%); }
-  58% { transform: translateX(-50%) translateX(var(--thomas-lunge)) translateY(-1%); }
+  0%, 100% { transform: translateX(-50%); }
+  30% { transform: translateX(-50%) translateX(var(--thomas-recoil)); }
+  58% { transform: translateX(-50%) translateX(var(--thomas-lunge)); }
 }
 
 @keyframes thomas-kick-body {
-  0%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
-  28% { transform: translateX(-50%) translateX(var(--thomas-recoil)) translateY(2%) scale(0.98); }
-  62% { transform: translateX(-50%) translateX(var(--thomas-kick-lunge)) translateY(-4%) scale(1.03); }
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  28% { transform: translateX(-50%) translateX(var(--thomas-recoil)) scale(0.98); }
+  62% { transform: translateX(-50%) translateX(var(--thomas-kick-lunge)) scale(1.03); }
 }
 
 @keyframes thomas-combo-body {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  25% { transform: translateX(-50%) translateX(calc(var(--thomas-lunge) * 0.48)) translateY(-1%); }
-  66% { transform: translateX(-50%) translateX(var(--thomas-kick-lunge)) translateY(-3%) scale(1.025); }
+  0%, 100% { transform: translateX(-50%); }
+  25% { transform: translateX(-50%) translateX(calc(var(--thomas-lunge) * 0.48)); }
+  66% { transform: translateX(-50%) translateX(var(--thomas-kick-lunge)) scale(1.025); }
 }
 
 @keyframes thomas-punch-sprite {
@@ -8582,16 +8645,16 @@ footer p {
 
 @keyframes thomas-command-ox {
   0%, 100% { transform: translateX(-50%) scale(1); }
-  25% { transform: translateX(-54%) translateY(1%) scale(0.98); }
-  57% { transform: translateX(-47%) translateY(-2%) scale(1.03); }
-  76% { transform: translateX(-41%) translateY(-3%) scale(1.06); filter: brightness(1.18) drop-shadow(0 0 26px #d8bd79); }
+  25% { transform: translateX(-54%) scale(0.98); }
+  57% { transform: translateX(-47%) scale(1.03); }
+  76% { transform: translateX(-41%) scale(1.06); filter: brightness(1.18) drop-shadow(0 0 26px #d8bd79); }
 }
 
 @keyframes thomas-invoke-mover {
   0%, 100% { transform: translateX(-50%) scale(1); }
-  22% { transform: translateX(-52%) translateY(1%) scale(0.98); }
-  52% { transform: translateX(-50%) translateY(-4%) scale(1.03); }
-  76% { transform: translateX(-45%) translateY(-5%) scale(1.07); filter: brightness(1.34) drop-shadow(0 0 34px #edc666); }
+  22% { transform: translateX(-52%) scale(0.98); }
+  52% { transform: translateX(-50%) scale(1.03); }
+  76% { transform: translateX(-45%) scale(1.07); filter: brightness(1.34) drop-shadow(0 0 34px #edc666); }
 }
 
 @keyframes dumb-ox-travel {
@@ -8699,10 +8762,12 @@ footer p {
   animation: machiavelli-fortune-colorwash 1.9s ease-out;
 }
 
-.fighter-machiavelli {
-  bottom: 3.5%;
+.fighter.fighter-machiavelli {
+  bottom: 2.8%;
   width: clamp(174px, 22.5vw, 336px);
   height: 78%;
+  --machiavelli-floor-gap: 1.02664263%;
+  transform-origin: 50% calc(100% - var(--machiavelli-floor-gap));
   --machiavelli-lunge: 12%;
   --machiavelli-kick-lunge: 16%;
   --machiavelli-recoil: -3%;
@@ -8719,22 +8784,47 @@ footer p {
 }
 
 .machiavelli-sheet {
-  background-image: url("/game/maquiavel-spritesheet.webp?v=2.3");
+  background-image: url("/game/maquiavel-spritesheet-hq-v2.webp");
 }
 
 .fighter-machiavelli .machiavelli-sheet {
-  inset: auto auto 0 50%;
+  /* All native shoe lines register to 744/768; scale about that baseline. */
+  inset: auto auto var(--machiavelli-floor-gap) 50%;
   width: auto;
-  height: 100%;
+  height: calc(100% * var(--machiavelli-scale, 1.2155));
   aspect-ratio: 1;
   background-size: 600% 600%;
   background-position: 0% 0%;
-  transform: translateX(-50%);
+  transform: translate(-50%, 3.125%);
   opacity: 1;
 }
 
 .fighter-enemy.fighter-machiavelli .fighter-sprite {
-  transform: translateX(-50%) scaleX(-1);
+  transform: translate(-50%, 3.125%) scaleX(-1);
+}
+
+.machiavelli-frame-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+  transform-origin: 50% 96.875%;
+}
+.machiavelli-frame-canvas[data-ready="true"] { visibility: visible; }
+.fighter-machiavelli .machiavelli-sheet:not(:has(> .machiavelli-frame-canvas[data-ready="true"])) {
+  filter: contrast(1.16) saturate(1.10) drop-shadow(0px 2px 3px rgba(0,0,0,0.75));
+}
+.fighter-machiavelli .machiavelli-sheet:has(> .machiavelli-frame-canvas[data-ready="true"]) {
+  background-image: none;
+  animation: none !important;
+}
+.fighter-machiavelli.jump { animation: none; }
+.fighter-machiavelli .fighter-shadow {
+  bottom: calc(var(--machiavelli-floor-gap) - 3.5%);
+  width: calc(70% * var(--machiavelli-scale, 1.2155));
+  left: calc((100% - 70% * var(--machiavelli-scale, 1.2155)) / 2);
+  transform: scale(var(--machiavelli-shadow-width, 1), var(--machiavelli-shadow-height, 1));
+  opacity: var(--machiavelli-shadow-opacity, 1);
 }
 
 .fighter-machiavelli.attack-punch {
@@ -8828,8 +8918,9 @@ footer p {
 }
 
 .portrait-machiavelli img {
-  object-position: 50% 3%;
-  transform: scale(1.6);
+  object-fit: contain;
+  object-position: 50% 100%;
+  transform: none;
 }
 
 .dialogue-machiavelli > span {
@@ -9010,21 +9101,21 @@ footer p {
 }
 
 @keyframes machiavelli-punch-body {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  30% { transform: translateX(-50%) translateX(var(--machiavelli-recoil)) translateY(1%); }
-  58% { transform: translateX(-50%) translateX(var(--machiavelli-lunge)) translateY(-1%); }
+  0%, 100% { transform: translateX(-50%); }
+  30% { transform: translateX(-50%) translateX(var(--machiavelli-recoil)); }
+  58% { transform: translateX(-50%) translateX(var(--machiavelli-lunge)); }
 }
 
 @keyframes machiavelli-kick-body {
-  0%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
-  28% { transform: translateX(-50%) translateX(var(--machiavelli-recoil)) translateY(2%) scale(0.98); }
-  62% { transform: translateX(-50%) translateX(var(--machiavelli-kick-lunge)) translateY(-4%) scale(1.03); }
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  28% { transform: translateX(-50%) translateX(var(--machiavelli-recoil)) scale(0.98); }
+  62% { transform: translateX(-50%) translateX(var(--machiavelli-kick-lunge)) scale(1.03); }
 }
 
 @keyframes machiavelli-combo-body {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  25% { transform: translateX(-50%) translateX(calc(var(--machiavelli-lunge) * 0.5)) translateY(-1%); }
-  66% { transform: translateX(-50%) translateX(var(--machiavelli-kick-lunge)) translateY(-3%) scale(1.025); }
+  0%, 100% { transform: translateX(-50%); }
+  25% { transform: translateX(-50%) translateX(calc(var(--machiavelli-lunge) * 0.5)); }
+  66% { transform: translateX(-50%) translateX(var(--machiavelli-kick-lunge)) scale(1.025); }
 }
 
 @keyframes machiavelli-punch-sprite {
@@ -9075,16 +9166,16 @@ footer p {
 
 @keyframes machiavelli-command-prince {
   0%, 100% { transform: translateX(-50%) scale(1); }
-  24% { transform: translateX(-54%) translateY(1%) scale(0.98); }
-  58% { transform: translateX(-47%) translateY(-2%) scale(1.03); }
-  76% { transform: translateX(-42%) translateY(-3%) scale(1.06); filter: brightness(1.18) drop-shadow(0 0 25px #b52b35); }
+  24% { transform: translateX(-54%) scale(0.98); }
+  58% { transform: translateX(-47%) scale(1.03); }
+  76% { transform: translateX(-42%) scale(1.06); filter: brightness(1.18) drop-shadow(0 0 25px #b52b35); }
 }
 
 @keyframes machiavelli-seize-fortune {
   0%, 100% { transform: translateX(-50%) scale(1); }
-  22% { transform: translateX(-52%) translateY(1%) scale(0.98); }
-  52% { transform: translateX(-50%) translateY(-4%) scale(1.03); }
-  76% { transform: translateX(-45%) translateY(-5%) scale(1.07); filter: brightness(1.32) drop-shadow(0 0 34px #d5a943); }
+  22% { transform: translateX(-52%) scale(0.98); }
+  52% { transform: translateX(-50%) scale(1.03); }
+  76% { transform: translateX(-45%) scale(1.07); filter: brightness(1.32) drop-shadow(0 0 34px #d5a943); }
 }
 
 @keyframes prince-travel {
@@ -9221,7 +9312,7 @@ footer p {
 }
 
 .galileo-sheet {
-  background-image: url("/game/galileu-spritesheet-hq-v3.webp?v=2.6");
+  background-image: url("/game/galileu-spritesheet-hq-v4.webp");
 }
 
 .fighter-galileo .galileo-sheet {
@@ -9237,6 +9328,21 @@ footer p {
 
 .fighter-enemy.fighter-galileo .fighter-sprite {
   transform: translateX(-50%) scaleX(-1);
+}
+
+.galileo-frame-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+  pointer-events: none;
+}
+.galileo-frame-canvas[data-ready="true"] { visibility: visible; }
+.fighter-galileo .galileo-sheet:has(> .galileo-frame-canvas[data-ready="true"]) {
+  background-image: none;
+  animation: none !important;
 }
 
 .fighter-galileo.attack-punch {
@@ -10926,7 +11032,7 @@ footer p {
 }
 
 .fighter-hobbes.attack-combo {
-  animation: hobbes-pact-body 780ms cubic-bezier(0.12, 0.74, 0.2, 1);
+  animation: none;
 }
 
 .fighter-hobbes.attack-combo .fighter-sprite {
@@ -10946,11 +11052,11 @@ footer p {
 }
 
 .fighter-hobbes.special-wolf {
-  animation: hobbes-release-wolf 1450ms cubic-bezier(0.15, 0.75, 0.25, 1);
+  animation: none;
 }
 
 .fighter-hobbes.special-leviathan {
-  animation: hobbes-summon-leviathan 1850ms cubic-bezier(0.15, 0.75, 0.25, 1);
+  animation: none;
 }
 
 .fighter-hobbes.victory .fighter-sprite {
@@ -11261,9 +11367,17 @@ footer p {
   83%, 100% { background-position: 100% 80%; }
 }
 
-@keyframes hobbes-hit-sprite { 0%, 100% { background-position: 80% 100%; } }
-@keyframes hobbes-wolf-sprite { 0%, 48% { background-position: 0% 100%; } 49%, 100% { background-position: 20% 100%; } }
-@keyframes hobbes-leviathan-sprite { 0%, 46% { background-position: 40% 100%; } 47%, 100% { background-position: 60% 100%; } }
+@keyframes hobbes-hit-sprite { 0%, 100% { background-position: 40% 0%; } }
+@keyframes hobbes-wolf-sprite {
+  0%,20%,100% { background-position: 20% 0%; }
+  21%,55% { background-position: 100% 0%; }
+  56%,88% { background-position: 80% 0%; }
+}
+@keyframes hobbes-leviathan-sprite {
+  0%,18%,100% { background-position: 20% 0%; }
+  19%,78% { background-position: 100% 0%; }
+  79%,95% { background-position: 80% 0%; }
+}
 
 @keyframes hobbes-release-wolf {
   0%, 100% { transform: translateX(-50%) scale(1); }
@@ -12404,63 +12518,6 @@ footer p {
   background: radial-gradient(circle, rgba(66, 113, 205, 0.32), rgba(174, 45, 58, 0.2) 46%, rgba(220, 176, 82, 0.12) 60%, transparent 74%);
 }
 
-.hegel-sheet { background-image: url("/game/hegel-spritesheet-hq.webp?v=3.3"); }
-
-.fighter-hegel .hegel-sheet {
-  inset: auto auto 0 50%;
-  width: auto;
-  height: 100%;
-  aspect-ratio: 1;
-  background-size: 600% 600%;
-  background-position: 0 0;
-  transform: translateX(-50%);
-  animation: none;
-  opacity: 1;
-}
-
-.fighter-enemy.fighter-hegel .fighter-sprite { transform: translateX(-50%) scaleX(-1); }
-
-.fighter-player.fighter-hegel.idle .fighter-sprite,
-.fighter-enemy.fighter-hegel.idle .fighter-sprite,
-.fighter-hegel.guard .fighter-sprite,
-.fighter-hegel.guard-hit .fighter-sprite {
-  background-image: url("/game/hegel-fullbody-hq.webp?v=3.3");
-  background-size: contain;
-  background-position: 50% 100% !important;
-  background-repeat: no-repeat;
-  animation: none !important;
-}
-
-.fighter-player.fighter-hegel.idle .fighter-sprite,
-.fighter-player.fighter-hegel.guard .fighter-sprite,
-.fighter-player.fighter-hegel.guard-hit .fighter-sprite { transform: translateX(-50%); }
-.fighter-enemy.fighter-hegel.idle .fighter-sprite,
-.fighter-enemy.fighter-hegel.guard .fighter-sprite,
-.fighter-enemy.fighter-hegel.guard-hit .fighter-sprite { transform: translateX(-50%) scaleX(-1); }
-
-.fighter-hegel.advance .fighter-sprite,
-.fighter-hegel.retreat .fighter-sprite {
-  transform-origin: 50% 100%;
-  animation: hegel-walk-sprite 560ms steps(1, end) infinite;
-}
-.fighter-player.fighter-hegel.advance .fighter-sprite,
-.fighter-player.fighter-hegel.retreat .fighter-sprite { transform: translateX(-50%); }
-.fighter-enemy.fighter-hegel.advance .fighter-sprite,
-.fighter-enemy.fighter-hegel.retreat .fighter-sprite { transform: translateX(-50%) scaleX(-1); }
-.fighter-hegel.attack-punch { animation: hegel-punch-body 520ms cubic-bezier(0.12, 0.76, 0.2, 1); }
-.fighter-hegel.attack-punch .fighter-sprite { animation: hegel-punch-sprite 520ms steps(1, end) 1 both; }
-.fighter-hegel.attack-kick { animation: hegel-kick-body 640ms cubic-bezier(0.12, 0.72, 0.2, 1); }
-.fighter-hegel.attack-kick .fighter-sprite { animation: hegel-kick-sprite 640ms steps(1, end) 1 both; }
-.fighter-hegel.attack-combo { animation: hegel-recognition-body 840ms cubic-bezier(0.12, 0.74, 0.2, 1); }
-.fighter-hegel.attack-combo .fighter-sprite { animation: hegel-recognition-sprite 840ms steps(1, end) 1 both; }
-.fighter-hegel.hit .fighter-sprite { animation: hegel-hit-sprite 440ms steps(1, end) 1 both; }
-.fighter-hegel.special-dialectic { animation: hegel-dialectic-body 1500ms cubic-bezier(0.15, 0.75, 0.25, 1); }
-.fighter-hegel.special-dialectic .fighter-sprite { animation: hegel-dialectic-sprite 1500ms steps(1, end) 1 both; }
-.fighter-hegel.special-absolute-spirit { animation: hegel-spirit-body 2000ms cubic-bezier(0.15, 0.75, 0.25, 1); }
-.fighter-hegel.special-absolute-spirit .fighter-sprite { animation: hegel-spirit-sprite 2000ms steps(1, end) 1 both; }
-.fighter-hegel.victory .fighter-sprite { background-position: 100% 100% !important; animation: none !important; }
-.fighter-hegel.knocked-out .fighter-sprite { background-position: 80% 100% !important; animation: none !important; }
-
 .select-overlay.select-hegel {
   background:
     linear-gradient(90deg, rgba(8, 10, 20, 0.96), rgba(135, 50, 52, 0.07), rgba(5, 8, 16, 0.94)),
@@ -12538,18 +12595,6 @@ footer p {
 .absolute-spirit > b { position:absolute; left:50%; bottom:8%; transform:translateX(-50%); color:#fff1bd; font-family:Georgia,serif; font-size:clamp(22px,3.7vw,53px); letter-spacing:.16em; text-shadow:0 0 24px #c28b3d; white-space:nowrap; }
 .spirit-impact { position:absolute; top:52%; width:10%; aspect-ratio:1; transform:translate(-50%,-50%); border-radius:50%; background:radial-gradient(circle,#fff,#f1d27a 23%,rgba(142,63,118,.65) 50%,transparent 72%); animation:spirit-impact 2s ease-out both; }
 
-@keyframes hegel-walk-sprite { 0%,16%{background-position:0 20%} 17%,33%{background-position:20% 20%} 34%,50%{background-position:40% 20%} 51%,67%{background-position:60% 20%} 68%,84%{background-position:80% 20%} 85%,100%{background-position:100% 20%} }
-@keyframes hegel-punch-sprite { 0%,14%{background-position:0 40%} 15%,30%{background-position:20% 40%} 31%,48%{background-position:40% 40%} 49%,66%{background-position:60% 40%} 67%,82%{background-position:80% 40%} 83%,100%{background-position:100% 40%} }
-@keyframes hegel-kick-sprite { 0%,16%{background-position:0 60%} 17%,34%{background-position:20% 60%} 35%,54%{background-position:40% 60%} 55%,72%{background-position:60% 60%} 73%,87%{background-position:80% 60%} 88%,100%{background-position:100% 60%} }
-@keyframes hegel-recognition-sprite { 0%,14%{background-position:0 80%} 15%,30%{background-position:20% 80%} 31%,47%{background-position:40% 80%} 48%,64%{background-position:60% 80%} 65%,82%{background-position:80% 80%} 83%,100%{background-position:100% 80%} }
-@keyframes hegel-hit-sprite { 0%,100%{background-position:0 100%} }
-@keyframes hegel-dialectic-sprite { 0%,30%{background-position:20% 80%} 31%,64%{background-position:40% 80%} 65%,100%{background-position:60% 80%} }
-@keyframes hegel-spirit-sprite { 0%,38%{background-position:60% 80%} 39%,68%{background-position:80% 80%} 69%,100%{background-position:100% 80%} }
-@keyframes hegel-punch-body { 0%,100%{transform:translateX(-50%)} 28%{transform:translateX(-50%) translateX(var(--hegel-recoil))} 58%{transform:translateX(-50%) translateX(var(--hegel-lunge))} }
-@keyframes hegel-kick-body { 0%,100%{transform:translateX(-50%) scale(1)} 26%{transform:translateX(-50%) translateX(var(--hegel-recoil)) scale(.98)} 60%{transform:translateX(-50%) translateX(var(--hegel-kick-lunge)) translateY(-5%) scale(1.04)} }
-@keyframes hegel-recognition-body { 0%,100%{transform:translateX(-50%)} 24%{transform:translateX(-54%) translateY(2%)} 62%{transform:translateX(-44%) translateY(-3%) scale(1.05)} }
-@keyframes hegel-dialectic-body { 0%,100%{transform:translateX(-50%) scale(1)} 24%{transform:translateX(-54%) translateY(2%) scale(.98)} 64%{transform:translateX(-44%) translateY(-4%) scale(1.07);filter:brightness(1.2) drop-shadow(0 0 28px #be7d46)} }
-@keyframes hegel-spirit-body { 0%,100%{transform:translateX(-50%) scale(1)} 22%{transform:translateX(-53%) translateY(1%) scale(.98)} 66%{transform:translateX(-45%) translateY(-5%) scale(1.08);filter:brightness(1.25) drop-shadow(0 0 38px #d4a857)} }
 @keyframes recognition-arrive { 0%{opacity:0;transform:translateX(-50%) scale(.62)} 24%,82%{opacity:1;transform:translateX(-50%) scale(1)} 100%{opacity:0;transform:translateX(-50%) scale(1.12)} }
 @keyframes recognition-master { 0%{transform:translateX(-55%) scale(1.16)} 44%{transform:translateX(64%) scale(.92)} 72%{transform:translateX(92%) scale(.74)} 100%{transform:translateX(110%) scale(.65)} }
 @keyframes recognition-bondsman { 0%{transform:translateX(55%) scale(.74)} 44%{transform:translateX(-64%) scale(.94)} 72%{transform:translateX(-92%) scale(1.16)} 100%{transform:translateX(-110%) scale(1.22)} }
@@ -14843,7 +14888,7 @@ button.story-tier-card:disabled { cursor: not-allowed; }
   cursor: pointer;
 }
 .doctor-checkpoint-panel > button:focus-visible { outline: 3px solid var(--gold-light); outline-offset: 3px; }
-.game-shell.phase-doctor-checkpoint > :is(.control-deck, .concept-panel, footer) { display: none; }
+.game-shell:is(.phase-doctor-checkpoint, .phase-grand-philosopher-preview) > :is(.control-deck, .concept-panel, footer) { display: none; }
 
 .story-tier-card b {
   margin-top: 10px;
@@ -14923,11 +14968,10 @@ button.story-tier-card:disabled { cursor: not-allowed; }
   position: absolute;
   z-index: 100;
   inset: 0;
-  display: grid;
+  display: block;
   width: 100%;
   height: 100%;
   padding: 0;
-  place-items: center;
   overflow: hidden;
   border: 0;
   background: #000;
@@ -14939,11 +14983,20 @@ button.story-tier-card:disabled { cursor: not-allowed; }
   animation: story-intro-fade-out 300ms ease both;
 }
 
+/* Keep intrinsic image dimensions out of layout: a grid auto-row could grow
+   taller than the reserved viewport, clipping the bottom behind navigation. */
 .story-intro-player img {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
+  object-position: center;
 }
 
 .story-intro-player:focus-visible {
@@ -15515,6 +15568,65 @@ button.story-tier-card:disabled { cursor: not-allowed; }
   cursor: pointer;
 }
 
+/* Book promotion follows the Superintelligence's announcement. */
+.story-book-overlay {
+  z-index: 94;
+  padding: clamp(10px, 2vw, 24px);
+  overflow-y: auto;
+  background: rgba(1, 3, 8, .98);
+  backdrop-filter: none;
+}
+.story-book-panel {
+  display: flex;
+  flex-direction: column;
+  width: min(1040px, 100%);
+  max-height: 100%;
+  min-height: 0;
+  margin: auto;
+  border: 1px solid #9b793f;
+  background: #080b12;
+}
+.story-book-panel:focus { outline: none; }
+.story-book-art {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  flex: 1 1 auto;
+  object-fit: contain;
+}
+.story-book-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px;
+  border-top: 1px solid #665531;
+}
+.story-book-actions > :is(a, button) {
+  display: flex;
+  flex: 1 1 220px;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid #d7b362;
+  background: #342719;
+  color: #fff1c8;
+  font: inherit;
+  font-size: .875rem;
+  line-height: 1.4;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+.story-book-actions > :is(a, button):hover,
+.story-book-actions > :is(a, button):focus-visible {
+  outline: 2px solid #ffe7a8;
+  outline-offset: 3px;
+  background: #594020;
+}
+
 /* Finale: a compact stage inside the existing battle frame. */
 .story-ending-overlay {
   z-index: 94;
@@ -15918,7 +16030,7 @@ button.story-tier-card:disabled { cursor: not-allowed; }
 .battle-frame:is(.phase-story-intro, .phase-story-recap, .phase-story-quiz) {
   background: #000 !important;
 }
-.battle-frame:is(.phase-story-intro, .phase-story-recap, .phase-story-quiz) > :not(.story-intro-player):not(.story-quiz-terminal) {
+.battle-frame:is(.phase-story-intro, .phase-story-recap, .phase-story-quiz) > :not(.story-intro-player):not(.story-quiz-terminal):not(.story-art-navigation) {
   display: none;
 }
 
@@ -16053,4 +16165,128 @@ button.story-tier-card:disabled { cursor: not-allowed; }
   .story-focus-felipe .story-dialogue-card::after { left: 16%; right: auto; }
   .story-visual .story-cast { position: relative; grid-row: 3; inset: auto; min-height: 0; }
   .story-scene-actions button { min-height: 52px; font-size: 16px; }
+}
+
+/* Combat feedback and readiness never change the HUD's geometry. */
+.phase-playing .fighter { transition: left 55ms linear; }
+.phase-playing .fighter.advance, .phase-playing .fighter.retreat { transition: none; }
+.fighter-hud { position: relative; }
+.special-ready-indicator {
+  position: absolute; top: calc(100% + 7px); left: 0; z-index: 30;
+  padding: 4px 8px; color: #efffff; border: 1px solid #a4efff;
+  border-radius: 4px; background: #122733; font-size: clamp(8px, 1.1vw, 12px);
+  font-weight: 900; letter-spacing: .05em; pointer-events: none;
+  animation: combat-ready-glow 750ms ease-in-out infinite alternate;
+}
+.enemy-special-ready { left: auto; right: 0; color: #ffe1bc; border-color: #ffb366; }
+.special-ready-button { box-shadow: 0 0 13px #78e7ff88; border-color: #b0f3ff !important; }
+@keyframes combat-ready-glow { from { box-shadow: 0 0 5px #7cdaff66; } to { box-shadow: 0 0 18px #7cdaffcc; } }
+.fighter.impact-flash > .fighter-sprite { filter: brightness(5) saturate(0) drop-shadow(0 0 6px #ff6868) !important; }
+/* Pause both CSS and Canvas clocks. Impact flashes retain their real-time duration. */
+.is-hitstop .battlefield, .is-hitstop .battlefield *,
+.is-hitstop .battlefield *::before, .is-hitstop .battlefield *::after {
+  animation-play-state: paused !important; transition: none !important;
+}
+.fighter.guard-hit::before {
+  content: ""; position: absolute; z-index: 25; top: 28%; right: 6%;
+  width: 30%; height: 42%; border: 4px solid #b4f3ff; border-radius: 50%;
+  background: radial-gradient(ellipse, #43c3ff22, #61d4ff99);
+  box-shadow: 0 0 22px #69dcff, inset 0 0 12px #b8f6ff;
+  pointer-events: none;
+}
+.fighter-enemy.guard-hit::before { right: auto; left: 6%; }
+@media (prefers-reduced-motion: reduce) {
+  .special-ready-indicator, .logos-bar.ready { animation: none; }
+}
+
+.amenemope-frame-canvas {
+  position: absolute; left: -30%; top: 0; width: 160%; height: 100%;
+  pointer-events: none; opacity: 0;
+}
+.amenemope-frame-canvas[data-ready="true"] { opacity: 1; }
+.amenemope-sheet:has(.amenemope-frame-canvas[data-ready="true"]) { background-image: none; }
+
+.fighter.guard-hit::before { filter: drop-shadow(0 0 18px #5edfff); animation: none; }
+
+/* Machiavelli's complete presentation art must stay inside both scene bounds. */
+.dialogue-visual > .dialogue-fighter.dialogue-machiavelli {
+  bottom: 0;
+  height: calc(100% - 76px);
+  overflow: visible;
+}
+.dialogue-fighter.dialogue-machiavelli img,
+.ending-fighter.ending-machiavelli img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 50% 100%;
+}
+.ending-fighter.ending-machiavelli {
+  bottom: 4%;
+  height: 78%;
+  width: 36%;
+  overflow: visible;
+  transform: none;
+  animation: machiavelli-presentation-in 780ms ease both;
+}
+.ending-fighter.ending-machiavelli.is-winner { left: 0; }
+.ending-fighter.ending-machiavelli.is-loser { right: 0; }
+.ending-machiavelli .ending-name { bottom: -12px; }
+@keyframes machiavelli-presentation-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (max-width: 700px) {
+  .ending-fighter.ending-machiavelli { height: 70%; width: 43%; bottom: 4%; }
+  .ending-fighter.ending-machiavelli.is-winner { left: 0; }
+  .ending-fighter.ending-machiavelli.is-loser { right: 0; }
+}
+
+/* A separate strip keeps narrative controls clear of the artwork and its text. */
+.battle-frame:is(.phase-story-intro, .phase-story-recap) {
+  --story-art-nav-height: calc(56px + env(safe-area-inset-bottom, 0px));
+}
+.battle-frame:is(.phase-story-intro, .phase-story-recap) > .story-intro-player {
+  bottom: var(--story-art-nav-height);
+  height: calc(100% - var(--story-art-nav-height));
+}
+.story-art-navigation {
+  position: absolute;
+  z-index: 101;
+  inset: auto 0 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  height: var(--story-art-nav-height);
+  padding: 6px max(12px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
+  border-top: 1px solid #c9a04e55;
+  background: #080b12;
+  color: #e8dcbf;
+}
+.story-art-navigation button {
+  min-width: 100px;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px solid #b89249;
+  border-radius: 5px;
+  background: #1c1a17;
+  color: #ffedbf;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.story-art-navigation button:first-child { justify-self: start; }
+.story-art-navigation button:last-child { justify-self: end; }
+.story-art-navigation button:hover:not(:disabled) { background: #3a2d17; border-color: #ffe4a0; }
+.story-art-navigation button:disabled { opacity: .35; cursor: default; }
+.story-art-navigation button:focus-visible { outline: 3px solid #ffe4a0; outline-offset: 2px; }
+.story-art-count { font-size: 12px; white-space: nowrap; }
+@media (max-width: 400px) {
+  .story-art-navigation { gap: 6px; padding-left: 8px; padding-right: 8px; }
+  .story-art-navigation button { min-width: 76px; padding: 8px 10px; font-size: 12px; }
+  .story-art-count { font-size: 11px; }
 }

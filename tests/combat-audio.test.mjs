@@ -32,8 +32,8 @@ const readyAudio = async () => {
   return { audio, context };
 };
 
-test("cinco golpes distintos e oito amostras de efeitos leves existem", async () => {
-  assert.equal(Object.keys(COMBAT_SOUNDS).length, 8);
+test("cinco golpes distintos e nove amostras de efeitos leves existem", async () => {
+  assert.equal(Object.keys(COMBAT_SOUNDS).length, 9);
   assert.equal(new Set(Object.values(MOVE_SOUNDS)).size, 5);
   for (const path of Object.values(COMBAT_SOUNDS)) {
     await access(new URL(`../public${path}`, import.meta.url));
@@ -113,8 +113,9 @@ test("ambos os lados disparam som apenas depois da verificação de contato; KO 
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   const player = page.slice(page.indexOf("const performMove"), page.indexOf("const movePlayer"));
   assert.ok(player.indexOf("if (!landed)") < player.indexOf("effectsAudio.current?.play(MOVE_SOUNDS[moveName]"));
-  const cpu = page.slice(page.indexOf("const currentDistance ="), page.indexOf("const opponentFighter = selectedOpponent;", page.indexOf("const currentDistance =")));
-  assert.ok(cpu.indexOf("currentDistance > move.range") < cpu.indexOf("effectsAudio.current?.play(MOVE_SOUNDS[moveName]"));
+  const cpu = page.slice(page.indexOf("const cpuMoves ="), page.indexOf("\n  const opponentFighter = selectedOpponent;", page.indexOf("const cpuMoves =")));
+  assert.ok(cpu.indexOf("!attackConnects(") >= 0);
+  assert.ok(cpu.indexOf("!attackConnects(") < cpu.indexOf("effectsAudio.current?.play(MOVE_SOUNDS[moveName]"));
   const finish = page.slice(page.indexOf("const finishByCoherence"), page.indexOf("const performMove"));
   assert.equal((finish.match(/play\(defeatSound/g) ?? []).length, 2);
   assert.ok(finish.indexOf("if (roundResolved.current) return") < finish.indexOf("play(defeatSound"));

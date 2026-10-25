@@ -1,0 +1,127 @@
+{
+  "mode": "built-in image_gen edit",
+  "asset": "/game/galileu-spritesheet-hq-v4.webp",
+  "invariants": [
+    "Original 36 poses and timing",
+    "Original normalized height, shoe line and frame center per pose",
+    "Unchanged arena scale and all combat values"
+  ],
+  "jobs": [
+    {
+      "id": "11",
+      "r": 1,
+      "c": 1,
+      "prompt": "Use case: identity-preserve. Asset type: high-definition PhiloKombat 2D arcade animation restoration.\nImage 1 is the EDIT TARGET: exactly FOUR Galileo Galilei poses in a 2-by-2 arrangement. Image 2 is Galileo's face and costume IDENTITY REFERENCE. Image 3 is Felipe, a QUALITY REFERENCE ONLY for sharp, finely detailed realistic digitized arcade rendering. Never copy Felipe's face, body, clothes, tattoos or magenta background.\nRestore these four Galileo poses with visibly much higher facial and fabric detail, approaching Felipe's crisp realistic finish. Preserve the recognizable elderly Italian man: high balding forehead, swept-back wavy gray hair, full gray-white beard, aged face and wrinkles, ivory turned-out collar, dark burgundy velvet Renaissance robe with black front and patterned dark trim, dark breeches, dark leather boots. Resolve individual beard hairs, hair strands, eyes, facial planes, collar folds, velvet nap, seams, brass telescope engraving and leather detail. Natural anatomical proportions, no cartoon, pixel art, painterly blur or smooth plastic skin.\nINVARIANTS: reproduce EXACTLY the four source poses and their order, facing direction, torso lean, extended arm/leg directions, hand positions, seated/falling posture where shown, and costume silhouette. Exactly two arms and two legs per figure. The brass telescope must exist ONLY in cells where the source shows it and in precisely the same hand and direction. Do not add a telescope to empty hands.\nAll four complete silhouettes must remain visible with generous empty padding and clear gutters. Preserve entire heads, fingers, toes and telescope ends. REAL TRANSPARENT RGBA BACKGROUND. Crisp natural alpha edges; no yellow/green halos, gray rectangles, glow, floor, cast shadow, checkerboard drawing, grid, text, watermark, extra props or characters.\nThis is source block row 1, column 1; keep its four specific gestures and poses unchanged.",
+      "referenced_image_paths": [
+        "/workspace/scratch/6fb9ed9b9b4d/galileo-hq/source-r1c1.png",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/galileu.webp",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/felipe-idle.webp"
+      ]
+    },
+    {
+      "id": "12",
+      "r": 1,
+      "c": 2,
+      "prompt": "Use case: identity-preserve. Asset type: high-definition PhiloKombat 2D arcade animation restoration.\nImage 1 is the EDIT TARGET: exactly FOUR Galileo Galilei poses in a 2-by-2 arrangement. Image 2 is Galileo's face and costume IDENTITY REFERENCE. Image 3 is Felipe, a QUALITY REFERENCE ONLY for sharp, finely detailed realistic digitized arcade rendering. Never copy Felipe's face, body, clothes, tattoos or magenta background.\nRestore these four Galileo poses with visibly much higher facial and fabric detail, approaching Felipe's crisp realistic finish. Preserve the recognizable elderly Italian man: high balding forehead, swept-back wavy gray hair, full gray-white beard, aged face and wrinkles, ivory turned-out collar, dark burgundy velvet Renaissance robe with black front and patterned dark trim, dark breeches, dark leather boots. Resolve individual beard hairs, hair strands, eyes, facial planes, collar folds, velvet nap, seams, brass telescope engraving and leather detail. Natural anatomical proportions, no cartoon, pixel art, painterly blur or smooth plastic skin.\nINVARIANTS: reproduce EXACTLY the four source poses and their order, facing direction, torso lean, extended arm/leg directions, hand positions, seated/falling posture where shown, and costume silhouette. Exactly two arms and two legs per figure. The brass telescope must exist ONLY in cells where the source shows it and in precisely the same hand and direction. Do not add a telescope to empty hands.\nAll four complete silhouettes must remain visible with generous empty padding and clear gutters. Preserve entire heads, fingers, toes and telescope ends. REAL TRANSPARENT RGBA BACKGROUND. Crisp natural alpha edges; no yellow/green halos, gray rectangles, glow, floor, cast shadow, checkerboard drawing, grid, text, watermark, extra props or characters.\nThis is source block row 1, column 2; keep its four specific gestures and poses unchanged.",
+      "referenced_image_paths": [
+        "/workspace/scratch/6fb9ed9b9b4d/galileo-hq/source-r1c2.png",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/galileu.webp",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/felipe-idle.webp"
+      ]
+    },
+    {
+      "id": "13",
+      "r": 1,
+      "c": 3,
+      "prompt": "Use case: identity-preserve. Asset type: high-definition PhiloKombat 2D arcade animation restoration.\nImage 1 is the EDIT TARGET: exactly FOUR Galileo Galilei poses in a 2-by-2 arrangement. Image 2 is Galileo's face and costume IDENTITY REFERENCE. Image 3 is Felipe, a QUALITY REFERENCE ONLY for sharp, finely detailed realistic digitized arcade rendering. Never copy Felipe's face, body, clothes, tattoos or magenta background.\nRestore these four Galileo poses with visibly much higher facial and fabric detail, approaching Felipe's crisp realistic finish. Preserve the recognizable elderly Italian man: high balding forehead, swept-back wavy gray hair, full gray-white beard, aged face and wrinkles, ivory turned-out collar, dark burgundy velvet Renaissance robe with black front and patterned dark trim, dark breeches, dark leather boots. Resolve individual beard hairs, hair strands, eyes, facial planes, collar folds, velvet nap, seams, brass telescope engraving and leather detail. Natural anatomical proportions, no cartoon, pixel art, painterly blur or smooth plastic skin.\nINVARIANTS: reproduce EXACTLY the four source poses and their order, facing direction, torso lean, extended arm/leg directions, hand positions, seated/falling posture where shown, and costume silhouette. Exactly two arms and two legs per figure. The brass telescope must exist ONLY in cells where the source shows it and in precisely the same hand and direction. Do not add a telescope to empty hands.\nAll four complete silhouettes must remain visible with generous empty padding and clear gutters. Preserve entire heads, fingers, toes and telescope ends. REAL TRANSPARENT RGBA BACKGROUND. Crisp natural alpha edges; no yellow/green halos, gray rectangles, glow, floor, cast shadow, checkerboard drawing, grid, text, watermark, extra props or characters.\nThis is source block row 1, column 3; keep its four specific gestures and poses unchanged.",
+      "referenced_image_paths": [
+        "/workspace/scratch/6fb9ed9b9b4d/galileo-hq/source-r1c3.png",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/galileu.webp",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/felipe-idle.webp"
+      ]
+    },
+    {
+      "id": "21",
+      "r": 2,
+      "c": 1,
+      "prompt": "Use case: identity-preserve. Asset type: high-definition PhiloKombat 2D arcade animation restoration.\nImage 1 is the EDIT TARGET: exactly FOUR Galileo Galilei poses in a 2-by-2 arrangement. Image 2 is Galileo's face and costume IDENTITY REFERENCE. Image 3 is Felipe, a QUALITY REFERENCE ONLY for sharp, finely detailed realistic digitized arcade rendering. Never copy Felipe's face, body, clothes, tattoos or magenta background.\nRestore these four Galileo poses with visibly much higher facial and fabric detail, approaching Felipe's crisp realistic finish. Preserve the recognizable elderly Italian man: high balding forehead, swept-back wavy gray hair, full gray-white beard, aged face and wrinkles, ivory turned-out collar, dark burgundy velvet Renaissance robe with black front and patterned dark trim, dark breeches, dark leather boots. Resolve individual beard hairs, hair strands, eyes, facial planes, collar folds, velvet nap, seams, brass telescope engraving and leather detail. Natural anatomical proportions, no cartoon, pixel art, painterly blur or smooth plastic skin.\nINVARIANTS: reproduce EXACTLY the four source poses and their order, facing direction, torso lean, extended arm/leg directions, hand positions, seated/falling posture where shown, and costume silhouette. Exactly two arms and two legs per figure. The brass telescope must exist ONLY in cells where the source shows it and in precisely the same hand and direction. Do not add a telescope to empty hands.\nAll four complete silhouettes must remain visible with generous empty padding and clear gutters. Preserve entire heads, fingers, toes and telescope ends. REAL TRANSPARENT RGBA BACKGROUND. Crisp natural alpha edges; no yellow/green halos, gray rectangles, glow, floor, cast shadow, checkerboard drawing, grid, text, watermark, extra props or characters.\nThis is source block row 2, column 1; keep its four specific gestures and poses unchanged.",
+      "referenced_image_paths": [
+        "/workspace/scratch/6fb9ed9b9b4d/galileo-hq/source-r2c1.png",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/galileu.webp",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/felipe-idle.webp"
+      ]
+    },
+    {
+      "id": "22",
+      "r": 2,
+      "c": 2,
+      "prompt": "Use case: identity-preserve. Asset type: high-definition PhiloKombat 2D arcade animation restoration.\nImage 1 is the EDIT TARGET: exactly FOUR Galileo Galilei poses in a 2-by-2 arrangement. Image 2 is Galileo's face and costume IDENTITY REFERENCE. Image 3 is Felipe, a QUALITY REFERENCE ONLY for sharp, finely detailed realistic digitized arcade rendering. Never copy Felipe's face, body, clothes, tattoos or magenta background.\nRestore these four Galileo poses with visibly much higher facial and fabric detail, approaching Felipe's crisp realistic finish. Preserve the recognizable elderly Italian man: high balding forehead, swept-back wavy gray hair, full gray-white beard, aged face and wrinkles, ivory turned-out collar, dark burgundy velvet Renaissance robe with black front and patterned dark trim, dark breeches, dark leather boots. Resolve individual beard hairs, hair strands, eyes, facial planes, collar folds, velvet nap, seams, brass telescope engraving and leather detail. Natural anatomical proportions, no cartoon, pixel art, painterly blur or smooth plastic skin.\nINVARIANTS: reproduce EXACTLY the four source poses and their order, facing direction, torso lean, extended arm/leg directions, hand positions, seated/falling posture where shown, and costume silhouette. Exactly two arms and two legs per figure. The brass telescope must exist ONLY in cells where the source shows it and in precisely the same hand and direction. Do not add a telescope to empty hands.\nAll four complete silhouettes must remain visible with generous empty padding and clear gutters. Preserve entire heads, fingers, toes and telescope ends. REAL TRANSPARENT RGBA BACKGROUND. Crisp natural alpha edges; no yellow/green halos, gray rectangles, glow, floor, cast shadow, checkerboard drawing, grid, text, watermark, extra props or characters.\nThis is source block row 2, column 2; keep its four specific gestures and poses unchanged.",
+      "referenced_image_paths": [
+        "/workspace/scratch/6fb9ed9b9b4d/galileo-hq/source-r2c2.png",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/galileu.webp",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/felipe-idle.webp"
+      ]
+    },
+    {
+      "id": "23",
+      "r": 2,
+      "c": 3,
+      "prompt": "Use case: identity-preserve. Asset type: high-definition PhiloKombat 2D arcade animation restoration.\nImage 1 is the EDIT TARGET: exactly FOUR Galileo Galilei poses in a 2-by-2 arrangement. Image 2 is Galileo's face and costume IDENTITY REFERENCE. Image 3 is Felipe, a QUALITY REFERENCE ONLY for sharp, finely detailed realistic digitized arcade rendering. Never copy Felipe's face, body, clothes, tattoos or magenta background.\nRestore these four Galileo poses with visibly much higher facial and fabric detail, approaching Felipe's crisp realistic finish. Preserve the recognizable elderly Italian man: high balding forehead, swept-back wavy gray hair, full gray-white beard, aged face and wrinkles, ivory turned-out collar, dark burgundy velvet Renaissance robe with black front and patterned dark trim, dark breeches, dark leather boots. Resolve individual beard hairs, hair strands, eyes, facial planes, collar folds, velvet nap, seams, brass telescope engraving and leather detail. Natural anatomical proportions, no cartoon, pixel art, painterly blur or smooth plastic skin.\nINVARIANTS: reproduce EXACTLY the four source poses and their order, facing direction, torso lean, extended arm/leg directions, hand positions, seated/falling posture where shown, and costume silhouette. Exactly two arms and two legs per figure. The brass telescope must exist ONLY in cells where the source shows it and in precisely the same hand and direction. Do not add a telescope to empty hands.\nAll four complete silhouettes must remain visible with generous empty padding and clear gutters. Preserve entire heads, fingers, toes and telescope ends. REAL TRANSPARENT RGBA BACKGROUND. Crisp natural alpha edges; no yellow/green halos, gray rectangles, glow, floor, cast shadow, checkerboard drawing, grid, text, watermark, extra props or characters.\nThis is source block row 2, column 3; keep its four specific gestures and poses unchanged.",
+      "referenced_image_paths": [
+        "/workspace/scratch/6fb9ed9b9b4d/galileo-hq/source-r2c3.png",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/galileu.webp",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/felipe-idle.webp"
+      ]
+    },
+    {
+      "id": "31",
+      "r": 3,
+      "c": 1,
+      "prompt": "Use case: identity-preserve. Asset type: high-definition PhiloKombat 2D arcade animation restoration.\nImage 1 is the EDIT TARGET: exactly FOUR Galileo Galilei poses in a 2-by-2 arrangement. Image 2 is Galileo's face and costume IDENTITY REFERENCE. Image 3 is Felipe, a QUALITY REFERENCE ONLY for sharp, finely detailed realistic digitized arcade rendering. Never copy Felipe's face, body, clothes, tattoos or magenta background.\nRestore these four Galileo poses with visibly much higher facial and fabric detail, approaching Felipe's crisp realistic finish. Preserve the recognizable elderly Italian man: high balding forehead, swept-back wavy gray hair, full gray-white beard, aged face and wrinkles, ivory turned-out collar, dark burgundy velvet Renaissance robe with black front and patterned dark trim, dark breeches, dark leather boots. Resolve individual beard hairs, hair strands, eyes, facial planes, collar folds, velvet nap, seams, brass telescope engraving and leather detail. Natural anatomical proportions, no cartoon, pixel art, painterly blur or smooth plastic skin.\nINVARIANTS: reproduce EXACTLY the four source poses and their order, facing direction, torso lean, extended arm/leg directions, hand positions, seated/falling posture where shown, and costume silhouette. Exactly two arms and two legs per figure. The brass telescope must exist ONLY in cells where the source shows it and in precisely the same hand and direction. Do not add a telescope to empty hands.\nAll four complete silhouettes must remain visible with generous empty padding and clear gutters. Preserve entire heads, fingers, toes and telescope ends. REAL TRANSPARENT RGBA BACKGROUND. Crisp natural alpha edges; no yellow/green halos, gray rectangles, glow, floor, cast shadow, checkerboard drawing, grid, text, watermark, extra props or characters.\nThis is source block row 3, column 1; keep its four specific gestures and poses unchanged.",
+      "referenced_image_paths": [
+        "/workspace/scratch/6fb9ed9b9b4d/galileo-hq/source-r3c1.png",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/galileu.webp",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/felipe-idle.webp"
+      ]
+    },
+    {
+      "id": "32",
+      "r": 3,
+      "c": 2,
+      "prompt": "Use case: identity-preserve. Asset type: high-definition PhiloKombat 2D arcade animation restoration.\nImage 1 is the EDIT TARGET: exactly FOUR Galileo Galilei poses in a 2-by-2 arrangement. Image 2 is Galileo's face and costume IDENTITY REFERENCE. Image 3 is Felipe, a QUALITY REFERENCE ONLY for sharp, finely detailed realistic digitized arcade rendering. Never copy Felipe's face, body, clothes, tattoos or magenta background.\nRestore these four Galileo poses with visibly much higher facial and fabric detail, approaching Felipe's crisp realistic finish. Preserve the recognizable elderly Italian man: high balding forehead, swept-back wavy gray hair, full gray-white beard, aged face and wrinkles, ivory turned-out collar, dark burgundy velvet Renaissance robe with black front and patterned dark trim, dark breeches, dark leather boots. Resolve individual beard hairs, hair strands, eyes, facial planes, collar folds, velvet nap, seams, brass telescope engraving and leather detail. Natural anatomical proportions, no cartoon, pixel art, painterly blur or smooth plastic skin.\nINVARIANTS: reproduce EXACTLY the four source poses and their order, facing direction, torso lean, extended arm/leg directions, hand positions, seated/falling posture where shown, and costume silhouette. Exactly two arms and two legs per figure. The brass telescope must exist ONLY in cells where the source shows it and in precisely the same hand and direction. Do not add a telescope to empty hands.\nAll four complete silhouettes must remain visible with generous empty padding and clear gutters. Preserve entire heads, fingers, toes and telescope ends. REAL TRANSPARENT RGBA BACKGROUND. Crisp natural alpha edges; no yellow/green halos, gray rectangles, glow, floor, cast shadow, checkerboard drawing, grid, text, watermark, extra props or characters.\nThis is source block row 3, column 2; keep its four specific gestures and poses unchanged.",
+      "referenced_image_paths": [
+        "/workspace/scratch/6fb9ed9b9b4d/galileo-hq/source-r3c2.png",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/galileu.webp",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/felipe-idle.webp"
+      ]
+    },
+    {
+      "id": "33",
+      "r": 3,
+      "c": 3,
+      "prompt": "Use case: identity-preserve. Asset type: high-definition PhiloKombat 2D arcade animation restoration.\nImage 1 is the EDIT TARGET: exactly FOUR Galileo Galilei poses in a 2-by-2 arrangement. Image 2 is Galileo's face and costume IDENTITY REFERENCE. Image 3 is Felipe, a QUALITY REFERENCE ONLY for sharp, finely detailed realistic digitized arcade rendering. Never copy Felipe's face, body, clothes, tattoos or magenta background.\nRestore these four Galileo poses with visibly much higher facial and fabric detail, approaching Felipe's crisp realistic finish. Preserve the recognizable elderly Italian man: high balding forehead, swept-back wavy gray hair, full gray-white beard, aged face and wrinkles, ivory turned-out collar, dark burgundy velvet Renaissance robe with black front and patterned dark trim, dark breeches, dark leather boots. Resolve individual beard hairs, hair strands, eyes, facial planes, collar folds, velvet nap, seams, brass telescope engraving and leather detail. Natural anatomical proportions, no cartoon, pixel art, painterly blur or smooth plastic skin.\nINVARIANTS: reproduce EXACTLY the four source poses and their order, facing direction, torso lean, extended arm/leg directions, hand positions, seated/falling posture where shown, and costume silhouette. Exactly two arms and two legs per figure. The brass telescope must exist ONLY in cells where the source shows it and in precisely the same hand and direction. Do not add a telescope to empty hands.\nAll four complete silhouettes must remain visible with generous empty padding and clear gutters. Preserve entire heads, fingers, toes and telescope ends. REAL TRANSPARENT RGBA BACKGROUND. Crisp natural alpha edges; no yellow/green halos, gray rectangles, glow, floor, cast shadow, checkerboard drawing, grid, text, watermark, extra props or characters.\nThis is source block row 3, column 3; keep its four specific gestures and poses unchanged.",
+      "referenced_image_paths": [
+        "/workspace/scratch/6fb9ed9b9b4d/galileo-hq/source-r3c3.png",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/galileu.webp",
+        "/workspace/scratch/6fb9ed9b9b4d/philo-site/public/game/felipe-idle.webp"
+      ]
+    }
+  ],
+  "source": "/game/galileu-spritesheet-hq-v3.webp",
+  "sourceCell": 418,
+  "restoredCell": 768,
+  "atlas": [
+    4608,
+    4608
+  ],
+  "corrections": [
+    {
+      "block": "11",
+      "prompt": "Use case: precise-object-edit. EDIT THE ATTACHED FOUR-POSE TRANSPARENT SPRITE BLOCK. Keep the top two Galileo poses completely unchanged. In BOTH LOWER WALKING POSES, REMOVE THE BRASS TELESCOPE COMPLETELY: the lowered near hand must be EMPTY, naturally half-closed exactly as a walking hand, with no tube or prop anywhere near it. His walking poses in the game carry NO telescope. Keep the same elderly Galileo identity, beard, collar, burgundy velvet robe, leather boots, identical walking stride, arm position, composition, size, realistic sharp details and transparent RGBA background. Change ONLY the erroneous telescope in the bottom left and bottom right sprites; do not alter any other pixels unnecessarily. Exactly four separate complete silhouettes with clear gutters. No new objects, no text, no background, no shadow."
+    },
+    {
+      "block": "21",
+      "prompt": "Use case: precise-object-edit. Edit this four-pose Galileo sprite block. ONLY the BOTTOM-LEFT figure is wrong: REMOVE the brass telescope completely from his raised forward hand. Replace it with the SAME bare hand with the INDEX FINGER EXTENDED POINTING DIAGONALLY UP-RIGHT and the other fingers curled, like a scientific pointing gesture. This kick preparation carries NO object. Keep the raised knee, torso, other arm, hand position, limb angles, robe, face, size, boots, composition, all sharp details and actual transparent RGBA background unchanged. Leave all THREE OTHER FIGURES untouched. No telescope, stick, rod, glow or prop may remain in the bottom-left cell. Preserve exactly four separate complete figures with transparent gutters, no text or ground shadows."
+    }
+  ]
+}

@@ -49,12 +49,14 @@ function texture(file: string, cell?: number): Promise<HTMLCanvasElement> {
   return pending;
 }
 
-export function FelipeSprite({ action = "idle", staticPose, portrait = false, framing = "combat", onReady }: {
-  action?: string; staticPose?: FelipePose; portrait?: boolean;
+export function FelipeSprite({ action = "idle", staticPose, portrait = false, framing = "combat", onReady, paused = false }: {
+  action?: string; staticPose?: FelipePose; portrait?: boolean; paused?: boolean;
   framing?: "combat" | "tight"; onReady?: () => void;
 }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const attacks = useRef(0);
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
   const readyCallback = useRef(onReady);
   readyCallback.current = onReady;
   useEffect(() => {
@@ -64,13 +66,13 @@ export function FelipeSprite({ action = "idle", staticPose, portrait = false, fr
     if (!ctx) return;
     let cancelled = false, frame = 0, reportedReady = false;
     const loaded = new Map<FelipePose, HTMLCanvasElement>();
-    let started = 0;
+    let elapsed = 0, previous = 0;
     const variant = action === "attack-punch" ? attacks.current++ : attacks.current;
     const poses = staticPose ? [staticPose] : Object.keys(FELIPE_ART) as FelipePose[];
     const paint = (now: number) => {
       if (cancelled) return;
-      if (!started) started = now;
-      const elapsed = now - started;
+      if (previous && !pausedRef.current) elapsed += Math.min(32, now - previous);
+      previous = now;
       const pose = staticPose ?? felipePose(action, elapsed, variant);
       const source = loaded.get(pose) ?? loaded.get("idle");
       ctx.clearRect(0, 0, canvas.width, canvas.height);

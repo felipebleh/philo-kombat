@@ -40,12 +40,15 @@ const COLUMNS = 32;
 const ROWS = 48;
 
 /** A textured mesh keeps the approved native-resolution art in every frame. */
-export function FighterWalk({ active, retreat, fighter }: {
+export function FighterWalk({ active, retreat, fighter, paused = false }: {
+  paused?: boolean;
   active: boolean;
   retreat: boolean;
   fighter: keyof typeof WALK_ART;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -171,10 +174,13 @@ export function FighterWalk({ active, retreat, fighter }: {
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       gl.uniform1i(gl.getUniformLocation(program, "art"), 0);
       const started = performance.now();
+      let elapsed = 0, previous = started;
       const draw = (now: number) => {
         if (disposed || gl.isContextLost()) return;
+        if (!pausedRef.current) elapsed += Math.min(32, now - previous);
+        previous = now;
         for (let index = 0; index < source.length; index += 2) {
-          const [x, y] = deform(source[index], source[index + 1], now - started, retreat);
+          const [x, y] = deform(source[index], source[index + 1], elapsed, retreat);
           deformed[index] = x;
           deformed[index + 1] = y;
         }

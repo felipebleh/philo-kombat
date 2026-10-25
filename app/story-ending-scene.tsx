@@ -6,7 +6,7 @@ import { ENDING_TIMING, SUPERINTELLIGENCE_RETURN_LINE } from "./story-ending.mjs
 
 export type EndingAudioStage = "waiting" | "celebration" | "blackout" | "threat";
 export function StoryEnding({ onReturn, onAudioStageChange }: { onReturn: () => void; onAudioStageChange?: (stage: EndingAudioStage) => void }) {
-  const [stage, setStage] = useState<"celebration" | "blackout" | "threat">("celebration");
+  const [stage, setStage] = useState<"celebration" | "blackout" | "threat" | "book">("celebration");
   const [groupReady, setGroupReady] = useState(false);
   const [felipeReady, setFelipeReady] = useState(false);
   const ready = groupReady && felipeReady;
@@ -14,11 +14,12 @@ export function StoryEnding({ onReturn, onAudioStageChange }: { onReturn: () => 
   const reportFelipeReady = useCallback(() => setFelipeReady(true), []);
   const [letters, setLetters] = useState(0);
   const heading = useRef<HTMLHeadingElement>(null);
+  const bookPanel = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    onAudioStageChange?.(stage === "threat" || ready ? stage : "waiting");
+    onAudioStageChange?.(stage === "book" ? "threat" : stage === "threat" || ready ? stage : "waiting");
   }, [onAudioStageChange, ready, stage]);
   useEffect(() => {
-    if (!ready || stage === "threat") return;
+    if (!ready || stage === "threat" || stage === "book") return;
     const timer = window.setTimeout(() => setStage(stage === "celebration" ? "blackout" : "threat"),
       stage === "celebration" ? ENDING_TIMING.celebration : ENDING_TIMING.blackout);
     return () => window.clearTimeout(timer);
@@ -38,6 +39,31 @@ export function StoryEnding({ onReturn, onAudioStageChange }: { onReturn: () => 
     }, 36);
     return () => window.clearInterval(typing);
   }, [stage]);
+  useEffect(() => {
+    if (stage === "book") bookPanel.current?.focus();
+    if (stage !== "threat") return;
+    const poster = new Image();
+    poster.decoding = "async";
+    poster.src = "/game/story-book-promo.webp";
+  }, [stage]);
+
+  if (stage === "book") return (
+    <section className="overlay story-book-overlay" aria-label="A aventura continua nas páginas: Histórias que pensam">
+      <div className="story-book-panel" ref={bookPanel} tabIndex={-1}>
+        <img
+          className="story-book-art"
+          src="/game/story-book-promo.webp"
+          width={1672}
+          height={941}
+          alt="Felipe apresenta Histórias que pensam: Filosofando através de contos. Algumas aventuras continuam nas páginas de um livro. Vamos continuar essa jornada?"
+        />
+        <div className="story-book-actions">
+          <a href="https://a.co/d/0cXWi78j" target="_blank" rel="noopener noreferrer">CONHECER O LIVRO NA AMAZON</a>
+          <button type="button" onClick={onReturn}>CONTINUAR A JORNADA</button>
+        </div>
+      </div>
+    </section>
+  );
 
   return (
     <section className={`overlay story-ending-overlay finale-stage-${stage} ${ready ? "finale-assets-ready" : ""}`} aria-label="Final da campanha Discípulo">
@@ -64,7 +90,7 @@ export function StoryEnding({ onReturn, onAudioStageChange }: { onReturn: () => 
         <footer className="story-ending-controls">
           {stage === "threat" ? <>
             <p>Conquista de Doutor registrada. A próxima campanha está em preparação.</p>
-            <button type="button" onClick={onReturn}>VOLTAR ÀS JORNADAS</button>
+            <button type="button" onClick={() => setStage("book")}>CONTINUAR</button>
           </> : <>
             <p>{stage === "blackout" ? "O sinal está voltando…" : "Os filósofos recuperaram seus pensamentos."}</p>
             <button type="button" onClick={() => setStage("threat")}>AVANÇAR CENA</button>

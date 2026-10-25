@@ -20,6 +20,12 @@ import "../app/augustine.css";
 import "../app/marx.css";
 import "../app/descartes.css";
 import "../app/versus-selection.css";
+import "../app/hobbes.css";
+import "../app/rousseau.css";
+import "../app/hegel.css";
+import "../app/freud.css";
+import "../app/cyborg.css";
+import "../app/doctor-ending.css";
 import "./fonts.css";
 
 createRoot(document.getElementById("root")!).render(<Game />);

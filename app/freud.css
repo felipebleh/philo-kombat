@@ -1,0 +1,33 @@
+/* Native animations and images remain intact; individual scale composes with their transforms. */
+.fighter-freud > .fighter-sprite { scale:var(--freud-scale,1.10);transform-origin:50% 100%; }
+.fighter-freud:is(.attack-punch,.attack-kick,.attack-combo) > .fighter-sprite { bottom:-3.25521%;transform-origin:50% 96.74479%; }
+.fighter-freud > .fighter-shadow { visibility:hidden; }
+.freud-ground-shadow { position:absolute;z-index:3;bottom:2.8%;width:clamp(173px,21.56vw,323.4px);height:4.5%;background:#000;opacity:.5;border-radius:50%;filter:blur(5px);transform:translateX(-50%);transition:left 220ms ease;pointer-events:none; }
+.freud-cigar-smoke { position:absolute;left:0;bottom:0;width:100%;height:140%;pointer-events:none;z-index:6; }
+.freud-flash-definitions { position:absolute;pointer-events:none; }
+.battle-frame.freud-polish-fight .fighter.hit { filter:none !important; }
+.battle-frame.freud-polish-fight .fighter.hit > .fighter-sprite { filter:none !important;opacity:1 !important; }
+.battle-frame.freud-polish-fight .fighter.impact-flash > .fighter-sprite { filter:url('#philo-freud-soft-hitflash') !important;opacity:1 !important; }
+
+/* The portrait row gets its own room floor, so the couch stays behind the feet. */
+.arena-freud.phase-dialogue .dialogue-visual { background:linear-gradient(90deg,#1d101475,#1d101420 50%,#1d101475),url('/game/arena-freud.webp?v=3.7') center bottom/cover no-repeat; }
+.dialogue-visual > .dialogue-fighter.dialogue-freud { bottom:2%;height:calc(100% - 76px); }
+.dialogue-visual > .dialogue-freud.dialogue-left { left:9% !important; }
+.dialogue-visual > .dialogue-freud.dialogue-right { right:9% !important; }
+.dialogue-freud img { position:relative;z-index:1;object-fit:contain;object-position:50% 100%;translate:0 3.25521%; }
+.dialogue-freud::after { content:'';position:absolute;z-index:0;left:22%;bottom:0;width:56%;height:4%;background:#0007;border-radius:50%;filter:blur(4px); }
+.dialogue-freud > span { z-index:3; }
+
+.freud-dream-effect,.freud-death-effect { position:absolute;inset:0;z-index:16;pointer-events:none; }
+.freud-dream-effect canvas,.freud-death-effect canvas { width:100%;height:100%; }
+.freud-dream-effect>b,.freud-death-effect>b { position:absolute;top:14%;left:0;width:100%;text-align:center;color:#e2d3ef;font:bold clamp(14px,2.3vw,31px) Georgia,serif;letter-spacing:.08em;text-shadow:0 2px 5px #0d071d,0 0 18px #604789; }
+.freud-death-effect>b { color:#f0c0d0;text-shadow:0 2px 5px #13051a,0 0 15px #c43c67; }
+.freud-death-dim { position:absolute;inset:0;z-index:4;pointer-events:none;background:#000;opacity:.4; }
+.effect-freud-death-drive .special-colorwash,.effect-freud-dreams .special-colorwash { display:none; }
+.freud-death-impact { position:absolute;z-index:35;top:50%;width:clamp(70px,15vw,210px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;background:radial-gradient(circle,#efbfd8 1%,#b23e7766 25%,#4b1a6c66 45%,transparent 70%);animation:freud-energy-impact 300ms ease-out both; }
+.freud-energy-shake { animation:freud-energy-shake 240ms linear; }
+.freud-torpor-veil {position:absolute;z-index:10;left:12%;bottom:1%;width:76%;height:22%;border-radius:50%;background:radial-gradient(ellipse,#887ec94d,#5479a52e 45%,transparent 72%);pointer-events:none; }
+@keyframes freud-energy-shake { 0%,100%{translate:0;} 15%,55%{translate:-6px 2px;} 30%,70%{translate:6px -2px;} 45%,85%{translate:-3px 1px;} }
+@keyframes freud-energy-impact { from{opacity:1;scale:.6;} to{opacity:0;scale:2;} }
+@media(max-width:760px){.freud-ground-shadow{width:clamp(161px,32.34vw,254.1px);}}
+@media(prefers-reduced-motion:reduce){.freud-energy-shake,.freud-death-impact{animation:none;}}

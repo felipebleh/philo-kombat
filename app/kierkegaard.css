@@ -111,88 +111,44 @@
   background: radial-gradient(ellipse at 50% 28%, rgba(255,225,158,.22), rgba(15,37,53,.62) 55%, rgba(3,13,22,.88));
   animation: kierkegaard-colorwash 1900ms ease-out;
 }
-.kierkegaard-effect { position: absolute; inset: 0; z-index: 32; pointer-events: none; }
-.kierkegaard-effect > b {
-  position: absolute;
-  left: 50%;
-  bottom: 5%;
-  transform: translateX(-50%);
-  color: #e6eee9;
-  font: bold clamp(20px,3vw,44px) Georgia, serif;
-  letter-spacing: .16em;
-  text-shadow: 0 0 22px #72a7b9, 0 3px 6px #000;
-  white-space: nowrap;
-  animation: kierkegaard-title 1500ms ease-out both;
-}
-.anxiety-aura {
-  position: absolute; left: var(--kierkegaard-target); top: 48%;
-  width: 42%; aspect-ratio: 1; border-radius: 50%;
-  background: radial-gradient(circle, transparent 14%, rgba(134,180,199,.28) 26%, rgba(121,79,166,.46) 46%, transparent 71%);
-  animation: kierkegaard-vertigo 1500ms ease-out both;
-}
-.anxiety-ring {
-  position: absolute; left: var(--kierkegaard-target); top: 45%;
-  width: 33%; height: 15%; border-radius: 50%;
-  border: 3px solid rgba(172,207,223,.76);
-  border-left-color: transparent; border-right-color: rgba(147,114,196,.28);
-  filter: drop-shadow(0 0 10px #8299ba);
-  animation: kierkegaard-ring 1500ms ease-in-out both;
-}
-.anxiety-ring.ring-two { top: 32%; width: 28%; animation-delay: 60ms; }
-.anxiety-ring.ring-three { top: 59%; width: 37%; animation-delay: 100ms; }
-.anxiety-impact, .faith-impact {
-  position: absolute; left: var(--kierkegaard-target); top: 53%;
-  width: 12%; aspect-ratio: 1; border-radius: 50%;
-  background: radial-gradient(circle, #fff, #c4deec 20%, rgba(125,85,169,.7) 42%, transparent 70%);
-  animation: kierkegaard-impact 1500ms ease-out both;
-}
-/* Exactly one visible Kierkegaard while the leap travels toward the opponent. */
-.effect-kierkegaard-faith-leap .fighter-kierkegaard { visibility: hidden; }
-.kierkegaard-leap-actor {
-  position: absolute; left: var(--kierkegaard-origin); bottom: 2.8%;
-  height: 82%; width: auto; aspect-ratio: 13 / 12;
-  transform: translateX(-50%);
-  animation: kierkegaard-faith-travel 1900ms linear both;
-}
-.kierkegaard-leap-actor > span {
-  display: block; width: 100%; height: 100%;
-  background: url("/game/kierkegaard-guard-frame.webp?v=4.0") center bottom / contain no-repeat;
-  transform: scaleX(var(--kierkegaard-facing));
-  filter: drop-shadow(0 0 12px rgba(247,210,137,.45));
-  animation: kierkegaard-leap-pose 1900ms steps(1,end) both;
-}
-.faith-glow {
-  position: absolute; left: var(--kierkegaard-landing); bottom: 12%;
-  width: 12%; height: 65%; border-radius: 50%;
-  background: linear-gradient(180deg, transparent, rgba(255,231,171,.4), transparent);
-  animation: kierkegaard-faith-glow 1900ms ease-out both;
-}
-.faith-impact {
-  top: auto; bottom: 3%; width: 24%; aspect-ratio: 2;
-  background: radial-gradient(ellipse, #fff6ce 0 8%, rgba(241,194,96,.85) 20%, rgba(108,160,177,.55) 43%, transparent 70%);
-  animation-duration: 1900ms;
-}
-.kierkegaard-faith-leap > b { animation-duration: 1900ms; color: #ffedc6; }
-
 @keyframes kierkegaard-idle-player { 0%,100%{transform:translateX(-50%)} 50%{transform:translateX(-50%) translateY(-.3%) rotate(-.12deg)} }
 @keyframes kierkegaard-idle-enemy { 0%,100%{transform:translateX(-50%) scaleX(-1)} 50%{transform:translateX(-50%) scaleX(-1) translateY(-.3%) rotate(-.12deg)} }
 @keyframes kierkegaard-jab { 0%,100%{transform:translateX(-50%)} 42%{transform:translateX(-50%) translateX(var(--kierkegaard-lunge)) rotate(-1deg)} }
 @keyframes kierkegaard-kick { 0%,100%{transform:translateX(-50%)} 48%{transform:translateX(-50%) translateX(var(--kierkegaard-sweep)) rotate(-2deg)} }
-@keyframes kierkegaard-combo { 0%,100%{transform:translateX(-50%)} 20%,48%{transform:translateX(-50%) translateX(var(--kierkegaard-lunge)) rotate(-2deg)} 34%,58%{transform:translateX(-50%) rotate(1deg)} 70%{transform:translateX(-50%) translateX(var(--kierkegaard-sweep)) rotate(-3deg)} }
-@keyframes kierkegaard-umbrella-combo { 0%,12%,34%,40%,58%,62%,90%,100%{background-image:url("/game/kierkegaard-guard-frame.webp?v=4.0")} 13%,33%,41%,57%,63%,89%{background-image:url("/game/kierkegaard-combo-hq.webp?v=4.0")} }
+@keyframes kierkegaard-combo { 0%,100%{transform:translateX(-50%)} 18%,57%{transform:translateX(-50%) translateX(var(--kierkegaard-lunge)) rotate(-2deg)} 36%,79%{transform:translateX(-50%) rotate(1deg)} }
+@keyframes kierkegaard-umbrella-combo { 0%,10%,36%,44%,73%,100%{background-image:url("/game/kierkegaard-guard-frame.webp?v=4.0")} 11%,35%,45%,72%{background-image:url("/game/kierkegaard-combo-hq.webp?v=4.0")} }
 @keyframes kierkegaard-channel { 0%,100%{filter:brightness(1)} 70%{filter:brightness(1.18) drop-shadow(0 0 20px #a5bddd)} }
 @keyframes kierkegaard-contact { 0%,32%{opacity:0;transform:scale(.2)} 43%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(2.8)} }
 @keyframes kierkegaard-colorwash { 0%,100%{opacity:0} 18%,88%{opacity:1} }
-@keyframes kierkegaard-title { 0%,22%,100%{opacity:0;transform:translateX(-50%) translateY(12px)} 40%,88%{opacity:1;transform:translateX(-50%) translateY(0)} }
-@keyframes kierkegaard-vertigo { 0%{opacity:0;transform:translate(-50%,-50%) scale(.15)} 26%,74%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(1.5)} }
-@keyframes kierkegaard-ring { 0%{opacity:0;transform:translate(-50%,-50%) rotate(-30deg) scale(.1)} 24%{opacity:1} 78%{opacity:1;transform:translate(-50%,-50%) rotate(185deg) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) rotate(260deg) scale(.3)} }
-@keyframes kierkegaard-impact { 0%,76%{opacity:0;transform:translateX(-50%) scale(.15)} 79%{opacity:1;transform:translateX(-50%) scale(1)} 100%{opacity:0;transform:translateX(-50%) scale(4)} }
-@keyframes kierkegaard-faith-travel { 0%,12%{left:var(--kierkegaard-origin);bottom:2.8%} 46%{left:var(--kierkegaard-landing);bottom:13.5%} 60%{left:var(--kierkegaard-landing);bottom:13.5%} 78%,86%{left:var(--kierkegaard-landing);bottom:2.8%} 100%{left:var(--kierkegaard-origin);bottom:2.8%} }
-@keyframes kierkegaard-leap-pose { 0%,18%,87%,100%{background-image:url("/game/kierkegaard-guard-frame.webp?v=4.0")} 19%,86%{background-image:url("/game/kierkegaard-combo-hq.webp?v=4.0")} }
-@keyframes kierkegaard-faith-glow { 0%,34%,100%{opacity:0;transform:translateX(-50%) scaleY(.1)} 55%,77%{opacity:1;transform:translateX(-50%) scaleY(1)} 85%{opacity:0} }
 
 @media (max-width: 760px) {
   .fighter-kierkegaard { width: clamp(210px, 42vw, 330px); height: 78%; }
-  .kierkegaard-leap-actor { height: 78%; }
-  .kierkegaard-effect > b { letter-spacing: .07em; }
 }
+
+/* Complete motion frames; the approved base dimensions, idle, J and K above stay intact. */
+.kierkegaard-motion-canvas { display:none; position:absolute; left:0; bottom:0; width:100%; height:170%; pointer-events:none; }
+.fighter-kierkegaard:is(.advance,.retreat,.guard,.guard-hit,.jump,.special-faith-leap,.attack-combo) .kierkegaard-motion-canvas[data-ready="true"] { display:block; }
+.fighter-kierkegaard:is(.advance,.retreat,.guard,.guard-hit,.jump,.special-faith-leap,.attack-combo) .fighter-sprite:has(.kierkegaard-motion-canvas[data-ready="true"]) { background-image:none !important; }
+.fighter.fighter-kierkegaard:is(.jump,.special-faith-leap) { animation:none !important; }
+.fighter.fighter-kierkegaard:is(.advance,.retreat,.special-faith-leap) { transition:none; }
+.fighter-kierkegaard .fighter-sprite { overflow:visible; }
+.fighter-kierkegaard .fighter-shadow { transform:scale(var(--kierkegaard-shadow-scale,1)); opacity:calc(.85 * var(--kierkegaard-shadow-scale,1)); }
+.kierkegaard-either-cuts { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:9; }
+.kierkegaard-special-canvas { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:7; }
+.kierkegaard-contact-effect { position:absolute; inset:0; z-index:35; pointer-events:none; }
+.kierkegaard-contact-effect canvas { width:100%;height:100%; }
+.kierkegaard-contact-effect b { position:absolute; top:14%; left:50%; transform:translateX(-50%); font:bold clamp(18px,3vw,40px) Georgia,serif; color:#fff0b8; text-shadow:0 2px 4px #160e06,0 0 20px #e8b752; white-space:nowrap; animation:kierkegaard-impact-title 600ms ease-out both; }
+.kierkegaard-contact-effect.anxiety b { color:#d8cce5;text-shadow:0 2px 4px #170c22,0 0 20px #745197;font-size:clamp(15px,2.3vw,32px); }
+.battle-frame.kierkegaard-faith-shake { animation:kierkegaard-heavy-shake 240ms ease-out; }
+.fighter.is-disoriented::before { content:"";position:absolute;left:37%;top:3%;width:25%;height:10%;border:2px dashed #c6b9d3;border-radius:50%;z-index:12;animation:kierkegaard-dizzy 600ms linear;pointer-events:none; }
+@keyframes kierkegaard-impact-title { 0%{opacity:0;transform:translateX(-50%) translateY(8px)} 15%,78%{opacity:1;transform:translateX(-50%) translateY(0)} 100%{opacity:0;transform:translateX(-50%) translateY(-6px)} }
+@keyframes kierkegaard-heavy-shake { 0%,100%{transform:translate(0,0)} 15%,55%{transform:translate(-6px,2px)} 30%,70%{transform:translate(6px,-2px)} 45%,85%{transform:translate(-3px,1px)} }
+@keyframes kierkegaard-dizzy { from{transform:rotate(-15deg)} to{transform:rotate(345deg)} }
+@media (prefers-reduced-motion:reduce) { .battle-frame.kierkegaard-faith-shake,.fighter.is-disoriented::before {animation:none;} }
+
+.fighter-kierkegaard.attack-combo .fighter-sprite:has(.kierkegaard-motion-canvas[data-ready="true"]) { animation:none !important; }
+
+/* Reaching umbrella poses get transparent side room; feet stay anchored. */
+.fighter-kierkegaard.attack-combo { animation:none; }
+.fighter-kierkegaard.attack-combo .kierkegaard-motion-canvas { width:180%;left:-40%; }
+.kierkegaard-either-cuts { inset:auto auto 0 -40%;width:180%;height:100%; }

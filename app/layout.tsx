@@ -20,6 +20,12 @@ import "./augustine.css";
 import "./marx.css";
 import "./descartes.css";
 import "./versus-selection.css";
+import "./hobbes.css";
+import "./rousseau.css";
+import "./hegel.css";
+import "./freud.css";
+import "./cyborg.css";
+import "./doctor-ending.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,9 +41,6 @@ export const metadata: Metadata = {
   title: "Philo Kombat — Uma batalha de ideias",
   description:
     "Jogo educacional de luta em que filósofos transformam conceitos em golpes.",
-  other: {
-    "codex-preview": "development",
-  },
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",

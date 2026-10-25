@@ -1,0 +1,87 @@
+{
+  "walk1": {
+    "width": 363,
+    "height": 739,
+    "source": "walk1.webp"
+  },
+  "walk3": {
+    "width": 371,
+    "height": 737,
+    "source": "walk3.webp"
+  },
+  "walk0": {
+    "width": 471,
+    "height": 730,
+    "source": "walk0.webp"
+  },
+  "walk2": {
+    "width": 525,
+    "height": 722,
+    "source": "walk2.webp"
+  },
+  "kick": {
+    "width": 1159,
+    "height": 996,
+    "source": "kick.webp"
+  },
+  "windup": {
+    "width": 475,
+    "height": 692,
+    "source": "windup.webp"
+  },
+  "punch": {
+    "width": 1253,
+    "height": 995,
+    "source": "punch.webp"
+  },
+  "hook": {
+    "width": 971,
+    "height": 1320,
+    "source": "hook.webp"
+  },
+  "guard": {
+    "width": 517,
+    "height": 566,
+    "source": "guard.webp"
+  },
+  "hit": {
+    "width": 433,
+    "height": 722,
+    "source": "hit.webp"
+  },
+  "jump": {
+    "width": 491,
+    "height": 654,
+    "source": "jump.webp"
+  },
+  "cast": {
+    "width": 599,
+    "height": 790,
+    "source": "cast.webp"
+  },
+  "fallen": {
+    "width": 599,
+    "height": 211,
+    "source": "fallen.webp"
+  },
+  "rise": {
+    "width": 437,
+    "height": 479,
+    "source": "rise.webp"
+  },
+  "charge": {
+    "width": 484,
+    "height": 712,
+    "source": "charge.webp"
+  },
+  "victory": {
+    "width": 476,
+    "height": 856,
+    "source": "victory.webp"
+  },
+  "idle": {
+    "width": 946,
+    "height": 1445,
+    "source": "idle.webp"
+  }
+}
