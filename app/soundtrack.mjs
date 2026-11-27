@@ -29,9 +29,16 @@ export function battleTrack(gameMode, fighter, opponent) {
   return SOUNDTRACK.contemporary;
 }
 
-export function soundtrackForPhase(phase, gameMode, fighter, opponent, sceneKind = "intro", endingStage = "waiting") {
+export function soundtrackForPhase(phase, gameMode, fighter, opponent, sceneKind = "intro", endingStage = "waiting", campaign = "disciple") {
   if (["intro", "mode-select", "story-tier-select"].includes(phase)) return SOUNDTRACK.title;
   if (phase === "select") return SOUNDTRACK.selection;
+  if (phase === "grand-complete") return SOUNDTRACK.applause;
+  if (phase === "grand-epilogue") {
+    if (endingStage === "rescue") return SOUNDTRACK.result;
+    if (endingStage === "celebration") return SOUNDTRACK.applause;
+    return null;
+  }
+  if (phase === "story-intro" && campaign === "grand") return SOUNDTRACK.boss;
   if (phase === "story-intro" || (phase === "story-scene" && sceneKind === "intro")) return SOUNDTRACK.preFight;
   if (phase === "playing" || phase === "finishing") return battleTrack(gameMode, fighter, opponent);
   // Only the champion screen contains both the winner and final phrase.

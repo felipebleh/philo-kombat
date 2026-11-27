@@ -320,14 +320,14 @@ test("pós-luta de Nietzsche mostra seis artes antes da Superinteligência", asy
 test("Modo História reutiliza o motor e o acesso ao Versus permanece ligado", () => {
   assert.match(
     page,
-    /await preloadFightAssets\(\s*"felipe", opponent, setLoadingProgress,\s*activeStoryEncounters\[encounterIndex\]\.background,\s*\);\s+resetGame\(\);/,
+    /await preloadFightAssets\(\s*"felipe", opponent, setLoadingProgress,\s*activeStoryEncounters\[encounterIndex\]\.background,[^)]*\);\s+resetGame\(\);/,
   );
   assert.match(page, /onClick=\{openSelection\}[\s\S]*?MODO VERSUS/);
   assert.match(page, /gameMode === "story"[\s\S]*?CONTINUAR HISTÓRIA/);
   assert.match(page, /gameMode === "story" \|\| nextPlayerWins >= 2/);
   assert.match(
     page,
-    /nextStoryIntroScene[\s\S]*?setPhase\(storyCampaign === "doctor" \? "story-scene" : "story-tier-select"\)/,
+    /nextStoryIntroScene[\s\S]*?setPhase\(storyCampaign !== "disciple" \? "story-scene" : "story-tier-select"\)/,
   );
   assert.match(page, /gameMode === "story" \? "mode-story"/);
   assert.match(page, /Voltar à escolha de modos/);

@@ -5,7 +5,11 @@ import ts from "typescript";
 
 const source = await readFile(new URL("../app/fighter-assets.ts", import.meta.url), "utf8");
 const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
-const compiled = ts.transpileModule(source, {
+const sidartaArtUrl = new URL("../app/sidarta-hd-art.json", import.meta.url);
+const compiled = ts.transpileModule(source.replace(
+  '"./sidarta-hd-art.json";',
+  `${JSON.stringify(sidartaArtUrl.href)} with { type: "json" };`,
+), {
   compilerOptions: { module: ts.ModuleKind.ESNext },
 }).outputText;
 const { FIGHTER_THUMBNAILS, fightAssetUrls } = await import(
@@ -15,7 +19,7 @@ const { FIGHTER_THUMBNAILS, fightAssetUrls } = await import(
 test("the roster uses lightweight WebP thumbnails", async () => {
   assert.ok(Object.keys(FIGHTER_THUMBNAILS).length >= 41);
   for (const url of Object.values(FIGHTER_THUMBNAILS)) {
-    assert.match(url, /^\/game\/thumb-[a-z-]+\.webp$/);
+    assert.match(url, /^\/game\/thumb-[a-z-]+(?:-v\d+)?\.webp$/);
     await access(new URL(`../public${url}`, import.meta.url));
   }
   assert.match(page, /fighterThumbnailArt\(fighter\)/);
@@ -55,6 +59,19 @@ test("História prepara sua arena real e Versus mantém a arena do jogador", () 
   assert.ok(story.includes("/game/arena-agora.webp"));
   assert.ok(!story.includes("/game/arena-felipe-classroom.webp"));
   assert.ok(fightAssetUrls("felipe", "socrates").includes("/game/arena-felipe-classroom.webp"));
+});
+
+test("the final Grande Filósofo fight preloads the giant and its arena in place of the regular SuperIA pack", () => {
+  const giant = "/game/superia-grand-final-colossus.webp";
+  const arena = "/game/arena-grand-final-servers.webp";
+  const final = fightAssetUrls("felipe", "superintelligence", arena, giant);
+  assert.ok(final.includes(giant));
+  assert.ok(final.includes(arena));
+  assert.ok(!final.some(url => url.includes("superintelligence-fullbody")));
+  const regular = fightAssetUrls("felipe", "superintelligence", "/game/arena-supercomputer.webp");
+  assert.ok(regular.some(url => url.includes("superintelligence-fullbody")));
+  assert.ok(!regular.includes(giant));
+  assert.ok(!regular.includes(arena));
 });
 
 test("roster thumbnails stay within a lightweight initial budget", async () => {

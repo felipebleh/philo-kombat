@@ -355,3 +355,32 @@
   .arendt-effect > b { letter-spacing: .05em; max-width: 92%; text-align: center; white-space: normal; }
   .arendt-bureaucracy { width: clamp(140px,34vw,250px); }
 }
+
+/* HQ cutouts have no sprite-sheet rows to cycle through on impact. */
+.fighter-arendt.hit { filter:none; animation:none; opacity:1; }
+.fighter-arendt:is(.hit,.guard,.guard-hit,.knocked-out,.victory) .fighter-sprite {
+  background-position:50% 100% !important; background-size:contain; background-repeat:no-repeat;
+  animation:none !important; opacity:1; visibility:visible; filter:none;
+}
+.fighter-arendt:is(.attack-punch,.attack-kick) .fighter-sprite { animation:none !important; background-position:50% 100% !important; }
+.fighter-arendt.attack-combo .fighter-sprite { background-position:50% 100% !important; }
+.fighter.fighter-arendt.impact-flash > .fighter-sprite { filter:none !important; }
+.fighter-arendt.impact-flash > .fighter-sprite::after {
+  content:""; position:absolute; inset:0; pointer-events:none; background:rgba(255,255,255,.35);
+  -webkit-mask:url('/game/arendt-guard-frame.webp?v=4.3') center bottom / contain no-repeat;
+  mask:url('/game/arendt-guard-frame.webp?v=4.3') center bottom / contain no-repeat;
+}
+.fighter-arendt:is(.guard,.guard-hit) { animation:none; filter:none; }
+.arendt-guard-canvas { display:block; width:100%; height:100%; pointer-events:none; }
+.fighter-arendt .fighter-sprite:has(.arendt-guard-canvas[data-ready="true"]) { background-image:none !important; animation:none !important; }
+.fighter-arendt.knocked-out { opacity:1; }
+.fighter-player.fighter-arendt.knocked-out .fighter-sprite { transform:translateX(-50%) translateY(-20%) rotate(65deg) scale(.66); }
+.fighter-enemy.fighter-arendt.knocked-out .fighter-sprite { transform:translateX(-50%) translateY(-20%) scaleX(-1) rotate(65deg) scale(.66); }
+.ending-fighter.ending-arendt.is-loser { bottom:4%; height:72%; box-sizing:border-box; padding-bottom:54px; }
+.ending-fighter.ending-arendt.is-loser img { object-fit:contain; object-position:center bottom; padding-bottom:10px; box-sizing:border-box; }
+.ending-arendt.is-loser .ending-name { bottom:0; left:0; right:0; max-width:100%; text-align:center; white-space:normal; overflow:visible; text-overflow:clip; letter-spacing:.08em; padding:7px 4px; }
+.arendt-effects-canvas { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:14; }
+.effect-arendt-banality .special-colorwash { background:rgba(0,0,0,.4); opacity:1; animation:none; }
+.effect-arendt-natality .special-colorwash { background:radial-gradient(circle,rgba(255,235,164,.16),transparent 70%); opacity:1; animation:none; }
+/* The damage number and bar show the committed health before KO presentation. */
+.arendt-polish-fight .coherence-bar > span { transition:none; }

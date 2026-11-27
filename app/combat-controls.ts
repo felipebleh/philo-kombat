@@ -15,10 +15,10 @@ export const cpuDecisionInterval = (fighter: string) => 1280 + cpuBreathingRoom(
 // Widths use arena percentages; vertical coordinates use normalized body space.
 // Existing reach already includes a four-unit forward origin and a ten-unit body.
 export function fighterContactGeometry(fighter: string) {
-  const scale = fighter === "hypatia" ? HYPATIA_SCALE : fighter === "averroes" ? AVERROES_SCALE : fighter === "thomas" ? THOMAS_SCALE : fighter === "machiavelli" ? MACHIAVELLI_SCALE : fighter === "freud" ? FREUD_SCALE : 1;
+  const scale = fighter === "wittgenstein" ? .92 : fighter === "hypatia" ? HYPATIA_SCALE : fighter === "averroes" ? AVERROES_SCALE : fighter === "thomas" ? THOMAS_SCALE : fighter === "machiavelli" ? MACHIAVELLI_SCALE : fighter === "freud" ? FREUD_SCALE : 1;
   return {
     scale,
-    hurtbox: { width: 10 * scale, height: scale },
+    hurtbox: { width: (fighter === "darwin" ? 8 : 10) * scale, height: scale },
     attackOrigin: { x: 4 * scale, y: .65 * scale },
   };
 }
@@ -39,13 +39,13 @@ export function resolveFighterPushboxes(player:number,enemy:number,playerFighter
   return {player:left,enemy:Math.max(left+gap,Math.min(80,center+gap/2))};
 }
 // Positions are percentages of the arena. Extend only toward the facing side.
-export function attackConnects(origin: number, target: number, facing: 1 | -1, range: number, move: CombatMove, airborne = false, fighters?: { attacker: string; target: string }) {
+export function attackConnects(origin: number, target: number, facing: 1 | -1, range: number, move: CombatMove, airborne = false, fighters?: { attacker: string; target: string; defenderCrouching?: boolean }) {
   if (isSupreme(move)) return true;
   const forward = (target - origin) * facing;
   const bonus = move === "dialetica" ? 0 : move === "caverna" ? 2 : 4;
   let reach = (range + bonus) * 1.3;
   // Only fighters with calibrated body sizes need adjusted attack/target geometry.
-  if (fighters && (fighterContactGeometry(fighters.attacker).scale !== 1 || fighterContactGeometry(fighters.target).scale !== 1)) {
+  if (fighters && (fighterContactGeometry(fighters.attacker).scale !== 1 || fighterContactGeometry(fighters.target).scale !== 1 || fighters.target === "darwin")) {
     const attacker = fighterContactGeometry(fighters.attacker);
     const defender = fighterContactGeometry(fighters.target);
     reach = attacker.attackOrigin.x + (reach - 4) * attacker.scale + (defender.hurtbox.width - 10) / 2;
@@ -53,6 +53,22 @@ export function attackConnects(origin: number, target: number, facing: 1 | -1, r
     const halfHeight = .15 * attacker.scale;
     const defenderBottom = airborne ? .55 : 0;
     if (attackY + halfHeight < defenderBottom || attackY - halfHeight > defenderBottom + defender.hurtbox.height) return false;
+  }
+  // Calibrated targets use the visible body rather than the wide art canvas.
+  if (fighters?.attacker === "felipe" && (fighters.target === "darwin" || fighters.target === "wittgenstein")) {
+    const visibleReach = move === "dialetica" ? 30 : move === "caverna" ? 36 : 40;
+    reach = Math.min(reach, visibleReach);
+  }
+  // Confúcio's kick overlaps a crouching torso or knee, but not a jump.
+  if (fighters?.attacker === "confucius" && move === "caverna") {
+    const attackBottom = .20, attackTop = .56;
+    const defenderBottom = airborne ? .55 : 0, defenderTop = defenderBottom + (fighters.defenderCrouching ? .58 : 1);
+    if (attackTop <= defenderBottom || attackBottom >= defenderTop || airborne) return false;
+  }
+  if(fighters?.attacker === "deleuze" && move === "caverna") {
+    const attackBottom=.18,attackTop=.64,defenderBottom=airborne?.55:0;
+    const defenderTop=defenderBottom+(fighters.defenderCrouching?.58:1);
+    if(airborne||attackBottom>=defenderTop||attackTop<=defenderBottom)return false;
   }
   if(fighters?.attacker === "schopenhauer" && (move === "dialetica" || move === "ideias")) {
     const span=caneContactSpan(reach,fighterContactGeometry(fighters.target).hurtbox.width);

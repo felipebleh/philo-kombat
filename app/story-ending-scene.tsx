@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { TrimmedArt } from "./trimmed-art";
 import { ENDING_TIMING, SUPERINTELLIGENCE_RETURN_LINE } from "./story-ending.mjs";
 
-export type EndingAudioStage = "waiting" | "celebration" | "blackout" | "threat";
+export type EndingAudioStage = "waiting" | "celebration" | "blackout" | "threat" | "rescue";
 export function StoryEnding({ onReturn, onAudioStageChange }: { onReturn: () => void; onAudioStageChange?: (stage: EndingAudioStage) => void }) {
   const [stage, setStage] = useState<"celebration" | "blackout" | "threat" | "book">("celebration");
   const [groupReady, setGroupReady] = useState(false);

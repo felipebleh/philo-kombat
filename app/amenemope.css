@@ -1,0 +1,17 @@
+/* Registration is calibrated against Felipe's visible idle body, not transparent cells. */
+.fighter.fighter-amenemope {bottom:2.8%;height:82%;width:clamp(225px,28vw,420px);filter:none;}
+.fighter-amenemope .fighter-sprite.amenemope-sheet {
+ inset:auto auto 0 50%;width:auto;height:100%;aspect-ratio:2/3;
+ transform:translateX(-50%);transform-origin:50% 100%;animation:none!important;
+ filter:drop-shadow(0px 2px 3px rgba(0,0,0,.65));overflow:visible;
+}
+.fighter-enemy.fighter-amenemope .fighter-sprite.amenemope-sheet {transform:translateX(-50%) scaleX(-1);}
+.fighter-amenemope:is(.attack-punch,.attack-kick,.attack-combo,.special-feather,.special-scale,.advance,.retreat) {animation:none;}
+.fighter-amenemope:is(.attack-punch,.attack-kick,.attack-combo)::after {display:none;}
+.fighter-amenemope .fighter-shadow {display:none;}
+.fighter-amenemope .amenemope-frame-canvas {left:-60%;width:220%;image-rendering:auto;}
+.amenemope-effects {position:absolute;inset:0;width:100%;height:100%;z-index:7;pointer-events:none;}
+.amenemope-judgment-dim {position:absolute;inset:0;background:rgba(0,0,0,.4);z-index:4;pointer-events:none;}
+.maat-impact-shake {animation:maat-impact-shake 240ms linear;}
+@keyframes maat-impact-shake {0%,100%{translate:0 0}15%,55%{translate:-6px 3px}35%,75%{translate:6px -3px}90%{translate:-3px 1px}}
+@media(prefers-reduced-motion:reduce){.maat-impact-shake{animation:none;}}

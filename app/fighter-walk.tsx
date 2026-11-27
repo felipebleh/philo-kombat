@@ -21,10 +21,10 @@ import { superintelligenceWalkVertex } from "./superintelligence-walk-mesh";
 const WALK_ART = {
   agostinho: { src: "/game/agostinho-fullbody-hq.webp", deform: augustineWalkVertex },
   felipe: { src: "/game/felipe-idle.webp", deform: felipeWalkVertex },
-  darwin: { src: "/game/darwin-fullbody-hq.webp?v=3.8.1", deform: darwinWalkVertex },
+  darwin: { src: "/game/darwin-fullbody-clean-hq.webp?v=5.3.1", deform: darwinWalkVertex },
   olympe: { src: "/game/olympe-fullbody-hq.webp?v=3.9", deform: olympeWalkVertex },
   kierkegaard: { src: "/game/kierkegaard-guard-frame.webp?v=4.0", deform: kierkegaardWalkVertex },
-  beauvoir: { src: "/game/beauvoir-guard-frame.webp?v=4.1", deform: beauvoirWalkVertex },
+  beauvoir: { src: "/game/beauvoir-guard-frame-clean-v2.webp", deform: beauvoirWalkVertex },
   foucault: { src: "/game/foucault-guard-frame.webp?v=4.2", deform: foucaultWalkVertex },
   arendt: { src: "/game/arendt-guard-frame.webp?v=4.3", deform: arendtWalkVertex },
   wittgenstein: { src: "/game/wittgenstein-fullbody-hq.webp?v=4.4", deform: wittgensteinWalkVertex },
@@ -161,8 +161,14 @@ export function FighterWalk({ active, retreat, fighter, paused = false }: {
     art.onload = () => {
       if (disposed || gl.isContextLost()) return;
       // No low-resolution intermediate frames or upscaled sprite-sheet cells.
+      const box = canvas.getBoundingClientRect();
+      const density = Math.min(4, Math.max(2, window.devicePixelRatio || 1));
       canvas.width = art.naturalWidth;
       canvas.height = art.naturalHeight;
+      if (fighter === "darwin") {
+        canvas.width = Math.max(canvas.width, Math.round(box.width * density));
+        canvas.height = Math.max(canvas.height, Math.round(box.height * density));
+      }
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -174,7 +180,7 @@ export function FighterWalk({ active, retreat, fighter, paused = false }: {
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       gl.uniform1i(gl.getUniformLocation(program, "art"), 0);
       const started = performance.now();
-      let elapsed = 0, previous = started;
+      let elapsed = fighter === "olympe" ? 66 : 0, previous = started;
       const draw = (now: number) => {
         if (disposed || gl.isContextLost()) return;
         if (!pausedRef.current) elapsed += Math.min(32, now - previous);

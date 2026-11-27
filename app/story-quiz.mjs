@@ -1,3 +1,4 @@
+import { GRAND_QUIZ_BANK } from "./grand-story.mjs";
 import { STORY_ENCOUNTERS, nextDiscipleEncounter } from "./story-mode.mjs";
 import { DOCTOR_QUIZ_BANK } from "./doctor-quiz.mjs";
 
@@ -31,11 +32,11 @@ function shuffled(items, random) {
 export function createStoryQuiz(random = Math.random, campaign = "disciple") {
   // Cada tentativa também contempla três filósofos diferentes.
   const philosophers = new Set();
-  const questions = shuffled(campaign === "doctor" ? DOCTOR_QUIZ_BANK : STORY_QUIZ_BANK, random).filter((question) => {
+  const questions = shuffled(campaign === "grand" ? GRAND_QUIZ_BANK : campaign === "doctor" ? DOCTOR_QUIZ_BANK : STORY_QUIZ_BANK, random).filter((question) => {
     if (philosophers.has(question.philosopher)) return false;
     philosophers.add(question.philosopher);
     return true;
-  }).slice(0, campaign === "doctor" ? 4 : 3).map((question) => ({
+  }).slice(0, campaign === "grand" ? 5 : campaign === "doctor" ? 4 : 3).map((question) => ({
     ...question,
     choices: shuffled(question.options.map((text, id) => ({ id, text })), random),
   }));

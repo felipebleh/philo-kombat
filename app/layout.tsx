@@ -14,6 +14,7 @@ import "./turing.css";
 import "./deleuze.css";
 import "./superintelligence.css";
 import "./felipe.css";
+import "./sidarta.css";
 import "./plato.css";
 import "./aristotle.css";
 import "./augustine.css";
@@ -26,6 +27,9 @@ import "./hegel.css";
 import "./freud.css";
 import "./cyborg.css";
 import "./doctor-ending.css";
+import "./grand-story.css";
+import "./grand-epilogue.css";
+import "./amenemope.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

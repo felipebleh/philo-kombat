@@ -70,12 +70,17 @@ test("walking preserves the face, original size and mesh continuity", () => {
 });
 
 test("all action poses use one high-resolution canvas without body scaling", async () => {
-  for (const name of ["guard-frame","punch-hq","kick-hq","combo-hq"]) {
-    const path = `foucault-${name}.webp`;
-    const webp = await readFile(new URL(`../public/game/${path}`, import.meta.url));
+  const motion = await readFile(new URL("../app/foucault-motion.ts", import.meta.url), "utf8");
+  for (const url of [
+    "/game/foucault-guard-v2.webp",
+    "/game/foucault-punch-hq.webp?v=4.2",
+    "/game/foucault-kick-book-v2.webp",
+    "/game/foucault-combo-hq.webp?v=4.2",
+  ]) {
+    const webp = await readFile(new URL(`../public${url.split("?")[0]}`, import.meta.url));
     assert.deepEqual(webpMetadata(webp), { width: 2048, height: 1536, hasAlpha: true });
-    assert.ok(assets.includes(`/game/${path}?v=4.2`));
-    assert.ok(css.includes(`/game/${path}?v=4.2`));
+    assert.ok(assets.includes(url));
+    assert.ok(css.includes(url) || motion.includes(url));
   }
   assert.match(css, /aspect-ratio: 4 \/ 3/);
   assert.match(css, /inset: auto auto 0 50%/);
@@ -86,12 +91,10 @@ test("all action poses use one high-resolution canvas without body scaling", asy
   }
 });
 
-test("Panóptico and Biopoder resolve exactly on the opponent", () => {
-  assert.match(page, /foucaultTarget = foucaultEffectFromPlayer \? enemyPosition : playerPosition/);
-  assert.match(page, /"--foucault-target": `\$\{foucaultTarget\}%`/);
-  assert.match(css, /left: var\(--foucault-target\)/);
-  assert.match(css, /0%,76%\{opacity:0/);
-  assert.match(css, /79%\{opacity:1/);
-  assert.match(page, /selectedFighter !== "foucault"/);
-  assert.match(page, /opponentFighter !== "foucault"/);
+test("Panóptico and Biopoder use the committed opponent position", async () => {
+  const effects = await readFile(new URL("../app/foucault-effects.tsx", import.meta.url), "utf8");
+  assert.match(page, /<FoucaultEffects\b[^>]+contact=\{foucaultImpact\}/);
+  assert.match(page, /foucaultContact\("player",moveName,current\.playerPosition,current\.enemyPosition\)/);
+  assert.match(page, /foucaultContact\("enemy",moveName,current\.enemyPosition,impactPosition\)/);
+  assert.match(effects, /x=hit\.position\*w\/100/);
 });

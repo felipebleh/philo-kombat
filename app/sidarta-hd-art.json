@@ -1,0 +1,52 @@
+{
+  "walk": [
+    {
+      "src": "/game/sidarta-walk-0-hq-v3.webp",
+      "width": 742,
+      "height": 1505,
+      "anchorX": 371
+    },
+    {
+      "src": "/game/sidarta-walk-1-hq-v3.webp",
+      "width": 742,
+      "height": 1599,
+      "anchorX": 371
+    },
+    {
+      "src": "/game/sidarta-walk-2-hq-v3.webp",
+      "width": 737,
+      "height": 1587,
+      "anchorX": 368.5
+    },
+    {
+      "src": "/game/sidarta-walk-3-hq-v3.webp",
+      "width": 742,
+      "height": 1584,
+      "anchorX": 371
+    },
+    {
+      "src": "/game/sidarta-walk-4-hq-v3.webp",
+      "width": 719,
+      "height": 1569,
+      "anchorX": 359.5
+    },
+    {
+      "src": "/game/sidarta-walk-5-hq-v3.webp",
+      "width": 738,
+      "height": 1692,
+      "anchorX": 369
+    }
+  ],
+  "guard": {
+    "src": "/game/sidarta-guard-hq-v3.webp",
+    "width": 701,
+    "height": 1392,
+    "anchorX": 350.5
+  },
+  "lotus": {
+    "src": "/game/sidarta-lotus-hq-v3.webp",
+    "width": 1164,
+    "height": 1351,
+    "anchorX": 582
+  }
+}

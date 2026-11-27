@@ -113,13 +113,11 @@ test("the sprite keeps the same centered anchor in every state", () => {
   assert.match(enemyIdle, /translateX\(-50%\) scaleX\(-1\)/);
 });
 
-test("the stamp lands once on the opponent and leaves the exact word MAL", () => {
-  assert.match(page, /arendtTarget = arendtEffectFromPlayer \? enemyPosition : playerPosition/);
-  assert.match(page, /"--arendt-target": `\$\{arendtTarget\}%`/);
-  assert.equal((page.match(/className="arendt-mal-mark">MAL</g) ?? []).length, 1);
-  assert.match(css, /left: var\(--arendt-target\)/);
-  assert.match(css, /0%,78%\{opacity:0/);
-  assert.match(css, /79%\{opacity:1/);
-  assert.match(page, /selectedFighter !== "arendt"/);
-  assert.match(page, /opponentFighter !== "arendt"/);
+test("the stamp is tied to Arendt's committed contact on either side", async () => {
+  const effects = await readFile(new URL("../app/arendt-effects.tsx", import.meta.url), "utf8");
+  assert.match(page, /<ArendtEffects\b[^>]+contact=\{arendtImpact\}/);
+  assert.match(page, /arendtContact\("player",moveName,current\.playerPosition,current\.enemyPosition\)/);
+  assert.match(page, /arendtContact\("enemy",moveName,current\.enemyPosition,impactPosition\)/);
+  assert.match(effects, /x=hit\.position\*w\/100/);
+  assert.match(effects, /BANALIDADE DO MAL!/);
 });

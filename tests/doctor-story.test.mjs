@@ -1,8 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile, stat } from "node:fs/promises";
-import vm from "node:vm";
 import test from "node:test";
-import ts from "typescript";
 import {
   DOCTOR_ENCOUNTERS, DOCTOR_INTRO_SCENES, DOCTOR_OPPONENT_ORDER,
   DOCTOR_FINAL_ENCOUNTER_INDEX, DOCTOR_FINAL_PRE_FIGHT_SCENES, doctorIntroScenes,
@@ -15,62 +13,7 @@ import { createStoryQuiz, answerStoryQuiz, advanceStoryQuiz, quizRecoveryIndex }
 
 const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
 
-// Run the real campaign callbacks with their state and I/O dependencies supplied.
-function campaignHarness(unlocked = true) {
-  const calls = [];
-  const entries = new Map([["philo-kombat:story:disciple", "4"]]);
-  const state = {
-    doctorUnlocked: unlocked, storyCampaign: "disciple", storyIndex: 0,
-    storySceneKind: "intro", storySceneStep: 0, storyIntroIndex: 0,
-    storySavedIndex: 4, quizReturnIndex: null,
-  };
-  const context = {
-    ...state, STORY_ENCOUNTERS, STORY_INTRO_SCENES, STORY_POST_FIGHT_SCENES,
-    DOCTOR_ENCOUNTERS, DOCTOR_INTRO_SCENES, DOCTOR_POST_FIGHT_SCENES, nextDoctorEncounter,
-    DOCTOR_FINAL_ENCOUNTER_INDEX,
-    FINAL_ENCOUNTER_INDEX: 9,
-    storyIntroLocked: { current: false }, storyRecapLocked: { current: false },
-    quizPassed: { current: false }, quizAnswerLocked: { current: false },
-    createStoryQuiz, answerStoryQuiz, advanceStoryQuiz, quizRecoveryIndex,
-    useCallback: (fn) => fn,
-    playTone: () => {},
-    openStoryQuiz: () => calls.push("quiz"),
-    completeDiscipleCampaign: () => calls.push("disciple-ending"),
-    nextEncounterAfterReview: (index) => ({ completed: false, index: index + 1 }),
-    window: {
-      setTimeout: (fn) => fn(),
-      localStorage: {
-        getItem: (key) => entries.get(key) ?? null,
-        setItem: (key, value) => entries.set(key, value),
-        removeItem: (key) => entries.delete(key),
-      },
-    },
-    preloadFightAssets: async (fighter, opponent, progress, background) => {
-      calls.push({ fighter, opponent, background }); progress(100);
-    },
-    resetGame: () => { calls.push("combat-engine"); context.phase = "playing"; },
-  };
-  for (const setter of [...page.matchAll(/\b(set\w+)\(/g)].map((match) => match[1])) {
-    const key = setter.slice(3, 4).toLowerCase() + setter.slice(4);
-    context[setter] = (value) => { context[key] = typeof value === "function" ? value(context[key]) : value; };
-  }
-  function callback(name) {
-    context.activeStoryEncounters = context.storyCampaign === "doctor" ? DOCTOR_ENCOUNTERS : STORY_ENCOUNTERS;
-    context.activeIntroScenes = context.storyCampaign === "doctor" ? doctorIntroScenes(context.storyIndex) : STORY_INTRO_SCENES;
-    context.activeRecapScenes = context.storyCampaign === "doctor" ? DOCTOR_POST_FIGHT_SCENES : STORY_POST_FIGHT_SCENES;
-    const start = page.indexOf(`  const ${name} = useCallback(`);
-    assert.ok(start >= 0, name);
-    const end = page.indexOf("\n  const ", start + 1);
-    const code = ts.transpileModule(`(() => {\n${page.slice(start, end)}\nreturn ${name};\n})();`, {
-      compilerOptions: { target: ts.ScriptTarget.ES2022 },
-    }).outputText;
-    return vm.runInNewContext(code, context);
-  }
-  context.prepareStoryFight = (index) => callback("prepareStoryFight")(index);
-  context.openDoctorQuiz = () => callback("openDoctorQuiz")();
-  context.completeDoctorCampaign = () => callback("completeDoctorCampaign")();
-  return { context, calls, entries, callback };
-}
+import { campaignHarness } from "./story-campaign-harness.mjs";
 
 test("Doutor mantém a conquista necessária para entrar", () => {
   const locked = campaignHarness(false);
@@ -736,7 +679,8 @@ test("quatro acertos levam às quatro artes e à luta com o clone; erro não alt
   callback("openStoryOutro")();
   assert.equal(context.phase, "doctor-complete");
   assert.deepEqual(nextDoctorEncounter(14), {completed:true,pending:false,index:14});
-  assert.deepEqual([...entries], before);
+  assert.equal(entries.get("philo-kombat:story:grand-unlocked"), "1");
+  assert.deepEqual([...entries].filter(([key]) => !key.includes("grand")), before);
   assert.deepEqual(storyImagePreloadUrls({mode:"versus",campaign:"doctor",phase:"story-intro",encounterIndex:14}), []);
 });
 

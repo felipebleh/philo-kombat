@@ -60,7 +60,7 @@ test("mesh never folds over or tears throughout the stride", () => {
 test("walking and attacks retain the approved high-resolution source images", async () => {
   const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
   const component = await readFile(new URL("../app/fighter-walk.tsx", import.meta.url), "utf8");
-  assert.match(component, /darwin-fullbody-hq\.webp\?v=3\.8\.1/);
+  assert.match(component, /darwin-fullbody-clean-hq\.webp\?v=5\.3\.1/);
   assert.match(component, /canvas\.width = art\.naturalWidth/);
   assert.match(component, /canvas\.height = art\.naturalHeight/);
   for (const move of ["punch", "kick", "combo"]) {

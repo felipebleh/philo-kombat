@@ -1,3 +1,5 @@
+import sidartaHdArt from "./sidarta-hd-art.json";
+
 export const FIGHTER_THUMBNAILS: Record<string, string> = {
   "felipe-cyborg": "/game/thumb-felipe-cyborg.webp",
   felipe: "/game/thumb-felipe.webp",
@@ -7,7 +9,7 @@ export const FIGHTER_THUMBNAILS: Record<string, string> = {
   socrates: "/game/thumb-socrates.webp",
   diogenes: "/game/thumb-diogenes.webp",
   aristotle: "/game/thumb-aristotle.webp",
-  sidarta: "/game/thumb-sidarta.webp",
+  sidarta: "/game/thumb-sidarta-v2.webp",
   confucius: "/game/thumb-confucius.webp",
   marcus: "/game/thumb-marcus.webp",
   hypatia: "/game/thumb-hypatia.webp",
@@ -125,16 +127,23 @@ const FIGHTER_ASSETS: Record<string, readonly string[]> = {
     "/game/aristotle-bust.webp",
   ],
   sidarta: [
-    "/game/sidarta.webp",
-    "/game/sidarta-spritesheet-clean.webp",
+    "/game/sidarta-fullbody-hq-v2.webp",
+    "/game/sidarta-spritesheet-hd-v1.webp",
+    "/game/sidarta-walk-3-hq-v3.webp",
+    "/game/sidarta-walk-body-v4.webp",
+    "/game/sidarta-walk-foot-v4.webp",
+    "/game/sidarta-guard-hq-v3.webp",
+    sidartaHdArt.lotus.src,
   ],
   confucius: [
     "/game/confucio.webp",
-    "/game/confucio-spritesheet.webp",
+    "/game/confucio-spritesheet-clean-v2.webp",
+    ...Array.from({length:36}, (_,index) => `/game/confucio-hd-v3/frame-${String(index).padStart(2,"0")}.webp`),
   ],
   marcus: [
     "/game/marco-aurelio.webp",
     "/game/marco-aurelio-spritesheet.webp",
+    ...Array.from({length:36}, (_,index) => `/game/marco-aurelio-hd-v2/frame-${String(index).padStart(2,"0")}.webp`),
   ],
   hypatia: [
     "/game/hipatia.webp",
@@ -201,6 +210,8 @@ const FIGHTER_ASSETS: Record<string, readonly string[]> = {
     "/game/adam-smith-spritesheet-hq.webp?v=3.1",
     "/game/adam-smith-punch-impact-hq-v2.webp?v=3.1.3",
     "/game/adam-smith-invisible-hand.webp?v=3.1",
+    ...Array.from({length:36}, (_,i) => `/game/adam-smith-hd-v1/frame-${String(i).padStart(2,"0")}.webp`),
+    "/game/adam-smith-hd-v1/super.webp",
   ],
   kant: [
     "/game/kant-fullbody-hq.webp?v=3.2",
@@ -259,7 +270,7 @@ const FIGHTER_ASSETS: Record<string, readonly string[]> = {
     "/game/freud-thanatos-hq.webp?v=3.7",
   ],
   darwin: [
-    "/game/darwin-fullbody-hq.webp?v=3.8.1",
+    "/game/darwin-fullbody-clean-hq.webp?v=5.3.1",
     "/game/darwin-punch-hq.webp?v=3.8.1",
     "/game/darwin-kick-hq.webp?v=3.8.1",
     "/game/darwin-combo-hq.webp?v=3.8.1",
@@ -273,6 +284,7 @@ const FIGHTER_ASSETS: Record<string, readonly string[]> = {
     "/game/olympe-combo-hq.webp?v=3.9",
     "/game/olympe-declaration-vfx.webp?v=3.9",
     "/game/olympe-tribune-vfx.webp?v=3.9",
+    ...Array.from({length:8},(_,i)=>`/game/olympe-motion-v2/pose-${i}.webp`),
   ],
   kierkegaard: [
     "/game/kierkegaard-combo-v3/combo-ready.webp",
@@ -297,17 +309,22 @@ const FIGHTER_ASSETS: Record<string, readonly string[]> = {
     "/game/kierkegaard-combo-hq.webp?v=4.0",
   ],
   beauvoir: [
-    "/game/beauvoir-fullbody-hq.webp?v=4.1",
-    "/game/beauvoir-guard-frame.webp?v=4.1",
-    "/game/beauvoir-punch-hq.webp?v=4.1",
-    "/game/beauvoir-kick-hq.webp?v=4.1",
-    "/game/beauvoir-combo-hq.webp?v=4.1",
+    "/game/beauvoir-block-v2.webp",
+    "/game/beauvoir-fullbody-hq-clean-v2.webp",
+    "/game/beauvoir-guard-frame-clean-v2.webp",
+    "/game/beauvoir-punch-hq-clean-v2.webp",
+    "/game/beauvoir-kick-hq-clean-v2.webp",
+    "/game/beauvoir-combo-hq-clean-v2.webp",
   ],
   foucault: [
-    "/game/foucault-fullbody-hq.webp?v=4.2",
-    "/game/foucault-guard-frame.webp?v=4.2",
+    "/game/foucault-idle-clean-v2.webp",
+    "/game/foucault-guard-v2.webp",
+    "/game/foucault-walk-a-v2.webp",
+    "/game/foucault-walk-b-v2.webp",
+    "/game/foucault-fullbody-clean-v2.webp",
+    "/game/foucault-idle-clean-v2.webp",
     "/game/foucault-punch-hq.webp?v=4.2",
-    "/game/foucault-kick-hq.webp?v=4.2",
+    "/game/foucault-kick-book-v2.webp",
     "/game/foucault-combo-hq.webp?v=4.2",
   ],
   arendt: [
@@ -318,6 +335,8 @@ const FIGHTER_ASSETS: Record<string, readonly string[]> = {
     "/game/arendt-combo-hq.webp?v=4.3",
   ],
   wittgenstein: [
+    "/game/wittgenstein-guard-v2.webp",
+    "/game/wittgenstein-silence-v2.webp",
     "/game/wittgenstein-fullbody-hq.webp?v=4.4",
     "/game/wittgenstein-punch-hq.webp?v=4.4",
     "/game/wittgenstein-kick-hq.webp?v=4.4",
@@ -333,6 +352,8 @@ const FIGHTER_ASSETS: Record<string, readonly string[]> = {
     "/game/angela-davis-panther-hq.webp?v=4.5.1",
   ],
   "paulo-freire": [
+    "/game/paulo-freire-guard-v2.webp",
+    "/game/paulo-freire-liberating-v2.webp",
     "/game/paulo-freire-fullbody-hq.webp?v=4.6",
     "/game/paulo-freire-punch-hq.webp?v=4.6",
     "/game/paulo-freire-kick-hq.webp?v=4.6",
@@ -341,6 +362,8 @@ const FIGHTER_ASSETS: Record<string, readonly string[]> = {
     "/game/paulo-freire-book-hq.webp?v=4.6",
   ],
   fanon: [
+    "/game/fanon-guard-v2.webp",
+    "/game/fanon-release-v2.webp",
     "/game/fanon-fullbody-hq.webp?v=4.7",
     "/game/fanon-punch-hq.webp?v=4.7",
     "/game/fanon-kick-hq.webp?v=4.7",
@@ -369,6 +392,10 @@ const FIGHTER_ASSETS: Record<string, readonly string[]> = {
     "/game/turing-digital-explosion-hq.webp?v=4.11",
   ],
   deleuze: [
+    "/game/guattari-assist-hq.webp?v=4.12",
+    "/game/deleuze-walk-a-v2.webp",
+    "/game/deleuze-walk-b-v2.webp",
+    "/game/deleuze-guard-v2.webp",
     "/game/deleuze-fullbody-hq.webp?v=4.12",
     "/game/deleuze-punch-hq.webp?v=4.12",
     "/game/deleuze-kick-hq.webp?v=4.12",
@@ -403,11 +430,11 @@ const FIGHTER_ASSETS: Record<string, readonly string[]> = {
 export const fighterThumbnailArt = (fighter: string) =>
   FIGHTER_THUMBNAILS[fighter] ?? FIGHTER_THUMBNAILS.plato;
 
-export const fightAssetUrls = (player: string, opponent: string, arena = (player === "felipe-cyborg" || opponent === "felipe-cyborg") ? FIGHTER_ARENAS["felipe-cyborg"] : FIGHTER_ARENAS[player]) =>
+export const fightAssetUrls = (player: string, opponent: string, arena = (player === "felipe-cyborg" || opponent === "felipe-cyborg") ? FIGHTER_ARENAS["felipe-cyborg"] : FIGHTER_ARENAS[player], opponentArt?: string) =>
   Array.from(
     new Set([
       ...(FIGHTER_ASSETS[player] ?? []),
-      ...(FIGHTER_ASSETS[opponent] ?? []),
+      ...(opponentArt ? [opponentArt] : FIGHTER_ASSETS[opponent] ?? []),
       arena,
       "/game/victory-spritesheet.webp",
     ].filter(Boolean)),
@@ -418,8 +445,9 @@ export async function preloadFightAssets(
   opponent: string,
   onProgress?: (progress: number) => void,
   arena?: string,
+  opponentArt?: string,
 ) {
-  const urls = fightAssetUrls(player, opponent, arena);
+  const urls = fightAssetUrls(player, opponent, arena, opponentArt);
   let completed = 0;
 
   await Promise.all(

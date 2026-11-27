@@ -120,3 +120,9 @@ test("hover and pointer focus do not scroll the roster; keyboard navigation reta
     assert.equal(calls.length,method==="pointer"?0:1);
   }
 });
+
+test('Sidarta remains the confirmed P1 while the opponent preview shows Krenak',()=>{
+ const {html}=fixture('opponent','sidarta','krenak');
+ const left=html.match(/<article[^>]*versus-player[\s\S]*?<\/article>/)?.[0];
+ assert.ok(left);assert.match(left,/CONFIRMADO/);assert.match(left,/sidarta-fullbody-hq-v2.webp/);assert.match(left,/<h3>SIDARTA<\/h3>/);assert.doesNotMatch(left,/krenak-fullbody/);
+});

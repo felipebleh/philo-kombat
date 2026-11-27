@@ -171,3 +171,38 @@
   .paulo-effect > b { letter-spacing:.04em; max-width:92%; white-space:normal; }
   .paulo-flying-book { width:clamp(150px,34vw,250px); }
 }
+
+/* 5.3: no empty sheet cells, soft visible hurt, native guard/open-book motion. */
+.fighter-paulo-freire.hit {filter:none;animation:none;opacity:1;}
+.fighter-paulo-freire:is(.hit,.guard,.guard-hit,.knocked-out) .fighter-sprite {
+ animation:none!important;background-position:50% 100%!important;background-size:contain;opacity:1;visibility:visible;filter:none;
+}
+.fighter-paulo-freire:is(.attack-punch,.attack-kick) .fighter-sprite {animation:none!important;background-position:50% 100%!important;}
+.fighter-paulo-freire.attack-combo .fighter-sprite {background-position:50% 100%!important;}
+.fighter.fighter-paulo-freire.impact-flash>.fighter-sprite {filter:none!important;}
+.fighter-paulo-freire.impact-flash>.fighter-sprite::after {
+ content:"";position:absolute;inset:0;pointer-events:none;background:rgba(255,255,255,.35);
+ mask:url('/game/paulo-freire-fullbody-hq.webp?v=4.6') center bottom/contain no-repeat;
+}
+.fighter-paulo-freire:is(.guard,.guard-hit) {animation:none;filter:none;}
+.fighter-paulo-freire:is(.guard,.guard-hit)::before {display:none;}
+.freire-motion-canvas {display:block;width:100%;height:100%;pointer-events:none;}
+.fighter-paulo-freire .fighter-sprite:has(.freire-motion-canvas[data-ready="true"]) {background-image:none!important;animation:none!important;}
+.fighter-paulo-freire:is(.attack-punch,.attack-kick,.attack-combo)::after {display:none;}
+.fighter-paulo-freire.attack-kick {animation-duration:620ms;}
+/* The trousers were desaturated by the generic knockout/FINISH filters. */
+.battle-frame .fighter-paulo-freire.knocked-out {filter:brightness(.88) drop-shadow(0 10px 10px rgba(0,0,0,.65));opacity:1;}
+.fighter-player.fighter-paulo-freire.knocked-out .fighter-sprite {transform:translateX(-50%) translateY(-20%) rotate(65deg) scale(.66);}
+.fighter-enemy.fighter-paulo-freire.knocked-out .fighter-sprite {transform:translateX(-50%) translateY(-20%) scaleX(-1) rotate(65deg) scale(.66);}
+.ending-fighter.ending-paulo-freire {bottom:4%;height:72%;box-sizing:border-box;padding-bottom:54px;}
+.ending-fighter.ending-paulo-freire img {object-fit:contain;object-position:center bottom;padding-bottom:10px;box-sizing:border-box;}
+.ending-paulo-freire .ending-name {bottom:0;left:0;right:0;max-width:100%;text-align:center;white-space:normal;overflow:visible;text-overflow:clip;letter-spacing:.07em;padding:7px 4px;}
+.effect-paulo-banking .special-colorwash {background:rgba(0,0,0,.35);opacity:1;animation:none;}
+.effect-paulo-liberating-book .special-colorwash {background:rgba(0,0,0,.4);opacity:1;animation:none;}
+.fighter-paulo-freire.special-banking-education {animation:freire-book-rejection 1450ms ease-out;}
+.fighter-paulo-freire.special-liberating-education {animation:none;}
+@keyframes freire-book-rejection {0%,30%,100%{transform:translateX(-50%)}62%{transform:translateX(-50%) translateX(var(--paulo-lunge))}}
+.freire-effects-canvas {position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:14;}
+.battle-frame:has(.fighter-paulo-freire) .coherence-bar>span {transition:none;}
+/* Raised hands fit above the existing body stage without shrinking his body. */
+.fighter-paulo-freire.special-liberating-education .fighter-sprite {height:115.8854%;aspect-ratio:1400 / 1780;}

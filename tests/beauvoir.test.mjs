@@ -71,11 +71,11 @@ test("walking preserves size, face and a continuous native-resolution mesh", () 
 
 test("combat poses share one canvas and no pose changes Beauvoir's scale", async () => {
   for (const name of ["guard-frame","punch-hq","kick-hq","combo-hq"]) {
-    const path = `beauvoir-${name}.webp`;
+    const path = `beauvoir-${name}-clean-v2.webp`;
     const webp = await readFile(new URL(`../public/game/${path}`, import.meta.url));
     assert.deepEqual(webpMetadata(webp), { width: 2048, height: 1536, hasAlpha: true });
-    assert.ok(assets.includes(`/game/${path}?v=4.1`));
-    assert.ok(css.includes(`/game/${path}?v=4.1`));
+    assert.ok(assets.includes(`/game/${path}`));
+    assert.ok(css.includes(`/game/${path}`));
   }
   assert.match(css, /aspect-ratio: 4 \/ 3/);
   for (const line of css.split("\n").filter(line => /^@keyframes beauvoir-(idle|jab|kick|combo|becoming-poses)/.test(line))) {
@@ -83,13 +83,10 @@ test("combat poses share one canvas and no pose changes Beauvoir's scale", async
   }
 });
 
-test("specials stay on the opponent and Tornar-se shows exactly one Beauvoir", () => {
-  assert.match(page, /beauvoirTarget = beauvoirEffectFromPlayer \? enemyPosition : playerPosition/);
-  assert.match(page, /"--beauvoir-facing": beauvoirEffectFromPlayer \? 1 : -1/);
-  assert.match(css, /\.effect-beauvoir-becoming \.fighter-beauvoir \{ visibility: hidden; \}/);
-  assert.equal((page.match(/className="beauvoir-becoming-actor"/g) || []).length, 1);
-  assert.match(css, /78%,86%\{left:var\(--beauvoir-landing\);bottom:2\.8%\}/);
-  assert.match(css, /0%,76%\{opacity:0/);
-  assert.match(page, /selectedFighter !== "beauvoir"/);
-  assert.match(page, /opponentFighter !== "beauvoir"/);
+test("Beauvoir's special effects use the committed opponent position", async () => {
+  const effects = await readFile(new URL("../app/beauvoir-effects.tsx", import.meta.url), "utf8");
+  assert.match(page, /<BeauvoirEffects\b[^>]+contact=\{beauvoirImpact\}/);
+  assert.match(page, /beauvoirContact\("player",moveName,current\.playerPosition,current\.enemyPosition\)/);
+  assert.match(page, /beauvoirContact\("enemy",moveName,current\.enemyPosition,impactPosition\)/);
+  assert.match(effects, /x=hit\.position\*w\/100/);
 });

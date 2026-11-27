@@ -93,11 +93,10 @@ test("all four poses share one transparent high-resolution canvas", async () => 
   assert.match(css, /height: 100%/);
 });
 
-test("both effects land at the opponent while only one Wittgenstein is drawn", () => {
-  assert.match(page, /wittgensteinTarget = wittgensteinEffectFromPlayer \? enemyPosition : playerPosition/);
-  assert.match(page, /"--wittgenstein-target": `\$\{wittgensteinTarget\}%`/);
-  assert.match(css, /left: var\(--wittgenstein-target\)/);
-  assert.match(page, /selectedFighter !== "wittgenstein"/);
-  assert.match(page, /opponentFighter !== "wittgenstein"/);
-  assert.equal((page.match(/className="wittgenstein-poker-line"/g) ?? []).length, 1);
+test("Wittgenstein's effects use the committed opponent position", async () => {
+  const effects = await readFile(new URL("../app/wittgenstein-effects.tsx", import.meta.url), "utf8");
+  assert.match(page, /<WittgensteinEffects\b[^>]+contact=\{wittContact\}/);
+  assert.match(page, /wittgensteinContact\("player",moveName,current\.enemyPosition\)/);
+  assert.match(page, /wittgensteinContact\("enemy",moveName,impactPosition\)/);
+  assert.match(effects, /x=hit\.position\*w\/100/);
 });

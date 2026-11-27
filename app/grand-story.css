@@ -1,0 +1,34 @@
+.grand-intro-caption {position:absolute;left:8%;right:8%;bottom:90px;z-index:3;padding:20px 26px;background:rgba(6,12,23,.95);border:1px solid #c2a16b;color:#fff2d8;font:clamp(16px,2vw,26px)/1.45 Georgia,serif;text-align:left;box-shadow:0 8px 36px #0009;}
+.game-shell:is(.phase-grand-complete, .phase-grand-epilogue) {width:100%;max-width:none;padding:0;min-height:100svh;background:#090e19;}
+.game-shell:is(.phase-grand-complete, .phase-grand-epilogue) > :is(.control-deck,.concept-panel,footer) {display:none;}
+.game-shell:is(.phase-grand-complete, .phase-grand-epilogue) > .game-header {position:fixed;top:0;right:0;z-index:220;width:auto;padding:6px;background:transparent;border:0;}
+.game-shell:is(.phase-grand-complete, .phase-grand-epilogue) > .game-header > :not(.audio-controls) {display:none;}
+.game-shell:is(.phase-grand-complete, .phase-grand-epilogue) .battle-frame {position:fixed;inset:0;width:100%;height:100svh;min-height:0;max-height:none;margin:0;border:0;border-radius:0;transform:none;overflow:hidden;}
+.battle-frame.phase-grand-complete > :not(.grand-ending) {display:none!important;}
+.grand-ending {position:absolute;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;gap:20px;overflow-y:auto;padding:64px 28px 28px;background:radial-gradient(ellipse at 50% 0,#34301f 0,transparent 60%),#090e19;color:#f7eedb;text-align:center;}
+.grand-ending-copy {max-width:800px;}
+.grand-ending h2 {font:clamp(28px,5vw,64px)/1.1 Georgia,serif;margin:12px 0;color:#e6c785;letter-spacing:.06em;}
+.grand-ending-copy > p {font-size:clamp(15px,1.4vw,20px);line-height:1.5;margin:10px 0;}
+.grand-ending-copy .grand-ending-line {font:italic clamp(23px,3vw,38px)/1.3 Georgia,serif;}
+.grand-ending blockquote {margin:20px 0;font:italic 20px/1.6 Georgia,serif;color:#d0c5b1;}
+.grand-ending-copy .grand-ending-signature {font-size:12px;letter-spacing:.15em;color:#ddbc79;}
+.grand-ending-roster {display:grid;grid-template-columns:repeat(auto-fit,minmax(95px,1fr));gap:12px;width:min(100%,1100px);}
+.grand-ending-roster figure {margin:0;min-width:0;padding:10px 4px;border:1px solid #b4976138;background:#121c29;}
+.grand-ending-roster img {display:block;width:62px;height:62px;object-fit:cover;object-position:center top;margin:0 auto 10px;border-radius:50%;border:1px solid #ddbc79;}
+.grand-ending-roster figcaption {font-size:10px;line-height:1.4;color:#e7d9bc;}
+.grand-ending-actions {display:flex;flex-wrap:wrap;justify-content:center;gap:14px;padding:8px 0 max(12px,env(safe-area-inset-bottom));}
+.grand-ending-actions button {min-height:48px;padding:14px 20px;border:1px solid #ddbc79;background:#312a1c;color:#fff2d8;font:inherit;font-size:13px;cursor:pointer;}
+.grand-ending-actions button:focus-visible,.grand-ending-actions button:hover {outline:2px solid #e6c785;outline-offset:3px;background:#51412a;}
+@media(max-width:600px) {
+ .grand-intro-caption {left:4%;right:4%;bottom:85px;padding:14px;font-size:16px;}
+ .grand-ending {padding:68px 16px 20px;gap:14px;}
+ .grand-ending-roster {grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+ .grand-ending blockquote {font-size:17px;}
+}
+@media(max-height:500px) and (orientation:landscape) {
+ .grand-intro-caption {bottom:65px;padding:8px 14px;font-size:15px;}
+ .grand-ending {padding-top:48px;}
+}
+
+.story-scene-actions button:disabled {opacity:.4;cursor:default;}
+.developer-access-note {margin:12px 0;color:#e6c785;font-size:12px;line-height:1.5;letter-spacing:.08em;}

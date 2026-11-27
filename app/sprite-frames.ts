@@ -64,11 +64,11 @@ export function amenemopeFrame(action: string, elapsed: number) {
   const durations: Record<string, number> = { "attack-punch": 520, "attack-kick": 620, hit: 440, "special-feather": 1050, "special-scale": 1050 };
   if (action === "attack-combo") {
     const progress = Math.min(.9999, elapsed / 780);
-    const index = progress < .5 ? Math.min(5, Math.floor(progress / .09)) : Math.min(5, Math.floor((progress - .5) / .1));
+    const index = Math.min(5, Math.floor((progress < .5 ? progress * 2 : (progress - .5) * 2) * 6));
     return { row: progress < .5 ? 2 : 3, column: index };
   }
   const row = action === "attack-punch" ? 2 : action === "attack-kick" ? 3 : action === "hit" || action === "guard-hit" ? 4 : action.startsWith("special-") ? 5 : action === "advance" || action === "retreat" ? 1 : 0;
   const loop = row < 2;
   const duration = durations[action] ?? (row === 1 ? 330 : 900);
-  return { row, column: Math.min(5, Math.floor((loop ? (elapsed % duration) / duration : Math.min(1, elapsed / duration)) * 5)) };
+  return { row, column: Math.min(5, Math.floor((loop ? (elapsed % duration) / duration : Math.min(1, elapsed / duration)) * 6)) };
 }

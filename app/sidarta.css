@@ -1,0 +1,24 @@
+/* Same world scale, floor, lunge and jump as Felipe; Sidarta retains his own poses. */
+.fighter.fighter-sidarta{bottom:2.8%;width:clamp(225px,28vw,420px);height:82%;--felipe-lunge:7%;--felipe-recoil:-3%;}
+.fighter-enemy.fighter-sidarta{--felipe-lunge:-7%;--felipe-recoil:3%;}
+.fighter-sidarta .fighter-sprite.sidarta-sheet{inset:auto auto 0 50%;width:auto;height:100%;aspect-ratio:75/64;background:none!important;animation:none!important;transform:translateX(-50%);image-rendering:auto;}
+.fighter-enemy.fighter-sidarta .fighter-sprite.sidarta-sheet{transform:translateX(-50%) scaleX(-1);}
+.sidarta-canvas{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0px 2px 3px rgba(0,0,0,.65));}
+.sidarta-walk-canvas{position:absolute;inset:0;display:block;width:100%;height:100%;pointer-events:none;filter:contrast(1.16) saturate(1.10) drop-shadow(0px 2px 3px rgba(0,0,0,.65));}
+.fighter-sidarta .fighter-shadow{display:none;}
+.fighter-sidarta:is(.advance,.retreat){animation:none;transition:left 640ms linear;}
+.fighter-sidarta.attack-punch{animation:felipe-lunge 560ms ease-out;}
+.fighter-sidarta.attack-kick{animation:felipe-lunge 680ms ease-out;}
+.fighter-sidarta.attack-combo{animation:felipe-combo-weight 1000ms ease-out;}
+.fighter-sidarta:is(.special-awakening,.special-dharma,.guard,.guard-hit,.victory){animation:none;}
+.sidarta-effects{position:absolute;inset:0;width:100%;height:100%;z-index:18;pointer-events:none;}
+.battle-frame.sidarta-dharma-impact{animation:sidarta-dharma-contact 220ms ease-out;}
+@keyframes sidarta-dharma-contact{0%,100%{translate:0}20%{translate:-5px 2px}45%{translate:5px -2px}70%{translate:-3px 1px}}
+.portrait-sidarta{--crop-left:0;--crop-top:0;--crop-size:320;}
+.versus-sidarta .versus-panel-art img{object-fit:contain;object-position:center bottom;}
+.ending-fighter.ending-sidarta{bottom:6%;height:72%;padding-bottom:42px;box-sizing:border-box;}
+.ending-fighter.ending-sidarta.is-winner{bottom:7%;height:61%;width:42%;left:1%;}
+.ending-fighter.ending-sidarta img{height:100%;width:100%;object-fit:contain;object-position:center bottom;padding-bottom:12px;box-sizing:border-box;}
+.ending-sidarta .ending-name{bottom:0;left:12%;right:auto;max-width:85%;}
+@media(max-width:760px){.ending-fighter.ending-sidarta.is-winner{width:45%;height:57%;bottom:9%}.ending-sidarta .ending-name{font-size:9px;letter-spacing:.12em}}
+@media(prefers-reduced-motion:reduce){.battle-frame.sidarta-dharma-impact{animation:none}}

@@ -1,3 +1,4 @@
+import { GRAND_INTRO_SCENES, GRAND_POST_FIGHT_SCENES } from "./grand-story.mjs";
 import { DOCTOR_ENDING_ASSETS } from "./doctor-ending.mjs";
 
 export const STORY_STORAGE_KEY = "philo-kombat:story:disciple";
@@ -966,10 +967,10 @@ export function storyImagePreloadUrls({
 }) {
   if (mode !== "story") return [];
   if (phase === "story-intro") {
-    const intro = campaign === "doctor" ? doctorIntroScenes(encounterIndex) : STORY_INTRO_SCENES;
+    const intro = campaign === "grand" ? GRAND_INTRO_SCENES : campaign === "doctor" ? doctorIntroScenes(encounterIndex) : STORY_INTRO_SCENES;
     return intro.slice(introIndex, introIndex + 2).map(({ image }) => image);
   }
-  const postFightScenes = campaign === "doctor" ? DOCTOR_POST_FIGHT_SCENES : STORY_POST_FIGHT_SCENES;
+  const postFightScenes = campaign === "grand" ? GRAND_POST_FIGHT_SCENES : campaign === "doctor" ? DOCTOR_POST_FIGHT_SCENES : STORY_POST_FIGHT_SCENES;
   const recap = postFightScenes[encounterIndex] ?? [];
   if (phase === "story-recap") {
     return recap.slice(sceneStep, sceneStep + 2).map(({ image }) => image);
@@ -977,7 +978,7 @@ export function storyImagePreloadUrls({
   if (phase !== "playing" && phase !== "won") return [];
   if (campaign === "doctor" && encounterIndex === DOCTOR_FINAL_ENCOUNTER_INDEX) return [...DOCTOR_ENDING_ASSETS];
   const urls = recap.slice(0, 1).map(({ image }) => image);
-  if (campaign !== "doctor" && encounterIndex === STORY_ENCOUNTERS.length - 1) {
+  if (campaign === "disciple" && encounterIndex === STORY_ENCOUNTERS.length - 1) {
     urls.push("/game/story-ending-philosophers-v1.webp", "/game/story-ending-felipe-toss-v1.webp");
   }
   return urls;

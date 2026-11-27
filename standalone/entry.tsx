@@ -14,6 +14,7 @@ import "../app/turing.css";
 import "../app/deleuze.css";
 import "../app/superintelligence.css";
 import "../app/felipe.css";
+import "../app/sidarta.css";
 import "../app/plato.css";
 import "../app/aristotle.css";
 import "../app/augustine.css";
@@ -26,6 +27,9 @@ import "../app/hegel.css";
 import "../app/freud.css";
 import "../app/cyborg.css";
 import "../app/doctor-ending.css";
+import "../app/grand-story.css";
+import "../app/grand-epilogue.css";
+import "../app/amenemope.css";
 import "./fonts.css";
 
 createRoot(document.getElementById("root")!).render(<Game />);

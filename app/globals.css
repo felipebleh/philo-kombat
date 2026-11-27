@@ -3251,7 +3251,7 @@ button {
 
 .title-content {
   position: relative;
-  z-index: 3;
+  z-index: 6;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -3360,25 +3360,24 @@ button {
   letter-spacing: 0.025em;
   line-height: 0.82;
   text-transform: uppercase;
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.08);
-  text-shadow:
-    0 2px 0 rgba(255, 255, 255, 0.08),
-    0 5px 0 rgba(0, 0, 0, 0.86),
-    0 12px 25px rgba(0, 0, 0, 0.88);
+  -webkit-text-stroke: 0.6px rgba(255, 244, 218, 0.28);
+  text-shadow: none;
 }
 
 .logo-philo {
   color: transparent;
-  background: linear-gradient(180deg, #fff8df 5%, #e7d8b4 55%, #9e885d 100%);
+  background: linear-gradient(180deg, #ffffff 5%, #fff0c5 55%, #e5c074 100%);
   background-clip: text;
   -webkit-background-clip: text;
+  filter: drop-shadow(0 0 12px rgba(255, 231, 171, 0.16));
 }
 
 .logo-kombat {
   color: transparent;
-  background: linear-gradient(180deg, #ff7775 0%, #c83d43 52%, #71161e 100%);
+  background: linear-gradient(180deg, #ffb4a1 0%, #ff6a63 52%, #e54747 100%);
   background-clip: text;
   -webkit-background-clip: text;
+  filter: drop-shadow(0 0 12px rgba(255, 102, 93, 0.2));
 }
 
 @keyframes title-enter-pulse {
@@ -14083,7 +14082,7 @@ footer p {
   width: auto;
   height: 100%;
   aspect-ratio: 2 / 3;
-  background: url("/game/darwin-fullbody-hq.webp?v=3.8.1") 50% 100% / contain no-repeat;
+  background: url("/game/darwin-fullbody-clean-hq.webp?v=5.3.1") 50% 100% / contain no-repeat;
   animation: none;
   transform-origin: 50% 100%;
 }
@@ -14131,7 +14130,7 @@ footer p {
 /* Deform the original HQ texture, never a low-resolution walking cell. */
 .fighter-darwin.advance .fighter-sprite,
 .fighter-darwin.retreat .fighter-sprite {
-  background-image: url("/game/darwin-fullbody-hq.webp?v=3.8.1");
+  background-image: url("/game/darwin-fullbody-clean-hq.webp?v=5.3.1");
   background-size: contain;
   background-position: 50% 100%;
   background-repeat: no-repeat;
@@ -14667,11 +14666,11 @@ footer p {
   74%,88%{opacity:1;transform:translate(-50%,-50%) translateX(var(--olympe-travel)) scaleX(var(--olympe-facing)) scale(1)}
   100%{opacity:0;transform:translate(-50%,-50%) translateX(var(--olympe-travel)) scaleX(var(--olympe-facing)) scale(1.08)}
 }
-@keyframes olympe-declaration-impact { 0%,69%{opacity:0;transform:translate(-50%,-50%) scale(.1)} 84%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(8)} }
+@keyframes olympe-declaration-impact { 0%,69%{opacity:0;transform:translate(-50%,-50%) scale(.1)} 76.13%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(8)} }
 @keyframes olympe-special-title { 0%,28%,100%{opacity:0;transform:translateX(-50%) translateY(22px)} 46%,88%{opacity:1;transform:translateX(-50%) translateY(0)} }
 @keyframes olympe-tribune-rise { 0%,5%{opacity:0;transform:translateX(-50%) scale(.24,.06)} 18%{opacity:.72} 48%,91%{opacity:1;transform:translateX(-50%) scale(1)} 100%{opacity:0;transform:translateX(-50%) scale(1.04)} }
 @keyframes olympe-tribune-aura { 0%,100%{opacity:0;transform:translate(-50%,-50%) scale(.12)} 42%,88%{opacity:1;transform:translate(-50%,-50%) scale(1.3)} }
-@keyframes olympe-tribune-impact { 0%,67%{opacity:0;transform:translate(-50%,-50%) scale(.1)} 84%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(10)} }
+@keyframes olympe-tribune-impact { 0%,67%{opacity:0;transform:translate(-50%,-50%) scale(.1)} 81.32%{opacity:1;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(10)} }
 
 @media (max-width: 760px) {
   .fighter-olympe {
@@ -16289,4 +16288,111 @@ button.story-tier-card:disabled { cursor: not-allowed; }
   .story-art-navigation { gap: 6px; padding-left: 8px; padding-right: 8px; }
   .story-art-navigation button { min-width: 76px; padding: 8px 10px; font-size: 12px; }
   .story-art-count { font-size: 11px; }
+}
+
+/* Marco Aurélio: maintain the existing animated spritesheet and floor anchor. */
+.fighter.fighter-marcus { width:clamp(218px,28.8vw,428px); height:98.56%; bottom:3.5%; }
+.fighter-marcus .fighter-sprite.marcus-sheet { image-rendering:auto; filter:drop-shadow(0px 2px 3px rgba(0,0,0,.6)); }
+.fighter-marcus:is(.attack-punch,.attack-combo) { animation:none; }
+.ending-fighter.ending-marcus { padding-bottom:38px; box-sizing:border-box; }
+.ending-fighter.ending-marcus img { object-fit:contain; object-position:center bottom; padding-bottom:14px; box-sizing:border-box; }
+.marcus-kick-arc { position:absolute;z-index:22;bottom:30%;width:clamp(90px,12vw,180px);height:clamp(90px,12vw,180px);border:5px solid transparent;border-right-color:#f9d96f;border-top-color:#b675ed;border-radius:50%;filter:drop-shadow(0 0 10px #c68dfb);transform:translateX(-20%) rotate(28deg);pointer-events:none;animation:marcus-kick-trail 620ms ease-out both; }
+.marcus-kick-arc.is-enemy { transform:translateX(-80%) scaleX(-1) rotate(28deg); }
+@keyframes marcus-kick-trail { 0%,18%,100%{opacity:0} 36%,65%{opacity:.95} }
+.marcus-cosmos { position:absolute;inset:0;z-index:15;pointer-events:none;background:rgba(0,0,0,.35); }
+.marcus-cosmos i {position:absolute;width:42%;height:1px;left:29%;top:25%;background:#eac86a;box-shadow:0 0 9px #f6d774;transform:rotate(-22deg);}
+.marcus-cosmos i:nth-child(2){top:37%;transform:rotate(18deg)} .marcus-cosmos i:nth-child(3){top:52%;transform:rotate(-12deg)} .marcus-cosmos i:nth-child(4){top:63%;transform:rotate(25deg)}
+.marcus-cosmos i::before,.marcus-cosmos i::after{content:"";position:absolute;width:6px;height:6px;top:-3px;background:#fff4b5;border-radius:50%;box-shadow:0 0 12px #ffe496}.marcus-cosmos i::after{right:0}
+.battle-frame.marcus-impact-shake {animation:marcus-impact-contact 220ms ease-out}
+@keyframes marcus-impact-contact{0%,100%{translate:0}20%{translate:-6px 2px}45%{translate:6px -2px}70%{translate:-4px 1px}}
+.inner-citadel .citadel-dome {border-color:#ebd288;background:repeating-linear-gradient(30deg,transparent 0 40px,#d8b0fa44 41px 43px),radial-gradient(circle,#fcebb94a,#69478355 55%,transparent 72%)}
+@media(prefers-reduced-motion:reduce){.battle-frame.marcus-impact-shake{animation:none}}
+.fighter-marcus .marcus-sheet:has(.marcus-canvas[data-ready="true"]) { background-image:none; }
+.marcus-canvas { display:block;width:100%;height:100%;pointer-events:none; }
+/* Align the visible sandals to the fixed shadow after scaling. */
+.fighter.fighter-marcus { height:90%; }
+.fighter-marcus .fighter-sprite.marcus-sheet { bottom:-7%; }
+.combat-message.marcus-heal{color:#b5ffb8;border-color:#e9ce75;text-shadow:0 0 8px #5ae57d,0 0 15px #edc969;}
+/* Smith's cinematic overlay is synchronized to the combat clock. */
+.smith-cinematic { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:30; }
+.effect-smith-wealth .special-colorwash { background:transparent; animation:none; }
+.ending-fighter.ending-smith { bottom:4%; height:72%; box-sizing:border-box; padding-bottom:36px; }
+.ending-fighter.ending-smith img { object-fit:contain; object-position:center bottom; padding-bottom:10px; box-sizing:border-box; }
+.ending-smith .ending-name { bottom:0; }
+.fighter-smith .smith-sheet:has(.smith-canvas[data-ready="true"]) { background-image:none !important; }
+.smith-canvas { display:block; width:100%; height:100%; pointer-events:none; }
+/* Keep a visible high-definition stance until a punch frame is decoded. */
+.fighter-smith.attack-punch .smith-sheet:not(:has(.smith-canvas[data-ready="true"])) { background-image:url("/game/adam-smith-fullbody-hq.webp?v=3.1") !important; }
+/* Olympe: smaller body, anchored at the same ground point. */
+.fighter-olympe { width:clamp(218.5px,27.55vw,408.5px); height:77.9%; }
+.fighter-player.fighter-olympe.advance, .fighter-player.fighter-olympe.retreat { transition:none; }
+.fighter-olympe.hit { filter:none; }
+.fighter-olympe.hit .fighter-sprite { background-position:50% 100% !important; animation:none !important; filter:none; }
+.fighter.fighter-olympe.impact-flash > .fighter-sprite { filter:none !important; }
+.fighter-olympe.impact-flash > .fighter-sprite::after {
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:rgba(255,255,255,.35);
+  -webkit-mask:url("/game/olympe-fullbody-hq.webp?v=3.9") center bottom / contain no-repeat;
+  mask:url("/game/olympe-fullbody-hq.webp?v=3.9") center bottom / contain no-repeat;
+}
+.ending-fighter.ending-olympe.is-loser { bottom:4%; height:72%; box-sizing:border-box; padding-bottom:36px; }
+.ending-fighter.ending-olympe.is-loser img { object-fit:contain; object-position:center bottom; padding-bottom:10px; box-sizing:border-box; }
+.ending-olympe.is-loser .ending-name { bottom:0; }
+.select-overlay .select-heading { background:rgba(5,8,18,.96); border-radius:8px; position:relative; z-index:20; }
+@media (max-width:760px) { .fighter-olympe { width:clamp(204.25px,40.85vw,318.25px); height:74.1%; } }
+.olympe-motion-canvas { display:block; width:100%; height:100%; pointer-events:none; }
+.fighter-olympe .fighter-sprite:has(.olympe-motion-canvas[data-ready="true"]) { background-image:none !important; animation:none !important; }
+
+/* Darwin uses full-body HQ textures, never the generic cycling damage sheet. */
+.fighter.fighter-darwin.hit { filter:none; animation:none; }
+.fighter-darwin.hit .fighter-sprite {
+  animation:none !important;
+  background-position:50% 100% !important;
+  filter:none;
+  opacity:1;
+}
+.fighter.fighter-darwin.impact-flash > .fighter-sprite { filter:none !important; }
+.fighter-darwin.impact-flash > .fighter-sprite::after {
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:rgba(255,255,255,.35);
+  -webkit-mask:url("/game/darwin-fullbody-clean-hq.webp?v=5.3.1") center bottom / contain no-repeat;
+  mask:url("/game/darwin-fullbody-clean-hq.webp?v=5.3.1") center bottom / contain no-repeat;
+}
+.fighter-darwin .fighter-sprite { image-rendering:auto; }
+
+/* Reserve room for both boots and the name, independently of winner/loser. */
+.ending-fighter:is(.ending-darwin,.ending-felipe) {
+  bottom:4%; height:72%; box-sizing:border-box; padding-bottom:42px;
+}
+.ending-fighter:is(.ending-darwin,.ending-felipe) > :is(img,canvas) {
+  width:100%; height:100%; object-fit:contain; object-position:center bottom;
+  box-sizing:border-box; padding-bottom:10px;
+}
+.ending-fighter:is(.ending-darwin,.ending-felipe) .ending-name {
+  bottom:0; left:0; right:0; max-width:100%; box-sizing:border-box;
+  text-align:center; white-space:normal; overflow:visible; text-overflow:clip;
+  font-size:clamp(8px,1.2vw,10px); letter-spacing:.1em; padding:7px 4px;
+}
+.movement-controls .button-row { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:5px; }
+.movement-controls .button-row button {
+  grid-template-columns:1fr; justify-items:center; gap:4px; padding:7px 2px; text-align:center;
+}
+.movement-controls .button-row button span {
+  font-size:9px; letter-spacing:0; white-space:nowrap; overflow:visible; text-overflow:clip;
+}
+.round-clock > span:first-child { white-space:nowrap; font-size:clamp(7px,.75vw,9px); letter-spacing:.08em; }
+@media (max-width:480px) {
+  .movement-controls .button-row { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+
+/* Darwin's new joint animation uses the native HQ texture on a HiDPI mesh.
+   These rules do not match advance/retreat; the approved walk stays intact. */
+.darwin-motion-canvas { display:block; width:100%; height:100%; pointer-events:none; }
+.fighter-darwin .fighter-sprite:has(.darwin-motion-canvas[data-ready="true"]) {
+  background-image:none !important; animation:none !important; image-rendering:auto;
+}
+.fighter-darwin:is(.guard,.guard-hit) { animation:none; filter:none; }
+.fighter-darwin:is(.guard,.guard-hit) .fighter-sprite {
+  background-size:contain; background-position:50% 100% !important;
+  animation:none !important; filter:none;
 }

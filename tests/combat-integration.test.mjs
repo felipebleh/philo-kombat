@@ -4,6 +4,7 @@ import vm from "node:vm";
 import { readFile } from "node:fs/promises";
 import ts from "typescript";
 import * as story from "../app/story-mode.mjs";
+import * as grand from "../app/grand-story.mjs";
 import * as ending from "../app/story-ending.mjs";
 import * as quiz from "../app/story-quiz.mjs";
 import * as music from "../app/soundtrack.mjs";
@@ -12,6 +13,9 @@ const compiledModule = async path => {
   const js=ts.transpileModule(await readFile(new URL(path,import.meta.url),"utf8"),{compilerOptions:{module:ts.ModuleKind.ESNext}}).outputText;
   return import(`data:text/javascript;base64,${Buffer.from(js).toString("base64")}`);
 };
+const grandFinal=await compiledModule("../app/grand-final.ts");
+const amenemope=await compiledModule("../app/amenemope-motion.ts");
+const confucius=await compiledModule("../app/confucius-motion.ts");
 const freudPolish=await compiledModule("../app/freud-motion.ts");
 const kierkegaard=await compiledModule("../app/kierkegaard-motion.ts");
 const controls=await compiledModule("../app/combat-controls.ts"), felipe=await compiledModule("../app/felipe-animation.ts");
@@ -36,16 +40,16 @@ const instrument=ctx=>root=>ts.visitNode(root,function visit(node){
   return ts.visitEachChild(node,visit,ctx);
 });
 const compiled=ts.transpileModule(source,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.None,jsx:ts.JsxEmit.React},transformers:{before:[instrument]}}).outputText;
-function harness(mode="versus", fighter="plato", opponent="socrates") {
-  let now=0, nextId=0;
-  const state=new Map([["phase","playing"],["gameMode",mode],["selectedFighter",fighter],["selectedOpponent",opponent]]),refs=new Map(),effects=[],listeners=new Map(),raf=new Map(),timers=new Map(),intervals=new Map();
-  const context={...story,...ending,...quiz,...music,...audio,...controls,...felipe,...kierkegaard,...freudPolish,
-    __state:(name,initial)=>{if(!state.has(name))state.set(name,typeof initial==="function"?initial():initial);return [state.get(name),v=>state.set(name,typeof v==="function"?v(state.get(name)):v)];},
+function harness(mode="versus", fighter="plato", opponent="socrates", campaign="disciple", storyIndex=0) {
+  let now=0, nextId=0;const phaseSnapshots=[];
+  const state=new Map([["storyCampaign",campaign],["storyIndex",storyIndex],["phase","playing"],["gameMode",mode],["selectedFighter",fighter],["selectedOpponent",opponent]]),refs=new Map(),effects=[],listeners=new Map(),raf=new Map(),timers=new Map(),intervals=new Map();
+  const context={...grand,...grandFinal,...story,...ending,...quiz,...music,...audio,...controls,...felipe,...kierkegaard,...freudPolish,...amenemope,...confucius,
+    __state:(name,initial)=>{if(!state.has(name))state.set(name,typeof initial==="function"?initial():initial);return [state.get(name),v=>{const next=typeof v==="function"?v(state.get(name)):v;if(name==='phase'&&next==='finishing')phaseSnapshots.push({player:state.get('playerCoherence'),enemy:state.get('enemyCoherence'),refPlayer:refs.get('gameRef')?.current.playerCoherence,refEnemy:refs.get('gameRef')?.current.enemyCoherence});state.set(name,next);}];},
     __ref:(name,initial)=>{if(!refs.has(name))refs.set(name,{current:initial});return refs.get(name);},
     useCallback:f=>f,useEffect:f=>effects.push(f),React:{createElement:()=>({})},
     HTMLElement:class{},performance:{now:()=>now},Date,Math:Object.assign(Object.create(Math),{random:()=>.2}),console,
     requestAnimationFrame:f=>{const id=++nextId;raf.set(id,f);return id;},cancelAnimationFrame:id=>raf.delete(id),
-    document:{hidden:false,addEventListener(){},removeEventListener(){}},
+    document:{querySelector:()=>({getBoundingClientRect:()=>({width:1000})}),hidden:false,addEventListener(){},removeEventListener(){}},
     window:{localStorage:{getItem:()=>null},addEventListener:(name,f)=>listeners.set(name,f),removeEventListener(){},setTimeout:(f,delay)=>{const id=++nextId;timers.set(id,{f,at:now+delay});return id;},clearTimeout:id=>timers.delete(id),setInterval:(f,delay)=>{const id=++nextId;intervals.set(id,{f,delay});return id;},clearInterval:id=>intervals.delete(id)},
   };
   vm.createContext(context);vm.runInContext(compiled,context);
@@ -61,7 +65,13 @@ function harness(mode="versus", fighter="plato", opponent="socrates") {
   const step=ms=>{for(let remaining=ms;remaining>0;){const dt=Math.min(10,remaining);remaining-=dt;now+=dt;const pending=[...raf.values()];raf.clear();pending.forEach(f=>f(now));for(const[id,t]of timers)if(t.at<=now){timers.delete(id);t.f();}synchronize();}};
   const key=(name,type="keydown",repeat=false)=>listeners.get(type)?.({key:name,repeat,preventDefault(){}});
   const position=(player,enemy)=>{state.set("playerPosition",player);state.set("enemyPosition",enemy);synchronize();};
-  return{c,state,step,key,position,synchronize,random:value=>context.Math.random=()=>value,cpuInterval:()=>[...intervals.values()].find(value=>value.f.toString().includes("enemyAggression.current"))?.delay,cpuStep:()=>{for(const value of intervals.values())if(value.f.toString().includes("enemyAggression.current"))value.f();}};
+  const tickRoundTimer=()=>{
+    for(const [id,value] of intervals)if(value.f.toString().includes('setTime('))intervals.delete(id);
+    effects.length=0;vm.runInContext('controller = Home()',context);
+    for(const effect of effects)if(effect.toString().includes('const timer = window.setInterval'))effect();
+    for(const value of intervals.values())if(value.f.toString().includes('setTime('))value.f();
+  };
+  return{c,state,step,key,position,synchronize,tickRoundTimer,phaseSnapshots,random:value=>context.Math.random=()=>value,randomSequence:values=>{let i=0;context.Math.random=()=>values[Math.min(i++,values.length-1)];},cpuInterval:()=>[...intervals.values()].find(value=>value.f.toString().includes("enemyAggression.current"))?.delay,cpuStep:()=>{for(const value of intervals.values())if(value.f.toString().includes("enemyAggression.current"))value.f();}};
 }
 test("actual controller handles held movement and stops after keyup, independently of browser repeat",()=>{
   const h=harness();h.key("d");h.step(200);assert.ok(h.state.get("playerPosition")>21);
@@ -521,4 +531,501 @@ test('cyborg combo connects at620ms and walking stops on key release without can
  const h=harness('versus','felipe-cyborg','felipe');h.position(25,50);h.c.performMove('ideias');h.step(610);assert.equal(h.state.get('enemyCoherence'),100);h.step(10);assert.equal(h.state.get('enemyCoherence'),83);h.step(550);
  h.key('a');h.step(180);h.key('a','keyup');assert.equal(h.state.get('playerAction'),'idle');
  h.c.performMove('dialetica');h.key('a','keyup');assert.equal(h.state.get('playerAction'),'attack-punch');
+});
+
+test("Amenemope J advances ten pixels without overlap and hits at 35% greater reach on either side",()=>{
+ for(const mode of ["versus","story"]){
+  const p=harness(mode,"amenemope","felipe");p.position(20,59);p.c.performMove("dialetica");
+  assert.equal(p.state.get("playerPosition"),21);p.step(210);assert.equal(p.state.get("enemyCoherence"),100);
+  p.step(20);assert.ok(p.state.get("enemyCoherence")<100);
+  const cpu=harness(mode,"felipe","amenemope");cpu.position(20,59);cpu.random(0);cpu.cpuStep();
+  assert.equal(cpu.state.get("enemyPosition"),58);cpu.step(230);assert.ok(cpu.state.get("playerCoherence")<100);
+ }
+});
+test("Amenemope's hieroglyph wave reaches medium distance at its visual contact beat and can miss",()=>{
+ for(const target of [68,74]){
+  const p=harness("versus","amenemope","felipe");p.position(20,target);p.c.performMove("ideias");p.step(500);
+  assert.equal(p.state.get("enemyCoherence"),100);p.step(20);
+  assert.equal(p.state.get("enemyCoherence")<100,target===68);
+ }
+});
+test("Amenemope L and U spend a full meter and apply damage, knockback and shake on the proper beat",()=>{
+ for(const [move,impact] of [["especial",610],["transcender",760]])for(const side of ["player","enemy"]){
+  const p=harness("story",side==="player"?"amenemope":"felipe",side==="enemy"?"amenemope":"felipe");
+  p.position(30,55);const meter=side==="player"?"logos":"enemyLogos",health=side==="player"?"enemyCoherence":"playerCoherence";
+  p.state.set(meter,100);p.synchronize();
+  if(side==="player")p.c.performMove(move);else {p.random(move==="transcender"?.6:.1);p.cpuStep();}
+  assert.equal(p.state.get(meter),0);p.step(impact-10);assert.equal(p.state.get(health),100);assert.equal(p.state.get("maatImpact"),false);
+  p.step(20);assert.ok(p.state.get(health)<100);
+  assert.equal(p.state.get("maatImpact"),move==="transcender");
+  assert.equal(p.state.get(side==="player"?"enemyPosition":"playerPosition"),side==="player"?60:25);
+ }
+});
+
+ test("Grande Filósofo starts with Amenemope and uses his upgraded combat controller",()=>{
+ assert.equal(grand.GRAND_ENCOUNTERS[0].opponent,"amenemope");
+ const h=harness("story","felipe","amenemope","grand");h.position(20,58);h.random(0);h.cpuStep();
+ assert.equal(h.state.get("enemyPosition"),57);h.step(230);assert.ok(h.state.get("playerCoherence")<100);
+ });
+
+test('Sidarta basic strikes share Felipe reach and contact frames in both game modes',()=>{
+ for(const mode of ['versus','story'])for(const [move,impact,damage,distance]of [['dialetica',220,7,35],['caverna',310,11,44],['ideias',620,17,50]]){
+  const h=harness(mode,'sidarta','felipe');h.position(20,20+distance);h.c.performMove(move);
+  h.step(impact-10);assert.equal(h.state.get('enemyCoherence'),100);h.step(10);assert.equal(h.state.get('enemyCoherence'),100-damage);
+ }
+});
+test('Sidarta specials consume Despertar and the wheel shakes exactly at contact on both sides',()=>{
+ for(const side of ['player','enemy'])for(const [move,impact,damage]of [['especial',1180,33],['transcender',1480,43]]){
+  const h=harness('versus',side==='player'?'sidarta':'felipe',side==='enemy'?'sidarta':'felipe');h.position(25,50);
+  const meter=side==='player'?'logos':'enemyLogos',health=side==='player'?'enemyCoherence':'playerCoherence';
+  h.state.set(meter,100);h.synchronize();h.random(move==='transcender'?.6:.3);
+  if(side==='player')h.c.performMove(move);else h.cpuStep();
+  assert.equal(h.state.get(meter),0);h.step(impact-10);assert.equal(h.state.get(health),100);assert.equal(h.state.get('sidartaImpact'),false);
+  h.step(10);assert.equal(h.state.get(health),100-damage);assert.equal(h.state.get('sidartaImpact'),move==='transcender');
+  h.step(650);assert.equal(h.state.get('sidartaImpact'),false);
+ }
+});
+test('Sidarta and Felipe use identical held movement, stop and jump duration',()=>{
+ const sidarta=harness('versus','sidarta','felipe'),baseline=harness('versus','felipe','sidarta');
+ for(const h of [sidarta,baseline]){h.position(25,70);h.key('d');h.step(200);h.key('d','keyup');}
+ assert.equal(sidarta.state.get('playerPosition'),baseline.state.get('playerPosition'));
+ for(const h of [sidarta,baseline]){h.c.jump();assert.equal(h.state.get('jumpDuration').player,650);h.step(700);assert.equal(h.state.get('playerAction'),'idle');}
+});
+test('Sidarta stops his walking animation on release, blur and physical limits',()=>{
+ const h=harness('versus','sidarta','felipe');h.position(25,70);
+ h.key('d');h.step(200);assert.equal(h.state.get('playerAction'),'advance');
+ h.key('d','keyup');assert.equal(h.state.get('playerAction'),'idle');
+ h.key('a');h.step(50);assert.equal(h.state.get('playerAction'),'retreat');
+ h.key('','blur');assert.equal(h.state.get('playerAction'),'idle');
+ h.position(13,70);h.key('a');h.step(30);assert.equal(h.state.get('playerAction'),'idle');h.key('a','keyup');
+ h.position(25,70);h.c.performMove('dialetica');h.key('a','keyup');assert.equal(h.state.get('playerAction'),'attack-punch');
+});
+test('CPU Sidarta moves continuously and stops with combat hitstop',()=>{
+ const h=harness('story','felipe','sidarta');h.position(18,70);h.random(.5);h.cpuStep();
+ assert.equal(h.state.get('enemyAction'),'advance');assert.equal(h.state.get('enemyPosition'),70);
+ h.step(200);assert.ok(Math.abs(h.state.get('enemyPosition')-68.4)<1e-8);
+ h.c.combatClock.current.freeze(50);h.step(50);assert.ok(Math.abs(h.state.get('enemyPosition')-68.4)<1e-8);
+ h.step(200);assert.ok(Math.abs(h.state.get('enemyPosition')-66.8)<1e-8);assert.equal(h.state.get('enemyAction'),'idle');
+ h.cpuStep();h.step(100);const x=h.state.get('enemyPosition');h.c.impactFeedback('enemy',false,false);h.step(400);assert.equal(h.state.get('enemyPosition'),x);
+ const back=harness('versus','felipe','sidarta');back.position(30,49);back.random(.8);back.cpuStep();
+ assert.equal(back.state.get('enemyAction'),'retreat');back.step(200);assert.equal(back.state.get('enemyPosition'),51);back.step(200);assert.equal(back.state.get('enemyPosition'),53);
+});
+
+test('Confúcio palm lunges ten pixels, gains 26% reach and works for player and CPU',()=>{
+ for(const mode of ['versus','story']){
+  const p=harness(mode,'confucius','felipe');p.position(20,58);p.c.performMove('dialetica');assert.equal(p.state.get('playerPosition'),21);p.step(220);assert.ok(p.state.get('enemyCoherence')<100);
+  const miss=harness(mode,'confucius','felipe');miss.position(20,60);miss.c.performMove('dialetica');miss.step(220);assert.equal(miss.state.get('enemyCoherence'),100);
+  const cpu=harness(mode,'felipe','confucius');cpu.position(20,58);cpu.random(0);cpu.cpuStep();assert.equal(cpu.state.get('enemyPosition'),57);cpu.step(190);assert.ok(cpu.state.get('playerCoherence')<100);
+ }
+});
+test('Confúcio kick reaches a crouching defender, respects guard and adds pushback',()=>{
+ assert.equal(controls.attackConnects(20,50,1,28,'caverna',false,{attacker:'confucius',target:'felipe',defenderCrouching:true}),true);
+ assert.equal(controls.attackConnects(20,50,1,28,'caverna',true,{attacker:'confucius',target:'felipe'}),false);
+ const kick=harness('versus','confucius','felipe');kick.position(20,50);kick.c.performMove('caverna');kick.step(310);assert.equal(kick.state.get('enemyPosition'),53.5);
+ const blocked=harness('versus','confucius','felipe');blocked.position(20,45);blocked.c.enemyGuardRef.current=true;blocked.c.performMove('caverna');blocked.step(310);assert.ok(blocked.state.get('enemyCoherence')<100);assert.ok(blocked.state.get('enemyCoherence')>90);
+ const cpu=harness('versus','felipe','confucius');cpu.position(25,50);cpu.random(.5);cpu.cpuStep();cpu.step(300);assert.equal(cpu.state.get('playerPosition'),21.7);
+});
+test('Confúcio combo final hit freezes four frames and enables a special confirm',()=>{
+ const h=harness('versus','confucius','felipe');h.position(20,50);h.state.set('logos',66);h.synchronize();h.c.performMove('ideias');h.step(610);assert.equal(h.state.get('enemyCoherence'),100);h.step(10);assert.ok(h.state.get('enemyCoherence')<100);assert.ok(h.c.combatClock.current.stopped>=60);assert.equal(h.c.enemyActionLock.current-h.c.combatClock.current.time,850);assert.equal(h.state.get('logos'),100);
+ h.step(150);assert.equal(h.c.performMove('transcender'),true);assert.equal(h.state.get('playerAction'),'special-li');assert.equal(h.state.get('logos'),0);h.step(760);assert.equal(h.state.get('confuciusImpact'),true);
+});
+test('Confúcio Ren freezes for 300ms and both specials consume Virtude before impact',()=>{
+ for(const side of ['player','enemy'])for(const [move,impact] of [['especial',side==='player'?610:640],['transcender',side==='player'?760:780]]){
+  const h=harness('versus',side==='player'?'confucius':'felipe',side==='enemy'?'confucius':'felipe');h.position(25,50);const meter=side==='player'?'logos':'enemyLogos',health=side==='player'?'enemyCoherence':'playerCoherence';h.state.set(meter,100);h.synchronize();h.random(move==='transcender'?.6:.3);
+  if(side==='player')h.c.performMove(move);else h.cpuStep();assert.equal(h.state.get(meter),0);
+  if(move==='especial'){assert.equal(h.c.combatClock.current.stopped,300);h.step(300);assert.equal(h.c.combatClock.current.time,0);}
+  h.step(impact-10);assert.equal(h.state.get(health),100);assert.equal(h.state.get('confuciusImpact'),false);h.step(10);assert.ok(h.state.get(health)<100);assert.equal(h.state.get('confuciusImpact'),move==='transcender');
+ }
+});
+test('Confúcio startup invulnerability prevents simultaneous strikes',()=>{
+ for(const move of ['especial','transcender']){
+  const h=harness('versus','confucius','felipe');h.position(20,54);h.random(0);h.cpuStep();h.state.set('logos',100);h.synchronize();h.c.performMove(move);h.step(move==='especial'?490:190);assert.equal(h.state.get('playerCoherence'),100);assert.equal(h.state.get('playerAction'),move==='especial'?'special-ren':'special-li');assert.equal(h.state.get('logos'),0);h.c.resetGame();assert.equal(h.state.get('confuciusImpact'),false);
+ }
+});
+
+test('CPU Confúcio has the same startup immunity, which expires after 260 combat ms',()=>{
+ for(const move of ['especial','transcender']){
+  const protectedCpu=harness('versus','felipe','confucius');protectedCpu.position(20,54);protectedCpu.c.performMove('dialetica');protectedCpu.state.set('enemyLogos',100);protectedCpu.synchronize();protectedCpu.randomSequence([0,0,move==='especial'?.3:.6]);protectedCpu.cpuStep();protectedCpu.step(move==='especial'?520:220);assert.equal(protectedCpu.state.get('enemyCoherence'),100);assert.equal(protectedCpu.state.get('enemyAction'),move==='especial'?'special-ren':'special-li');
+  const expired=harness('versus','felipe','confucius');expired.position(20,54);expired.state.set('enemyLogos',100);expired.synchronize();expired.randomSequence([0,0,move==='especial'?.3:.6]);expired.cpuStep();if(move==='especial')expired.step(300);expired.step(100);expired.c.performMove('dialetica');expired.step(220);assert.ok(expired.state.get('enemyCoherence')<100);assert.equal(expired.state.get('enemyAction'),'hit');
+ }
+});
+
+test('Marco Aurélio J and I advance and reach further without overlapping',()=>{
+ for(const move of ['dialetica','ideias']){const h=harness('versus','marcus','felipe');h.position(20,57);h.c.performMove(move);assert.ok(Math.abs(h.state.get('playerPosition')-21.2)<.001);h.step(move==='dialetica'?220:410);assert.ok(h.state.get('enemyCoherence')<100);}
+ const h=harness('versus','felipe','marcus');h.position(20,56);h.random(0);h.cpuStep();assert.ok(Math.abs(h.state.get('enemyPosition')-54.8)<.001);h.step(190);assert.ok(h.state.get('playerCoherence')<100);
+});
+test('Marco Aurélio heals 15 with Cidadela and protected startup resists a simultaneous strike',()=>{
+ const h=harness('versus','marcus','felipe');h.position(20,54);h.random(0);h.cpuStep();h.state.set('playerCoherence',60);h.state.set('logos',100);h.synchronize();h.c.performMove('especial');h.step(190);assert.equal(h.state.get('playerCoherence'),60);h.step(420);assert.equal(h.state.get('playerCoherence'),75);assert.ok(h.state.get('messages').some(m=>m.text==='+15 COERÊNCIA'));
+});
+test('Marco Aurélio cosmic special shakes on impact and clears',()=>{
+ const h=harness('versus','marcus','felipe');h.position(25,50);h.state.set('logos',100);h.synchronize();h.c.performMove('transcender');h.step(750);assert.equal(h.state.get('marcusImpact'),false);h.step(10);assert.equal(h.state.get('marcusImpact'),true);h.step(230);assert.equal(h.state.get('marcusImpact'),false);
+});
+
+test('Adam Smith punch and kick lunge and reach further for player and CPU',()=>{
+ for(const move of ['dialetica','caverna']){
+  const p=harness('versus','smith','felipe');p.position(20,55);p.c.performMove(move);assert.ok(p.state.get('playerPosition')>20);p.step(move==='dialetica'?220:310);assert.ok(p.state.get('enemyCoherence')<100);
+  const cpu=harness('versus','felipe','smith');cpu.position(20,55);cpu.randomSequence(move==='dialetica'?[0,0,0,0]:[0,0,0,.5]);cpu.cpuStep();assert.ok(cpu.state.get('enemyPosition')<55);cpu.step(move==='dialetica'?190:300);assert.ok(cpu.state.get('playerCoherence')<100);
+ }
+});
+test('Adam Smith specials have startup priority and hand freezes for 250ms',()=>{
+ for(const move of ['especial','transcender']){
+  const h=harness('versus','smith','felipe');h.position(20,54);h.random(0);h.cpuStep();h.state.set('logos',100);h.synchronize();h.c.performMove(move);if(move==='especial')assert.equal(h.c.combatClock.current.stopped,250);h.step(move==='especial'?440:190);assert.equal(h.state.get('playerCoherence'),100);assert.equal(h.state.get('logos'),0);
+ }
+});
+test('Adam Smith wealth deals four synchronized hits for 45 total',()=>{
+ const h=harness('versus','smith','felipe');h.position(25,50);h.state.set('logos',100);h.synchronize();h.c.performMove('transcender');h.step(899);assert.equal(h.state.get('enemyCoherence'),100);h.step(10);assert.equal(h.state.get('enemyCoherence'),89);h.step(220);assert.equal(h.state.get('enemyCoherence'),78);h.step(220);assert.equal(h.state.get('enemyCoherence'),67);h.step(260);assert.equal(h.state.get('enemyCoherence'),55);assert.equal(h.state.get('marcusImpact'),true);
+});
+test('CPU Adam Smith wealth also lands four times and shakes on the last hit',()=>{
+ const h=harness('versus','felipe','smith');h.position(25,50);h.state.set('enemyLogos',100);h.synchronize();h.randomSequence([0,.8]);h.cpuStep();assert.equal(h.state.get('enemyAction'),'special-wealth-of-nations');h.step(900);assert.equal(h.state.get('playerCoherence'),89);h.step(220);assert.equal(h.state.get('playerCoherence'),78);h.step(220);assert.equal(h.state.get('playerCoherence'),67);h.step(260);assert.equal(h.state.get('playerCoherence'),55);assert.equal(h.state.get('marcusImpact'),true);
+});
+test('Adam Smith hand closes and hits on the clock after its 250ms freeze',()=>{
+ const h=harness('versus','smith','felipe');h.position(25,50);h.state.set('logos',100);h.synchronize();h.c.performMove('especial');h.step(250);assert.equal(h.c.combatClock.current.time,0);h.step(1170);assert.equal(h.state.get('enemyCoherence'),100);h.step(10);assert.equal(h.state.get('enemyCoherence'),68);assert.ok(h.state.get('messages').some(m=>m.text==='MÃO INVISÍVEL!'));
+});
+
+test('Olympe jab advances and reaches further for player and CPU',()=>{
+ const p=harness('versus','olympe','felipe');p.position(20,58);p.random(0);p.c.performMove('dialetica');assert.equal(p.state.get('playerPosition'),21);p.step(220);assert.ok(p.state.get('enemyCoherence')<100);
+ const cpu=harness('versus','felipe','olympe');cpu.position(20,58);cpu.random(0);cpu.cpuStep();assert.equal(cpu.state.get('enemyPosition'),57);cpu.step(190);assert.ok(cpu.state.get('playerCoherence')<100);
+});
+test('Olympe kick deals 10 base damage and combo earns 24 Citizenship',()=>{
+ const p=harness('versus','olympe','felipe');p.position(20,45);p.random(0);p.c.performMove('caverna');p.step(310);assert.equal(p.state.get('enemyCoherence'),90);
+ const blocked=harness('versus','olympe','felipe');blocked.position(20,45);blocked.random(0);blocked.c.enemyGuardRef.current=true;blocked.c.performMove('caverna');blocked.step(310);assert.equal(blocked.state.get('enemyCoherence'),97);
+ const combo=harness('versus','olympe','felipe');combo.position(20,45);combo.c.performMove('ideias');combo.step(620);assert.equal(combo.state.get('logos'),24);
+});
+
+test('Darwin J/I lunge ten pixels and connect at the extended range on either side',()=>{
+ for(const move of ['dialetica','ideias']) {
+  const p=harness('versus','darwin','felipe');p.position(move==='dialetica'?20:13,move==='dialetica'?64:78);p.random(0);p.c.performMove(move);
+  assert.equal(p.state.get('playerPosition'),move==='dialetica'?21:14);p.step(700);assert.ok(p.state.get('enemyCoherence')<100);
+  const cpu=harness('versus','felipe','darwin');cpu.position(move==='dialetica'?20:13,move==='dialetica'?64:78);cpu.randomSequence(move==='dialetica'?[0,0,0,0]:[0,.9]);cpu.cpuStep();
+  assert.equal(cpu.state.get('enemyPosition'),move==='dialetica'?63:77);cpu.step(700);assert.ok(cpu.state.get('playerCoherence')<100);
+ }
+});
+test('Felipe normals miss a distant Darwin, and still connect at body contact',()=>{
+ assert.equal(controls.fighterContactGeometry('darwin').hurtbox.width,8);
+ for(const [move,range,bound] of [['dialetica',40,30],['caverna',40,36],['ideias',50,40]]) {
+  assert.equal(controls.attackConnects(20,20+bound+1,1,range,move,false,{attacker:'felipe',target:'darwin'}),false);
+  assert.equal(controls.attackConnects(60,60-bound-1,-1,range,move,false,{attacker:'felipe',target:'darwin'}),false);
+  assert.equal(controls.attackConnects(20,40,1,range,move,false,{attacker:'felipe',target:'darwin'}),true);
+ }
+ const h=harness('versus','darwin','felipe');h.position(20,55);h.random(0);h.cpuStep();h.step(220);assert.equal(h.state.get('playerCoherence'),100);
+});
+test('Darwin specials spend the meter and resist a simultaneous normal during startup',()=>{
+ for(const move of ['especial','transcender']) {
+  const h=harness('versus','darwin','felipe');h.position(20,48);h.random(0);h.cpuStep();h.state.set('logos',100);h.synchronize();h.c.performMove(move);h.step(190);
+  assert.equal(h.state.get('playerCoherence'),100);assert.equal(h.state.get('logos'),0);
+  assert.equal(h.state.get('playerAction'),move==='especial'?'special-natural-selection':'special-tree-of-life');
+ }
+});
+test('CPU meter grows more slowly against Darwin and full meter waits 300 combat ms',()=>{
+ const h=harness('versus','darwin','felipe');h.position(20,48);h.random(0);h.cpuStep();h.step(220);assert.equal(h.state.get('enemyLogos'),14);
+ const ready=harness('versus','darwin','felipe');ready.position(20,48);ready.random(0);ready.state.set('enemyLogos',100);ready.synchronize();
+ ready.cpuStep();assert.equal(ready.state.get('enemyLogos'),100);ready.step(290);ready.cpuStep();assert.equal(ready.state.get('enemyLogos'),100);
+ ready.step(10);ready.cpuStep();assert.equal(ready.state.get('enemyLogos'),0);assert.match(ready.state.get('enemyAction'),/^special/);
+ ready.c.resetGame();ready.state.set('enemyLogos',100);ready.synchronize();ready.cpuStep();assert.equal(ready.state.get('enemyLogos'),100);
+});
+
+
+test('round timer pauses for both Darwin specials on either side and resumes afterwards',()=>{
+ for(const side of ['player','enemy'])for(const action of ['special-natural-selection','special-tree-of-life']){
+  const h=harness('versus',side==='player'?'darwin':'felipe',side==='enemy'?'darwin':'felipe');
+  h.tickRoundTimer();assert.equal(h.state.get('time'),59);
+  h.state.set(side==='player'?'playerAction':'enemyAction',action);h.tickRoundTimer();assert.equal(h.state.get('time'),59);
+  h.state.set(side==='player'?'playerAction':'enemyAction','idle');h.tickRoundTimer();assert.equal(h.state.get('time'),58);
+ }
+});
+
+test('Wittgenstein combo gives 24 Clareza and his target body scales with the 8% reduction',()=>{
+ const h=harness('versus','wittgenstein','felipe');h.position(20,45);h.random(0);h.c.performMove('ideias');h.step(620);assert.equal(h.state.get('logos'),24);
+ assert.equal(controls.fighterContactGeometry('wittgenstein').scale,.92);assert.ok(Math.abs(controls.fighterContactGeometry('wittgenstein').hurtbox.width-9.2)<1e-10);
+ assert.equal(controls.attackConnects(20,52,1,40,'dialetica',false,{attacker:'felipe',target:'wittgenstein'}),false);
+});
+test('Wittgenstein specials deal 30/40, pierce guard and resist simultaneous startup damage',()=>{
+ for(const [move,damage,impact] of [['especial',30,1180],['transcender',40,1480]]){
+  const h=harness('versus','wittgenstein','felipe');h.position(20,48);h.random(0);h.cpuStep();h.state.set('logos',100);h.synchronize();h.c.performMove(move);
+  assert.equal(h.c.combatClock.current.stopped,250);assert.equal(h.state.get('logos'),0);h.step(440);assert.equal(h.state.get('playerCoherence'),100);
+  h.c.enemyGuardRef.current=true;h.step(impact-190);assert.equal(h.state.get('enemyCoherence'),100-damage);
+  assert.equal(h.state.get('wittContact').move,move);assert.equal(h.state.get('wittContact').at,impact);
+ }
+});
+test('CPU Wittgenstein uses identical special damage, guard piercing and full-meter costs',()=>{
+ for(const [move,damage,impact] of [['especial',30,1180],['transcender',40,1480]]){
+  const h=harness('versus','felipe','wittgenstein');h.position(20,45);h.state.set('enemyLogos',100);h.synchronize();h.randomSequence([0,move==='especial'?.2:.8]);h.cpuStep();
+  assert.equal(h.state.get('enemyLogos'),0);h.key('s');h.step(250+impact);assert.equal(h.state.get('playerCoherence'),100-damage);
+ }
+});
+test('silence lasts 1500 combat ms, blocks only specials, preserves the meter and resets',()=>{
+ const h=harness('versus','felipe','wittgenstein');h.position(20,45);h.state.set('enemyLogos',100);h.state.set('logos',100);h.synchronize();h.randomSequence([0,.8]);h.cpuStep();h.step(1730);
+ assert.equal(h.state.get('silenced').player,true);assert.equal(h.state.get('marcusImpact'),true);assert.equal(h.state.get('playerPosition'),13);
+ h.step(350);h.c.performMove('especial');assert.equal(h.state.get('logos'),100);
+ assert.equal(h.c.performMove('dialetica'),true);assert.equal(h.state.get('playerAction'),'attack-punch');h.step(1200);h.c.performMove('especial');assert.equal(h.state.get('logos'),0);
+ h.c.resetGame();assert.equal(h.state.get('silenced').player,false);assert.equal(h.state.get('wittContact'),null);
+});
+test('silenced CPU retains a full meter and can use normal attacks instead',()=>{
+ const h=harness('versus','wittgenstein','felipe');h.position(20,45);h.state.set('logos',100);h.synchronize();h.c.performMove('transcender');h.step(1730);assert.equal(h.state.get('silenced').enemy,true);
+ h.step(450);h.position(20,45);h.state.set('enemyLogos',100);h.synchronize();h.random(0);h.cpuStep();assert.equal(h.state.get('enemyLogos'),100);assert.equal(h.state.get('enemyAction'),'attack-punch');
+});
+test('both Wittgenstein cinematics pause the round timer for P1 and CPU',()=>{
+ for(const side of ['player','enemy'])for(const action of ['special-poker','special-language-limits']){
+  const h=harness('versus',side==='player'?'wittgenstein':'felipe',side==='enemy'?'wittgenstein':'felipe');h.tickRoundTimer();assert.equal(h.state.get('time'),59);
+  h.state.set(side==='player'?'playerAction':'enemyAction',action);h.tickRoundTimer();assert.equal(h.state.get('time'),59);
+  h.state.set(side==='player'?'playerAction':'enemyAction','idle');h.tickRoundTimer();assert.equal(h.state.get('time'),58);
+ }
+});
+
+test('Arendt J/I advance 10px and connect at extended range for P1 and CPU',()=>{
+ for(const move of ['dialetica','ideias']){
+  const p=harness('versus','arendt','felipe');p.position(move==='dialetica'?20:13,move==='dialetica'?64:78);p.random(0);p.c.performMove(move);assert.equal(p.state.get('playerPosition'),move==='dialetica'?21:14);p.step(700);assert.ok(p.state.get('enemyCoherence')<100);if(move==='ideias')assert.equal(p.state.get('logos'),24);
+  const cpu=harness('versus','felipe','arendt');cpu.position(move==='dialetica'?20:13,move==='dialetica'?64:78);cpu.randomSequence(move==='dialetica'?[0,0,0]:[0,.9]);cpu.cpuStep();assert.equal(cpu.state.get('enemyPosition'),move==='dialetica'?63:77);cpu.step(700);assert.ok(cpu.state.get('playerCoherence')<100);
+ }
+});
+test('Arendt interrupted J/K cancel stale damage and recover into valid next attack states',()=>{
+ for(const move of ['dialetica','caverna']){
+  const h=harness('versus','arendt','felipe');h.position(20,45);h.c.performMove(move);h.step(100);h.c.impactFeedback('player',false,false);assert.equal(h.state.get('playerAction'),'hit');h.step(600);assert.equal(h.state.get('enemyCoherence'),100);assert.equal(h.state.get('playerAction'),'idle');h.c.performMove('ideias');assert.equal(h.state.get('playerAction'),'attack-combo');
+ }
+});
+test('Arendt L has protected startup and deals one 38-point hit exactly with its stamp',()=>{
+ const h=harness('versus','arendt','felipe');h.position(20,48);h.random(0);h.cpuStep();h.state.set('logos',100);h.synchronize();h.c.performMove('especial');assert.equal(h.c.combatClock.current.stopped,200);assert.equal(h.state.get('logos'),0);
+ h.step(390);assert.equal(h.state.get('playerCoherence'),100);h.step(700);assert.equal(h.state.get('enemyCoherence'),100);h.step(10);assert.equal(h.state.get('enemyCoherence'),62);assert.equal(h.state.get('arendtImpact').at,900);assert.equal(h.state.get('marcusImpact'),true);h.step(1000);assert.equal(h.state.get('enemyCoherence'),62);
+});
+test('Natalidade from 46 HP commits exactly 14 without KO and heals exactly 15 on its dawn beat',()=>{
+ for(const health of [60,96]){
+  const h=harness('versus','arendt','felipe');h.position(20,45);h.state.set('playerCoherence',health);h.state.set('enemyCoherence',46);h.state.set('logos',100);h.synchronize();h.c.performMove('transcender');h.step(950);assert.equal(h.state.get('enemyCoherence'),46);assert.equal(h.state.get('playerCoherence'),health);
+  h.step(10);assert.equal(h.state.get('enemyCoherence'),14);assert.equal(h.state.get('playerCoherence'),Math.min(100,health+15));assert.equal(h.c.gameRef.current.enemyCoherence,14);assert.equal(h.state.get('phase'),'playing');assert.equal(h.c.roundResolved.current,false);assert.equal(h.state.get('arendtImpact').at,760);assert.equal(h.state.get('enemyPosition'),52);
+ }
+});
+test('fatal Natalidade clamps HUD and simulation to zero and commits healing before finish',()=>{
+ const h=harness('versus','arendt','felipe');h.position(20,45);h.state.set('playerCoherence',60);h.state.set('enemyCoherence',24);h.state.set('logos',100);h.synchronize();h.c.performMove('transcender');h.step(960);
+ assert.equal(h.state.get('phase'),'finishing');assert.equal(h.state.get('enemyCoherence'),0);assert.equal(h.c.gameRef.current.enemyCoherence,0);assert.equal(h.state.get('playerCoherence'),75);assert.deepEqual(h.phaseSnapshots,[{player:75,enemy:0,refPlayer:75,refEnemy:0}]);
+});
+test('CPU Arendt specials have symmetric clean damage, guard handling, healing and valid KO',()=>{
+ for(const [move,damage,impact] of [['especial',38,900],['transcender',32,760]]){
+  const h=harness('versus','felipe','arendt');h.position(20,45);h.state.set('playerCoherence',46);h.state.set('enemyCoherence',60);h.state.set('enemyLogos',100);h.synchronize();h.randomSequence([0,move==='especial'?.2:.8]);h.cpuStep();assert.equal(h.state.get('enemyLogos'),0);h.key('s');h.step(200+impact);
+  assert.equal(h.state.get('playerCoherence'),46-damage);assert.equal(h.c.gameRef.current.playerCoherence,46-damage);assert.equal(h.state.get('enemyCoherence'),move==='transcender'?75:60);assert.equal(h.state.get('phase'),'playing');
+ }
+ const ko=harness('versus','felipe','arendt');ko.position(20,45);ko.state.set('playerCoherence',24);ko.state.set('enemyCoherence',60);ko.state.set('enemyLogos',100);ko.synchronize();ko.randomSequence([0,.8]);ko.cpuStep();ko.step(960);assert.deepEqual(ko.phaseSnapshots,[{player:0,enemy:75,refPlayer:0,refEnemy:75}]);
+});
+test('Arendt L/U pause even the last clock second for either side and reset their contact',()=>{
+ for(const side of ['player','enemy'])for(const action of ['special-banality','special-natality']){
+  const h=harness('versus',side==='player'?'arendt':'felipe',side==='enemy'?'arendt':'felipe');h.state.set('time',1);h.state.set(side==='player'?'playerAction':'enemyAction',action);h.synchronize();h.tickRoundTimer();assert.equal(h.state.get('time'),1);assert.equal(h.state.get('phase'),'playing');h.c.resetGame();assert.equal(h.state.get('arendtImpact'),null);
+ }
+});
+
+test('Beauvoir J lunges 10px and J/I reach connects at medium distance with I granting 24 meter',()=>{
+ for(const move of ['dialetica','ideias']){
+  const h=harness('versus','beauvoir','felipe');h.position(13,move==='ideias'?78:61);h.random(0);h.c.performMove(move);
+  assert.equal(h.state.get('playerPosition'),move==='dialetica'?14:13);h.step(700);assert.ok(h.state.get('enemyCoherence')<100);if(move==='ideias')assert.equal(h.state.get('logos'),24);
+ }
+});
+test('Beauvoir K commits damage at the boot contact frame and interrupted strikes cannot hit later',()=>{
+ const h=harness('versus','beauvoir','felipe');h.position(20,45);h.random(0);h.c.performMove('caverna');h.step(300);assert.equal(h.state.get('enemyCoherence'),100);h.step(10);assert.equal(h.state.get('enemyCoherence'),88);assert.equal(h.state.get('beauvoirImpact').at,310);
+ for(const move of ['dialetica','caverna']){const h=harness('versus','beauvoir','felipe');h.position(20,45);h.c.performMove(move);h.step(100);h.c.impactFeedback('player',false,false);h.step(600);assert.equal(h.state.get('enemyCoherence'),100);assert.equal(h.state.get('playerAction'),'idle');}
+});
+test('Beauvoir L protects startup and commits exactly 32 with the mirror shatter',()=>{
+ const h=harness('versus','beauvoir','felipe');h.position(20,48);h.random(0);h.cpuStep();h.state.set('logos',100);h.synchronize();h.c.performMove('especial');assert.equal(h.state.get('logos'),0);assert.equal(h.c.combatClock.current.stopped,200);
+ h.step(390);assert.equal(h.state.get('playerCoherence'),100);h.step(700);assert.equal(h.state.get('enemyCoherence'),100);h.step(10);assert.equal(h.state.get('enemyCoherence'),68);assert.equal(h.state.get('beauvoirImpact').at,900);assert.equal(h.state.get('enemyPosition'),55);h.step(1200);assert.equal(h.state.get('enemyCoherence'),68);
+});
+test('Beauvoir U commits four exact 10-point hits, spends once and shakes only on final impact',()=>{
+ const h=harness('versus','beauvoir','felipe');h.position(20,45);h.state.set('logos',100);h.synchronize();h.c.performMove('transcender');h.step(890);assert.equal(h.state.get('enemyCoherence'),100);
+ for(let i=0;i<4;i++){while(h.c.combatClock.current.time<700+i*250)h.step(10);assert.equal(h.state.get('enemyCoherence'),90-i*10);assert.equal(h.state.get('logos'),0);assert.equal(h.state.get('beauvoirImpact').final,i===3);assert.equal(h.state.get('marcusImpact'),i===3);}
+ h.step(1000);assert.equal(h.state.get('enemyCoherence'),60);
+});
+test('Beauvoir U fatal intermediate hit updates HUD before one KO and cancels the remainder',()=>{
+ const h=harness('versus','beauvoir','felipe');h.position(20,45);h.state.set('enemyCoherence',15);h.state.set('logos',100);h.synchronize();h.c.performMove('transcender');h.step(1500);assert.equal(h.state.get('enemyCoherence'),0);assert.deepEqual(h.phaseSnapshots,[{player:100,enemy:0,refPlayer:100,refEnemy:0}]);h.step(2000);assert.equal(h.phaseSnapshots.length,1);
+});
+test('CPU Beauvoir specials deal symmetric clean damage even through guard',()=>{
+ for(const move of ['especial','transcender']){const h=harness('versus','felipe','beauvoir');h.position(20,45);h.state.set('enemyLogos',100);h.synchronize();h.randomSequence([0,move==='especial'?.2:.8]);h.cpuStep();assert.equal(h.state.get('enemyLogos'),0);h.key('s');h.step(2300);assert.equal(h.state.get('playerCoherence'),move==='especial'?68:60);}
+});
+test('Beauvoir retains half remaining meter only across rounds, for either side',()=>{
+ for(const side of ['player','enemy']){const h=harness('versus',side==='player'?'beauvoir':'felipe',side==='enemy'?'beauvoir':'felipe');h.state.set('logos',79);h.state.set('enemyLogos',91);h.synchronize();h.c.resetGame(true);assert.equal(h.state.get('logos'),side==='player'?39:0);assert.equal(h.state.get('enemyLogos'),side==='enemy'?45:0);h.c.resetGame();assert.equal(h.state.get('logos'),0);assert.equal(h.state.get('enemyLogos'),0);}
+});
+test('Beauvoir special clock pause covers both actors and reset invalidates queued U damage',()=>{
+ for(const side of ['player','enemy'])for(const action of ['special-beauvoir-other','special-becoming']){const h=harness('versus',side==='player'?'beauvoir':'felipe',side==='enemy'?'beauvoir':'felipe');h.state.set('time',1);h.state.set(side==='player'?'playerAction':'enemyAction',action);h.synchronize();h.tickRoundTimer();assert.equal(h.state.get('time'),1);assert.equal(h.state.get('phase'),'playing');}
+ const h=harness('versus','beauvoir','felipe');h.state.set('logos',100);h.synchronize();h.c.performMove('transcender');h.step(500);h.c.resetGame();h.synchronize();h.step(2200);assert.equal(h.state.get('enemyCoherence'),100);assert.equal(h.state.get('beauvoirImpact'),null);
+});
+
+test('Freire J lunges 10px; J/K/I connect with their calibrated reach and combo grants 24 meter',()=>{
+ for(const [move,gap] of [['dialetica',49],['caverna',59],['ideias',65]]){
+  const h=harness('versus','paulo-freire','felipe');h.position(13,13+gap);h.random(0);h.c.performMove(move);assert.equal(h.state.get('playerPosition'),move==='dialetica'?14:13);h.step(700);assert.ok(h.state.get('enemyCoherence')<100);if(move==='caverna')assert.equal(h.state.get('enemyCoherence'),90);if(move==='ideias')assert.equal(h.state.get('logos'),24);
+ }
+});
+test('Freire K deals base 10 at 310ms; damage cancels pending strikes and restores a visible valid pose',()=>{
+ const h=harness('versus','paulo-freire','felipe');h.position(20,45);h.random(0);h.c.performMove('caverna');h.step(300);assert.equal(h.state.get('enemyCoherence'),100);h.step(10);assert.equal(h.state.get('enemyCoherence'),90);assert.equal(h.state.get('freireImpact').at,310);
+ for(const move of ['dialetica','caverna']){const h=harness('versus','paulo-freire','felipe');h.position(20,45);h.c.performMove(move);h.step(100);h.c.impactFeedback('player',false,false);assert.equal(h.state.get('impactFlash').player,true);h.step(600);assert.equal(h.state.get('enemyCoherence'),100);assert.equal(h.state.get('playerAction'),'idle');}
+});
+test('Freire L protects startup and commits exactly 32 when the deposit is shattered',()=>{
+ const h=harness('versus','paulo-freire','felipe');h.position(20,48);h.random(0);h.cpuStep();h.state.set('logos',100);h.synchronize();h.c.performMove('especial');assert.equal(h.state.get('logos'),0);assert.equal(h.c.combatClock.current.stopped,200);assert.equal(h.state.get('playerPosition'),21);
+ h.step(390);assert.equal(h.state.get('playerCoherence'),100);h.step(700);assert.equal(h.state.get('enemyCoherence'),100);h.step(10);assert.equal(h.state.get('enemyCoherence'),68);assert.equal(h.state.get('freireImpact').at,900);assert.equal(h.state.get('enemyPosition'),55);h.step(1200);assert.equal(h.state.get('enemyCoherence'),68);
+});
+test('Freire U spends once and commits four 10-point impacts, shaking on the final word wave',()=>{
+ const h=harness('versus','paulo-freire','felipe');h.position(20,45);h.state.set('logos',100);h.synchronize();h.c.performMove('transcender');h.step(890);assert.equal(h.state.get('enemyCoherence'),100);
+ for(let i=0;i<4;i++){while(h.c.combatClock.current.time<700+i*250)h.step(10);assert.equal(h.state.get('enemyCoherence'),90-i*10);assert.equal(h.state.get('logos'),0);assert.equal(h.state.get('freireImpact').final,i===3);assert.equal(h.state.get('marcusImpact'),i===3);}
+ h.step(1000);assert.equal(h.state.get('enemyCoherence'),60);
+});
+test('Freire U fatal intermediate hit commits HUD before one KO; reset cancels remaining word waves',()=>{
+ const h=harness('versus','paulo-freire','felipe');h.position(20,45);h.state.set('enemyCoherence',15);h.state.set('logos',100);h.synchronize();h.c.performMove('transcender');h.step(1500);assert.equal(h.state.get('enemyCoherence'),0);assert.deepEqual(h.phaseSnapshots,[{player:100,enemy:0,refPlayer:100,refEnemy:0}]);h.step(2000);assert.equal(h.phaseSnapshots.length,1);
+ h.c.resetGame();h.synchronize();h.step(2200);assert.equal(h.state.get('enemyCoherence'),100);assert.equal(h.state.get('freireImpact'),null);
+});
+test('CPU Freire L/U have symmetric clean damage through guard and CPU combo grants 24',()=>{
+ for(const move of ['especial','transcender']){const h=harness('versus','felipe','paulo-freire');h.position(20,45);h.state.set('enemyLogos',100);h.synchronize();h.randomSequence([0,move==='especial'?.2:.8]);h.cpuStep();assert.equal(h.state.get('enemyLogos'),0);h.key('s');h.step(2300);assert.equal(h.state.get('playerCoherence'),move==='especial'?68:60);}
+ const h=harness('versus','felipe','paulo-freire');h.position(20,45);h.randomSequence([0,.9]);h.cpuStep();h.step(700);assert.ok(h.state.get('playerCoherence')<100);assert.equal(h.state.get('enemyLogos'),24);
+});
+test('Both Freire special animations pause the clock on either side, including its last second',()=>{
+ for(const side of ['player','enemy'])for(const action of ['special-banking-education','special-liberating-education']){const h=harness('versus',side==='player'?'paulo-freire':'felipe',side==='enemy'?'paulo-freire':'felipe');h.state.set('time',1);h.state.set(side==='player'?'playerAction':'enemyAction',action);h.synchronize();h.tickRoundTimer();assert.equal(h.state.get('time'),1);assert.equal(h.state.get('phase'),'playing');}
+});
+
+test('Fanon J/I advance 10px and connect at extended range; K commits 10 damage and 15 meter',()=>{
+ for(const [move,gap] of [['dialetica',49],['caverna',56],['ideias',65]]){
+  const h=harness('versus','fanon','felipe');h.position(13,13+gap);h.random(0);h.c.performMove(move);assert.equal(h.state.get('playerPosition'),move==='caverna'?13:14);h.step(700);assert.ok(h.state.get('enemyCoherence')<100);if(move==='caverna'){assert.equal(h.state.get('enemyCoherence'),90);assert.equal(h.state.get('logos'),15);}if(move==='ideias')assert.equal(h.state.get('logos'),24);
+ }
+});
+test('Fanon K activates at 310ms and interrupted attacks never apply stale damage',()=>{
+ const h=harness('versus','fanon','felipe');h.position(20,45);h.random(0);h.c.performMove('caverna');h.step(300);assert.equal(h.state.get('enemyCoherence'),100);h.step(10);assert.equal(h.state.get('enemyCoherence'),90);assert.equal(h.state.get('fanonImpact').at,310);
+ for(const move of ['dialetica','caverna']){const h=harness('versus','fanon','felipe');h.position(20,45);h.c.performMove(move);h.step(100);h.c.impactFeedback('player',false,false);assert.equal(h.state.get('impactFlash').player,true);h.step(600);assert.equal(h.state.get('enemyCoherence'),100);assert.equal(h.state.get('playerAction'),'idle');}
+});
+test('Fanon L protects startup and shatters its mask on exactly one 36-point impact',()=>{
+ const h=harness('versus','fanon','felipe');h.position(20,48);h.random(0);h.cpuStep();h.state.set('logos',100);h.synchronize();h.c.performMove('especial');assert.equal(h.state.get('logos'),0);assert.equal(h.c.combatClock.current.stopped,200);
+ h.step(390);assert.equal(h.state.get('playerCoherence'),100);h.step(700);assert.equal(h.state.get('enemyCoherence'),100);h.step(10);assert.equal(h.state.get('enemyCoherence'),64);assert.equal(h.state.get('fanonImpact').at,900);assert.equal(h.state.get('enemyPosition'),55);assert.equal(h.state.get('marcusImpact'),true);assert.equal(h.state.get('fanonQuake'),false);h.step(1200);assert.equal(h.state.get('enemyCoherence'),64);
+});
+test('Fanon U commits four 10-point hits across the arena and shakes 7px only on final impact',()=>{
+ const h=harness('versus','fanon','felipe');h.position(13,78);h.state.set('logos',100);h.synchronize();h.c.performMove('transcender');h.step(890);assert.equal(h.state.get('enemyCoherence'),100);
+ for(let i=0;i<4;i++){while(h.c.combatClock.current.time<700+i*250)h.step(10);assert.equal(h.state.get('enemyCoherence'),90-i*10);assert.equal(h.state.get('logos'),0);assert.equal(h.state.get('fanonImpact').final,i===3);assert.equal(h.state.get('fanonQuake'),i===3);}
+ h.step(1000);assert.equal(h.state.get('enemyCoherence'),60);
+});
+test('CPU Fanon U hits a genuinely jumping player at the opposite side for full 40 damage',()=>{
+ const h=harness('versus','felipe','fanon');h.position(13,78);h.state.set('enemyLogos',100);h.synchronize();h.randomSequence([0,.8]);h.cpuStep();h.step(700);h.c.jump();assert.equal(h.state.get('playerAction'),'jump');h.step(200);assert.equal(h.state.get('playerCoherence'),90);h.step(1400);assert.equal(h.state.get('playerCoherence'),60);
+});
+test('Fanon U fatal intermediate impact updates HUD before one KO; reset cancels remaining fissures',()=>{
+ const h=harness('versus','fanon','felipe');h.position(20,45);h.state.set('enemyCoherence',15);h.state.set('logos',100);h.synchronize();h.c.performMove('transcender');h.step(1500);assert.equal(h.state.get('enemyCoherence'),0);assert.deepEqual(h.phaseSnapshots,[{player:100,enemy:0,refPlayer:100,refEnemy:0}]);h.step(2000);assert.equal(h.phaseSnapshots.length,1);
+ h.c.resetGame();h.synchronize();h.step(2200);assert.equal(h.state.get('enemyCoherence'),100);assert.equal(h.state.get('fanonImpact'),null);assert.equal(h.state.get('fanonQuake'),false);
+});
+test('CPU Fanon specials apply symmetric full damage through guard and CPU combo grants 24',()=>{
+ for(const move of ['especial','transcender']){const h=harness('versus','felipe','fanon');h.position(20,45);h.state.set('enemyLogos',100);h.synchronize();h.randomSequence([0,move==='especial'?.2:.8]);h.cpuStep();assert.equal(h.state.get('enemyLogos'),0);h.key('s');h.step(2300);assert.equal(h.state.get('playerCoherence'),move==='especial'?64:60);}
+ const h=harness('versus','felipe','fanon');h.position(20,45);h.randomSequence([0,.9]);h.cpuStep();h.step(700);assert.ok(h.state.get('playerCoherence')<100);assert.equal(h.state.get('enemyLogos'),24);
+});
+test('Both Fanon specials pause the last clock second for P1 and CPU',()=>{
+ for(const side of ['player','enemy'])for(const action of ['special-black-skin-white-masks','special-wretched-earth']){const h=harness('versus',side==='player'?'fanon':'felipe',side==='enemy'?'fanon':'felipe');h.state.set('time',1);h.state.set(side==='player'?'playerAction':'enemyAction',action);h.synchronize();h.tickRoundTimer();assert.equal(h.state.get('time'),1);assert.equal(h.state.get('phase'),'playing');}
+});
+
+test('Foucault J/I lunge exactly 10px and normal strikes grant 14/14/24 meter',()=>{
+ for(const [move,gap,meter] of [['dialetica',49,14],['caverna',45,14],['ideias',70,24]]){const h=harness('versus','foucault','felipe');h.position(13,13+gap);h.random(0);h.c.performMove(move);assert.equal(h.state.get('playerPosition'),move==='caverna'?13:14);h.step(700);assert.ok(h.state.get('enemyCoherence')<100);assert.equal(h.state.get('logos'),meter);}
+});
+test('Foucault interrupted J/K resolve to visible valid idle without stale impacts',()=>{
+ for(const move of ['dialetica','caverna']){const h=harness('versus','foucault','felipe');h.position(20,45);h.c.performMove(move);h.step(100);h.c.impactFeedback('player',false,false);assert.equal(h.state.get('impactFlash').player,true);h.step(700);assert.equal(h.state.get('playerAction'),'idle');assert.equal(h.state.get('enemyCoherence'),100);}
+});
+test('Panopticon has protected startup, one synchronized 32 damage impact and 1.5s surveillance',()=>{
+ const h=harness('versus','foucault','felipe');h.position(20,48);h.random(0);h.cpuStep();h.state.set('logos',100);h.synchronize();h.c.performMove('especial');assert.equal(h.c.combatClock.current.stopped,200);h.step(390);assert.equal(h.state.get('playerCoherence'),100);h.step(700);assert.equal(h.state.get('enemyCoherence'),100);h.step(10);assert.equal(h.state.get('enemyCoherence'),68);assert.equal(h.state.get('foucaultImpact').at,900);assert.equal(h.state.get('foucaultShake'),5);assert.equal(h.state.get('watched').enemy,true);
+ while(h.c.combatClock.current.time<1600)h.step(10);h.position(20,45);h.c.enemyGuardRef.current=true;h.c.performMove('dialetica');h.step(230);assert.equal(h.state.get('enemyCoherence'),62,'watched guard takes normal chip plus 3');while(h.c.combatClock.current.time<2400)h.step(10);assert.equal(h.state.get('watched').enemy,false);h.position(20,45);h.c.enemyGuardRef.current=true;h.c.performMove('dialetica');h.step(230);assert.equal(h.state.get('enemyCoherence'),59,'normal guard restored');
+});
+test('Biopower binds for exactly 800ms then commits 40 damage once with 7px shake',()=>{
+ const h=harness('versus','foucault','felipe');h.position(13,78);h.state.set('logos',100);h.synchronize();h.c.performMove('transcender');h.step(450);assert.equal(h.state.get('docile').enemy,false);h.step(10);assert.equal(h.state.get('docile').enemy,true);assert.equal(h.c.enemyActionLock.current,1060);h.cpuStep();assert.equal(h.state.get('enemyCoherence'),100);h.step(790);assert.equal(h.state.get('enemyCoherence'),100);h.step(10);assert.equal(h.state.get('enemyCoherence'),60);assert.equal(h.state.get('docile').enemy,false);assert.equal(h.state.get('foucaultImpact').at,1060);assert.equal(h.state.get('foucaultShake'),7);h.step(1500);assert.equal(h.state.get('enemyCoherence'),60);
+});
+test('CPU Foucault specials deal full symmetric damage; Biopower blocks movement/guard/attacks',()=>{
+ for(const move of ['especial','transcender']){const h=harness('versus','felipe','foucault');h.position(20,45);h.state.set('enemyLogos',100);h.synchronize();h.randomSequence([0,move==='especial'?.2:.8]);h.cpuStep();h.step(460);if(move==='transcender'){assert.equal(h.state.get('docile').player,true);const p=h.state.get('playerPosition');h.c.movePlayer(1);h.c.jump();h.c.guard();assert.equal(h.c.performMove('dialetica'),false);assert.equal(h.state.get('playerPosition'),p);assert.equal(h.state.get('playerAction'),'idle');}h.step(1800);assert.equal(h.state.get('playerCoherence'),move==='especial'?68:60);}
+});
+test('Foucault fatal Biopower commits HP before one KO; reset cancels queued control and damage',()=>{
+ const h=harness('versus','foucault','felipe');h.position(20,45);h.state.set('enemyCoherence',30);h.state.set('logos',100);h.synchronize();h.c.performMove('transcender');h.step(1400);assert.deepEqual(h.phaseSnapshots,[{player:100,enemy:0,refPlayer:100,refEnemy:0}]);h.step(1600);assert.equal(h.phaseSnapshots.length,1);h.c.resetGame();h.synchronize();h.state.set('logos',100);h.synchronize();h.c.performMove('transcender');h.step(500);h.c.resetGame();h.synchronize();h.step(2500);assert.equal(h.state.get('enemyCoherence'),100);assert.equal(h.state.get('docile').enemy,false);assert.equal(h.state.get('watched').enemy,false);
+});
+test('Both Foucault cinematic actions pause the last clock second for either fighter',()=>{
+ for(const side of ['player','enemy'])for(const action of ['special-panopticon','special-biopower']){const h=harness('versus',side==='player'?'foucault':'felipe',side==='enemy'?'foucault':'felipe');h.state.set('time',1);h.state.set(side==='player'?'playerAction':'enemyAction',action);h.synchronize();h.tickRoundTimer();assert.equal(h.state.get('time'),1);assert.equal(h.state.get('phase'),'playing');}
+});
+
+test('Deleuze J keeps its established reach; K hits crouch and I starts at 320ms for 24 meter',()=>{
+ const j=harness('versus','deleuze','felipe');j.position(20,62);j.random(0);j.c.performMove('dialetica');j.step(230);assert.equal(j.state.get('enemyCoherence'),92);
+ const k=harness('versus','deleuze','felipe');k.position(20,65);k.c.enemyGuardRef.current=true;k.random(0);k.c.performMove('caverna');k.step(320);assert.ok(k.state.get('enemyCoherence')<100);
+ const h=harness('versus','deleuze','felipe');h.position(20,45);h.random(0);h.c.performMove('ideias');assert.equal(h.state.get('playerPosition'),21);h.step(310);assert.equal(h.state.get('enemyCoherence'),100);h.step(10);assert.equal(h.state.get('enemyCoherence'),82);assert.equal(h.state.get('logos'),24);assert.equal(h.state.get('deleuzeImpact').at,320);
+});
+test('Deleuze interrupted J/K/I cancel pending hits and recover to a valid visible base',()=>{
+ for(const move of ['dialetica','caverna','ideias']){const h=harness('versus','deleuze','felipe');h.position(20,45);h.c.performMove(move);h.step(100);h.c.impactFeedback('player',false,false);assert.equal(h.state.get('impactFlash').player,true);h.step(800);assert.equal(h.state.get('enemyCoherence'),100);assert.equal(h.state.get('playerAction'),'idle');}
+});
+test('Rhizome protects startup, spends once, commits 32 open or 17 guarded at its root impact',()=>{
+ for(const defended of [false,true]){const h=harness('versus','deleuze','felipe');h.position(20,48);h.random(0);h.cpuStep();h.state.set('logos',100);h.synchronize();h.c.performMove('especial');assert.equal(h.state.get('logos'),0);assert.equal(h.c.combatClock.current.stopped,200);h.step(390);assert.equal(h.state.get('playerCoherence'),100);h.step(700);assert.equal(h.state.get('enemyCoherence'),100);h.c.enemyGuardRef.current=defended;h.step(10);assert.equal(h.state.get('enemyCoherence'),defended?83:68);assert.equal(h.state.get('deleuzeImpact').at,900);assert.equal(h.state.get('deleuzeShake'),5);h.step(1000);assert.equal(h.state.get('enemyCoherence'),defended?83:68);}
+});
+test('Mil Plateaux spends once and commits four synchronized 10-point hits, shaking only on the last',()=>{
+ const h=harness('versus','deleuze','felipe');h.position(13,78);h.state.set('logos',100);h.synchronize();h.c.performMove('transcender');h.step(840);assert.equal(h.state.get('enemyCoherence'),100);
+ for(let i=0;i<4;i++){while(h.c.combatClock.current.time<650+i*200)h.step(10);assert.equal(h.state.get('enemyCoherence'),90-i*10);assert.equal(h.state.get('logos'),0);assert.equal(h.state.get('deleuzeImpact').final,i===3);assert.equal(h.state.get('deleuzeShake'),i===3?7:null);}
+ h.step(1600);assert.equal(h.state.get('enemyCoherence'),60);
+});
+test('CPU Deleuze uses the same Rhizome open/guard damage and four-hit Mil Plateaux',()=>{
+ for(const guard of [false,true]){const h=harness('versus','felipe','deleuze');h.position(20,45);h.state.set('enemyLogos',100);h.synchronize();h.randomSequence([0,.2]);h.cpuStep();h.step(500);if(guard)h.key('s');h.step(1000);assert.equal(h.state.get('playerCoherence'),guard?83:68);assert.equal(h.state.get('deleuzeShake'),null);}
+ const h=harness('versus','felipe','deleuze');h.position(13,78);h.state.set('enemyLogos',100);h.synchronize();h.randomSequence([0,.8]);h.cpuStep();h.step(700);h.c.jump();h.step(1400);assert.equal(h.state.get('playerCoherence'),60);assert.equal(h.state.get('enemyLogos'),0);
+ const combo=harness('versus','felipe','deleuze');combo.position(20,45);combo.randomSequence([0,.9]);combo.cpuStep();combo.step(320);assert.equal(combo.state.get('playerCoherence'),82);assert.equal(combo.state.get('enemyLogos'),24);
+});
+test('Mil Plateaux fatal hit commits HUD before one KO; reset cancels later layers',()=>{
+ const h=harness('versus','deleuze','felipe');h.position(20,45);h.state.set('enemyCoherence',15);h.state.set('logos',100);h.synchronize();h.c.performMove('transcender');h.step(1500);assert.deepEqual(h.phaseSnapshots,[{player:100,enemy:0,refPlayer:100,refEnemy:0}]);h.step(1800);assert.equal(h.phaseSnapshots.length,1);h.c.resetGame();h.synchronize();h.state.set('logos',100);h.synchronize();h.c.performMove('transcender');h.step(900);h.c.resetGame();h.synchronize();h.step(1800);assert.equal(h.state.get('enemyCoherence'),100);assert.equal(h.state.get('deleuzeImpact'),null);assert.equal(h.state.get('deleuzeShake'),null);
+});
+test('Both Deleuze cinematics pause the last clock second for P1 and CPU',()=>{
+ for(const side of ['player','enemy'])for(const action of ['special-rhizome','special-mille-plateaux']){const h=harness('versus',side==='player'?'deleuze':'felipe',side==='enemy'?'deleuze':'felipe');h.state.set('time',1);h.state.set(side==='player'?'playerAction':'enemyAction',action);h.synchronize();h.tickRoundTimer();assert.equal(h.state.get('time'),1);assert.equal(h.state.get('phase'),'playing');}
+});
+
+test("only the battle after Turing uses the giant SuperIA controller", () => {
+  const final = grand.GRAND_FINAL_ENCOUNTER_INDEX;
+  for (const [mode, opponent, campaign, stage] of [
+    ["versus", "superintelligence", "grand", final],
+    ["story", "superintelligence", "disciple", final],
+    ["story", "turing", "grand", final - 1],
+  ]) {
+    const battle = harness(mode, "felipe", opponent, campaign, stage);
+    assert.equal(battle.cpuInterval(), 1280);
+    assert.equal(battle.state.get("grandStrike"), null);
+  }
+  const boss = harness("story", "felipe", "superintelligence", "grand", final);
+  assert.equal(boss.cpuInterval(), 1050);
+  boss.cpuStep();
+  boss.step(400);
+  assert.equal(boss.state.get("enemyPosition"), 64);
+  assert.equal(boss.state.get("grandStrike"), null);
+});
+
+test("Felipe can guard or jump over the giant's straight punch", () => {
+  const final = grand.GRAND_FINAL_ENCOUNTER_INDEX;
+  const guarded = harness("story", "felipe", "superintelligence", "grand", final);
+  guarded.position(43, 70);
+  guarded.key("s");
+  guarded.step(10);
+  guarded.cpuStep();
+  assert.equal(guarded.state.get("grandStrike").kind, "jab");
+  assert.equal(guarded.state.get("grandStrike").stage, "warning");
+  guarded.step(690);
+  assert.equal(guarded.state.get("playerCoherence"), 95);
+  assert.equal(guarded.state.get("logos"), 16);
+
+  const leaping = harness("story", "felipe", "superintelligence", "grand", final);
+  leaping.position(43, 70);
+  leaping.cpuStep();
+  leaping.step(410);
+  leaping.key("w");
+  leaping.step(280);
+  assert.equal(leaping.state.get("grandStrike").stage, "impact");
+  assert.equal(leaping.state.get("playerCoherence"), 100);
+});
+
+test("punches, twin lasers and core beam use fixed lanes and reset with the round", () => {
+  const boss = harness("story", "felipe", "superintelligence", "grand", grand.GRAND_FINAL_ENCOUNTER_INDEX);
+  const expected = ["jab", "laser", "hook", "beam", "debris", "slam"];
+  for (const kind of expected) {
+    boss.position(34, 70);
+    boss.cpuStep();
+    const strike = boss.state.get("grandStrike");
+    assert.equal(strike.kind, kind);
+    const dodge = kind === "debris" ? 40 : 18;
+    boss.position(dodge, 70);
+    boss.step(strike.windup + strike.recovery + 80);
+    assert.equal(boss.state.get("playerCoherence"), 100);
+    if (kind === "beam") assert.equal(boss.state.get("enemyLogos"), 0);
+  }
+
+  boss.position(34, 70);
+  boss.state.set("enemyCoherence", 50);
+  boss.synchronize();
+  boss.cpuStep();
+  const next = boss.state.get("grandStrike");
+  assert.equal(next.kind, "jab");
+  assert.equal(next.windup, 550);
+  assert.equal(next.damage, 17);
+
+  boss.c.resetGame();
+  boss.synchronize();
+  boss.step(900);
+  assert.equal(boss.state.get("grandStrike"), null);
+  assert.equal(boss.state.get("enemyLogos"), 0);
 });

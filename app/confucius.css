@@ -1,0 +1,19 @@
+/* Full animated atlas, registered to the same floor and world scale as Felipe. */
+.fighter.fighter-confucius{bottom:2.8%;width:clamp(225px,28vw,420px);height:82%;filter:none;}
+.fighter-confucius .fighter-sprite.confucius-sheet{inset:auto auto 0 50%;width:auto;height:100%;aspect-ratio:75/64;background:none!important;animation:none!important;transform:translateX(-50%);image-rendering:auto;}
+.fighter-enemy.fighter-confucius .fighter-sprite.confucius-sheet{transform:translateX(-50%) scaleX(-1);}
+.confucius-canvas{display:block;width:100%;height:100%;filter:drop-shadow(0px 2px 3px rgba(0,0,0,.6));}
+.fighter-confucius .fighter-shadow{display:none;}
+.fighter-confucius:is(.advance,.retreat){animation:none;transition:left 640ms linear;}
+.fighter-confucius:is(.attack-punch,.attack-kick,.attack-combo,.special-ren,.special-li,.guard,.guard-hit,.victory){animation:none;}
+.fighter-confucius.jump .confucius-canvas{transform-origin:50% 85%;animation:confucius-air-lean 650ms ease-in-out;}
+@keyframes confucius-air-lean{0%,100%{transform:rotate(0)}45%,65%{transform:rotate(-4deg)}}
+.confucius-effects{position:absolute;inset:0;width:100%;height:100%;z-index:18;pointer-events:none;}
+.battle-frame.confucius-impact-shake{animation:confucius-impact-contact 220ms ease-out;}
+@keyframes confucius-impact-contact{0%,100%{translate:0}20%{translate:-6px 2px}45%{translate:6px -2px}70%{translate:-4px 1px}}
+.ending-fighter.ending-confucius.is-loser{bottom:6%;right:1%;height:72%;width:38%;padding-bottom:42px;box-sizing:border-box;transform:none;animation:none;}
+.ending-fighter.ending-confucius.is-loser img{height:100%;width:100%;object-fit:contain;object-position:center bottom;padding-bottom:12px;box-sizing:border-box;}
+.ending-confucius.is-loser .ending-name{bottom:0;left:auto;right:12%;max-width:85%;}
+.winner-nietzsche .ending-fighter.ending-confucius.is-loser{left:1%;right:auto;transform:none;}
+@media(max-width:760px){.ending-fighter.ending-confucius.is-loser{width:44%;height:58%;bottom:8%;right:1%}.ending-confucius.is-loser .ending-name{font-size:9px;letter-spacing:.12em}}
+@media(prefers-reduced-motion:reduce){.battle-frame.confucius-impact-shake,.fighter-confucius.jump .confucius-canvas{animation:none}}

@@ -43,7 +43,7 @@
   width: auto;
   height: 100%;
   aspect-ratio: 4 / 3;
-  background: url("/game/foucault-guard-frame.webp?v=4.2") 50% 100% / contain no-repeat;
+  background: url("/game/foucault-idle-clean-v2.webp") 50% 100% / contain no-repeat;
   image-rendering: auto;
   transform-origin: 50% 100%;
   animation: none;
@@ -54,7 +54,7 @@
 .fighter-player.fighter-foucault.idle .fighter-sprite { animation: foucault-idle-player 2.8s ease-in-out infinite !important; }
 .fighter-enemy.fighter-foucault.idle .fighter-sprite { animation: foucault-idle-enemy 2.8s ease-in-out infinite !important; }
 .fighter-foucault:is(.guard,.guard-hit,.jump,.hit,.victory,.knocked-out,.special-panopticon,.special-biopower) .fighter-sprite {
-  background-image: url("/game/foucault-guard-frame.webp?v=4.2");
+  background-image: url("/game/foucault-idle-clean-v2.webp");
   background-position: 50% 100%;
   background-size: contain;
 }
@@ -75,7 +75,7 @@
   background-repeat: no-repeat;
 }
 .fighter-foucault.attack-punch .fighter-sprite { background-image: url("/game/foucault-punch-hq.webp?v=4.2"); }
-.fighter-foucault.attack-kick .fighter-sprite { background-image: url("/game/foucault-kick-hq.webp?v=4.2"); }
+.fighter-foucault.attack-kick .fighter-sprite { background-image: url("/game/foucault-kick-book-v2.webp"); }
 .fighter-foucault.attack-combo .fighter-sprite { animation: foucault-combo-poses 940ms steps(1,end) both !important; }
 .fighter-foucault.attack-punch { animation: foucault-jab 520ms cubic-bezier(.12,.76,.2,1); }
 .fighter-foucault.attack-kick { animation: foucault-kick 650ms cubic-bezier(.12,.72,.2,1); }
@@ -239,7 +239,7 @@
 @keyframes foucault-jab { 0%,100%{transform:translateX(-50%)} 22%{transform:translateX(-50%) translateX(var(--foucault-recoil))} 58%{transform:translateX(-50%) translateX(var(--foucault-lunge)) rotate(-2deg)} }
 @keyframes foucault-kick { 0%,100%{transform:translateX(-50%)} 24%{transform:translateX(-50%) translateX(var(--foucault-recoil))} 62%{transform:translateX(-50%) translateX(var(--foucault-sweep)) rotate(-3deg)} }
 @keyframes foucault-combo { 0%,100%{transform:translateX(-50%)} 19%,48%{transform:translateX(-50%) translateX(var(--foucault-lunge)) rotate(-2deg)} 68%{transform:translateX(-50%) translateX(var(--foucault-sweep)) rotate(3deg)} }
-@keyframes foucault-combo-poses { 0%,18%,90%,100%{background-image:url("/game/foucault-guard-frame.webp?v=4.2")} 19%,39%{background-image:url("/game/foucault-punch-hq.webp?v=4.2")} 40%,62%{background-image:url("/game/foucault-kick-hq.webp?v=4.2")} 63%,89%{background-image:url("/game/foucault-combo-hq.webp?v=4.2")} }
+@keyframes foucault-combo-poses { 0%,18%,90%,100%{background-image:url("/game/foucault-idle-clean-v2.webp")} 19%,39%{background-image:url("/game/foucault-punch-hq.webp?v=4.2")} 40%,62%{background-image:url("/game/foucault-kick-book-v2.webp")} 63%,89%{background-image:url("/game/foucault-combo-hq.webp?v=4.2")} }
 @keyframes foucault-channel { 0%,100%{filter:brightness(1)} 68%{filter:brightness(1.17) drop-shadow(0 0 22px #78c6d3)} }
 @keyframes foucault-contact { 0%,32%{opacity:0;transform:scale(.2)} 45%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(2.8)} }
 @keyframes foucault-colorwash { 0%,100%{opacity:0} 17%,89%{opacity:1} }
@@ -254,3 +254,42 @@
   .fighter-foucault { width: clamp(210px,42vw,330px); height: 78%; }
   .foucault-effect > b { letter-spacing: .05em; max-width: 92%; text-align: center; white-space: normal; }
 }
+
+/* 5.3: native poses, gentle hurt and grounded -6% stature. */
+.fighter-foucault {height:77.08%;width:clamp(211.5px,26.32vw,394.8px);}
+.fighter-foucault .fighter-sprite {bottom:-2.7%;}
+.fighter-foucault.hit {filter:none;animation:none;opacity:1;}
+.fighter-foucault:is(.hit,.guard,.guard-hit,.knocked-out) .fighter-sprite {animation:none!important;background-position:50% 100%!important;background-size:contain;opacity:1;visibility:visible;filter:none;}
+.fighter-foucault:is(.attack-punch,.attack-kick) .fighter-sprite {animation:none!important;background-position:50% 100%!important;}
+.fighter-foucault.attack-combo .fighter-sprite {background-position:50% 100%!important;}
+.fighter.fighter-foucault.impact-flash>.fighter-sprite {filter:none!important;}
+.fighter-foucault.impact-flash>.fighter-sprite::after {content:"";position:absolute;inset:0;pointer-events:none;background:rgba(255,255,255,.35);mask:url('/game/foucault-idle-clean-v2.webp') center bottom/contain no-repeat;}
+.fighter-foucault:is(.guard,.guard-hit) {animation:none;filter:none;}
+.fighter-foucault:is(.guard,.guard-hit)::before {display:none;}
+.foucault-motion-canvas {display:block;width:100%;height:100%;pointer-events:none;}
+.fighter-foucault .fighter-sprite:has(.foucault-motion-canvas[data-ready="true"]) {background-image:none!important;animation:none!important;}
+.fighter-foucault:is(.advance,.retreat) {transition:none;}
+.fighter-foucault:is(.attack-punch,.attack-kick,.attack-combo)::after {display:none;}
+.fighter-foucault.attack-kick {animation-duration:620ms;}
+.fighter-foucault.knocked-out {opacity:1;}
+.fighter-player.fighter-foucault.knocked-out .fighter-sprite {transform:translateX(-50%) translateY(-20%) rotate(65deg) scale(.66);}
+.fighter-enemy.fighter-foucault.knocked-out .fighter-sprite {transform:translateX(-50%) translateY(-20%) scaleX(-1) rotate(65deg) scale(.66);}
+.ending-fighter.ending-foucault {bottom:4%;height:72%;box-sizing:border-box;padding-bottom:54px;}
+.ending-fighter.ending-foucault img {object-fit:contain;object-position:center bottom;padding-bottom:10px;box-sizing:border-box;}
+.ending-foucault .ending-name {bottom:0;left:0;right:0;max-width:100%;text-align:center;white-space:normal;overflow:visible;text-overflow:clip;letter-spacing:.07em;padding:7px 4px;}
+.arena-hospital-panoptico .round-result-card h2 {color:#fff1bd;text-shadow:0 2px 4px #000,1px 0 2px #000,-1px 0 2px #000;}
+.foucault-effects-canvas {position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:14;}
+.effect-foucault-panopticon .special-colorwash {background:rgba(4,25,37,.20);opacity:1;animation:none;}
+.effect-foucault-biopower .special-colorwash {background:rgba(0,0,0,.4);opacity:1;animation:none;}
+.fighter-foucault:is(.special-panopticon,.special-biopower) {animation:none;}
+.battle-frame:has(.fighter-foucault) .coherence-bar>span {transition:none;}
+.foucault-panopticon-shake .battlefield {animation:foucault-shake-five 240ms linear;}
+.foucault-biopower-shake .battlefield {animation:foucault-shake-seven 240ms linear;}
+@keyframes foucault-shake-five {0%,100%{transform:translate(0)}20%{transform:translate(-5px,2px)}40%{transform:translate(5px,-2px)}60%{transform:translate(-3px,1px)}80%{transform:translate(3px,-1px)}}
+@keyframes foucault-shake-seven {0%,100%{transform:translate(0)}20%{transform:translate(-7px,3px)}40%{transform:translate(7px,-3px)}60%{transform:translate(-5px,2px)}80%{transform:translate(5px,-2px)}}
+@media(max-width:760px){.fighter-foucault{height:73.32%;width:clamp(197.4px,39.48vw,310.2px);}}
+.ending-foucault .face-injury {display:none;}
+.arena-hospital-panoptico:is(.phase-won,.phase-lost) .battlefield>.fighter {visibility:hidden;}
+.arena-hospital-panoptico .post-fight-heading {color:#182c38;text-shadow:0 1px 2px #fff;}
+.arena-hospital-panoptico .post-fight-heading :is(span,strong) {color:inherit;}
+.effect-foucault-biopower .special-colorwash {mix-blend-mode:normal;}

@@ -86,12 +86,14 @@ test("the articulated crutch stride never changes scale or folds the mesh", () =
   }
 });
 
-test("Rizoma and Guattari converge only on the opponent", () => {
-  assert.match(page, /deleuzeTarget = deleuzeEffectFromPlayer \? enemyPosition : playerPosition/);
-  assert.match(page, /deleuzeEffectFromPlayer\s*\? Math\.min\(92, deleuzeTarget \+ 17\)\s*:\s*Math\.max\(8, deleuzeTarget - 17\)/);
-  assert.equal((page.match(/className="deleuze-guattari-assist"/g) ?? []).length, 1);
-  assert.match(page, /src="\/game\/guattari-assist-hq\.webp\?v=4\.12"/);
-  assert.match(css, /left:var\(--deleuze-target\)/);
-  assert.match(css, /left:var\(--deleuze-assist\)/);
-  assert.match(page, /Criar é resistir\./);
+test("Rizoma and Guattari converge on the opponent from either side", async () => {
+  const effects = await readFile(new URL("../app/deleuze-effects.tsx", import.meta.url), "utf8");
+  const assist = await readFile(new URL("../app/deleuze-guattari.tsx", import.meta.url), "utf8");
+  assert.match(page, /<DeleuzeEffects\b[^>]+contact=\{deleuzeImpact\}/);
+  assert.match(page, /deleuzeContact\("player",moveName,current\.playerPosition,current\.enemyPosition\)/);
+  assert.match(page, /deleuzeContact\("enemy",moveName,current\.enemyPosition,impactPosition\)/);
+  assert.match(effects, /x=hit\.position\*w\/100/);
+  assert.match(page, /<DeleuzeGuattari origin=\{playerPosition\} target=\{enemyPosition\}/);
+  assert.match(page, /<DeleuzeGuattari origin=\{enemyPosition\} target=\{playerPosition\}/);
+  assert.match(assist, /src="\/game\/guattari-assist-hq\.webp\?v=4\.12"/);
 });

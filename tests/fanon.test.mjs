@@ -108,17 +108,15 @@ test("the Casbah arena and both special effects keep native detail and transpare
   }
 });
 
-test("both specials hit only the opponent and victory raises the cracked mask", () => {
-  assert.match(page, /fanonTarget = fanonEffectFromPlayer \? enemyPosition : playerPosition/);
-  assert.match(page, /"--fanon-target": `\$\{fanonTarget\}%`/);
-  assert.equal((page.match(/className="fanon-mask-shatter"/g) ?? []).length, 1);
-  assert.equal((page.match(/className=\{`fanon-condemned-wave/g) ?? []).length, 1);
-  assert.match(css, /left:var\(--fanon-target\)/);
-  assert.match(css, /translateX\(var\(--fanon-travel\)\)/);
-  assert.match(css, /@keyframes fanon-wave-charge-enemy/);
+test("Fanon's specials use committed contact and victory raises the mask", async () => {
+  const effects = await readFile(new URL("../app/fanon-effects.tsx", import.meta.url), "utf8");
+  assert.match(page, /<FanonEffects\b[^>]+contact=\{fanonImpact\}/);
+  assert.match(page, /fanonContact\("player",moveName,current\.playerPosition,current\.enemyPosition\)/);
+  assert.match(page, /fanonContact\("enemy",moveName,current\.enemyPosition,impactPosition\)/);
+  assert.match(effects, /x=hit\.position\*w\/100/);
+  assert.match(effects, /PELE NEGRA, MÁSCARAS BRANCAS!/);
+  assert.match(effects, /OS CONDENADOS DA TERRA!/);
   assert.match(page, /Cada geração deve descobrir sua missão, cumpri-la ou traí-la\./);
   assert.match(page, /fighterVictoryArt\(matchWinner\)/);
   assert.match(css, /\.fighter-fanon\.victory \.fighter-sprite/);
-  assert.match(page, /selectedFighter !== "fanon"/);
-  assert.match(page, /opponentFighter !== "fanon"/);
 });

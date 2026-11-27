@@ -97,20 +97,18 @@ test("all five poses share one transparent high-resolution canvas and fixed scal
   assert.match(walk, /"paulo-freire": \{ src: "\/game\/paulo-freire-fullbody-hq\.webp\?v=4\.6"/);
 });
 
-test("the classroom, dollar rain and flying book are registered once", async () => {
+test("Freire's classroom and special effects use the committed opponent position", async () => {
   const arena = await readFile(new URL("../public/game/arena-paulo-freire.webp", import.meta.url));
-  const book = await readFile(new URL("../public/game/paulo-freire-book-hq.webp", import.meta.url));
   assert.equal(arena.subarray(0, 4).toString(), "RIFF");
-  assert.ok(arena.length > 100_000, "the arena keeps enough detail for the full battle frame");
-  assert.deepEqual(webpMetadata(book), { width: 1672, height: 941, hasAlpha: true });
-  assert.match(page, /pauloFreireTarget = pauloFreireEffectFromPlayer \? enemyPosition : playerPosition/);
-  assert.match(page, /"--paulo-target": `\$\{pauloFreireTarget\}%`/);
-  assert.equal((page.match(/className="paulo-money-rain"/g) ?? []).length, 1);
-  assert.equal((page.match(/className=\{`paulo-flying-book/g) ?? []).length, 1);
-  assert.match(page, /paulo-freire-book-hq\.webp\?v=4\.6/);
+  assert.ok(arena.length > 100_000);
+  const effects = await readFile(new URL("../app/freire-effects.tsx", import.meta.url), "utf8");
+  assert.match(page, /<FreireEffects\b[^>]+contact=\{freireImpact\}/);
+  assert.match(page, /freireContact\("player",moveName,current\.playerPosition,current\.enemyPosition\)/);
+  assert.match(page, /freireContact\("enemy",moveName,current\.enemyPosition,impactPosition\)/);
+  assert.match(effects, /x=hit\.position\*w\/100/);
   assert.match(page, /A leitura do mundo precede a leitura da palavra\./);
   assert.match(page, /fighterVictoryArt\(matchWinner\)/);
   assert.match(css, /\.fighter-paulo-freire\.victory \.fighter-sprite/);
-  assert.match(css, /@keyframes paulo-money-fall/);
-  assert.match(css, /@keyframes paulo-book-flight-enemy/);
+  assert.match(effects, /EDUCAÇÃO BANCÁRIA!/);
+  assert.match(effects, /EDUCAÇÃO LIBERTADORA!/);
 });

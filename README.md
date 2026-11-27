@@ -1,16 +1,13 @@
 # Philo Kombat — versão independente
 
-Atualização para a versão 226 do Sites, em 24/10/2026.
-Fonte original: `10dcba946984b509660bd513f04813bfb24fbf68`.
+Atualização para a versão 281 do Sites.
+Fonte original: `6371d570c6725a7a9073fdd4a95e140e3a57df83`.
 
-## Atualização 226
+## Atualização 281
 
-- Campanhas Discípulo e Doutor, com todas as artes atuais e encerramento do Doutor.
-- Felipe das Trevas reservado à história e botão Grande Filósofo com tela Em construção.
-- Artes completas acima da navegação, com botão Voltar e QR code sem recortes.
-- Ajustes atuais de alcance, controles, defesa, impactos e especiais preservados.
-- 660 arquivos originais conferidos por SHA-256, incluindo 552 recursos públicos.
-- Build estático com 566 arquivos; 268 testes passaram.
+- Campanhas Discípulo, Doutor e Grande Filósofo, além do modo Versus.
+- Grande Filósofo começa em Amenemope e segue por 17 pensadores até a SuperIA gigante, com banco de questões e epílogo.
+- A batalha final usa a versão validada, com a SuperIA atrás da ponte, socos articulados e lasers.
 
 ## Rodar e publicar
 
