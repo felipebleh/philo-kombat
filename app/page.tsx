@@ -2,11 +2,14 @@
 
 import {
   type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
   useCallback,
   useEffect,
   useRef,
   useState,
 } from "react";
+import { CombatButton } from "./combat-button";
+import "./mobile-combat.css";
 import { FelipeSprite, FelipeOwl } from "./felipe-sprite";
 import { CyborgSprite } from "./cyborg-sprite";
 import { CyborgSpecial, CyborgAtmosphere } from "./cyborg-effects";
@@ -174,6 +177,14 @@ type MoveName =
   | "ideias"
   | "especial"
   | "transcender";
+
+const TOUCH_MOVE_LABELS: Record<MoveName, string> = {
+  dialetica: "Soco",
+  caverna: "Chute",
+  ideias: "Combo",
+  especial: "Especial",
+  transcender: "Supremo",
+};
 
 const articulatedWalkDuration = (fighter: FighterId) =>
   (fighter === "felipe" || fighter === "felipe-cyborg" || fighter === "sidarta" || fighter === "confucius") ? FELIPE_WALK_DURATION :
@@ -6697,6 +6708,14 @@ export default function Home() {
   const combatClock = useRef(new CombatClock());
   const inputBuffer = useRef(new InputBuffer());
   const keysPressed = useRef<Record<string, boolean>>({});
+  const heldTouchKeys = useRef(new Map<number, "a" | "d" | "s">());
+  const isCombatKeyHeld = useCallback((key: "a" | "d" | "s") => {
+    if (keysPressed.current[key]) return true;
+    for (const heldKey of heldTouchKeys.current.values()) {
+      if (heldKey === key) return true;
+    }
+    return false;
+  }, []);
   const jumpRequested = useRef(false);
   const attackSequence = useRef({ player: 0, enemy: 0 });
   const [hitstop, setHitstop] = useState(false);
@@ -7036,6 +7055,7 @@ export default function Home() {
     disorientedUntil.current={player:0,enemy:0};
     inputBuffer.current.clear();
     keysPressed.current = {};
+    heldTouchKeys.current.clear();
     jumpRequested.current = false;
     attackSequence.current.player++;
     attackSequence.current.enemy++;
@@ -8122,12 +8142,39 @@ export default function Home() {
     setPlayerAction("guard");
     playTone(246.9, 0.06, "triangle");
     combatClock.current.schedule(() => {
-      if (actionSequence.current.player !== guardToken || keysPressed.current.s) return;
+      if (actionSequence.current.player !== guardToken || isCombatKeyHeld("s")) return;
       guardRef.current = false;
       setPlayerGuarding(false);
       setPlayerAction((current) => (current === "guard" ? "idle" : current));
     }, 680);
-  }, [playTone]);
+  }, [isCombatKeyHeld, playTone]);
+
+  const releaseCombatKey = useCallback((key: string) => {
+    if ((key === "a" || key === "d") &&
+      (selectedFighter === "kierkegaard" || selectedFighter === "felipe-cyborg" || selectedFighter === "sidarta" || selectedFighter === "confucius") &&
+      !isCombatKeyHeld("a") && !isCombatKeyHeld("d")) {
+      setPlayerAction(action => action === "advance" || action === "retreat" ? "idle" : action);
+    }
+    if (key === "s" && !isCombatKeyHeld("s")) {
+      guardRef.current = false;
+      setPlayerGuarding(false);
+      setPlayerAction(action => action === "guard" ? "idle" : action);
+    }
+  }, [isCombatKeyHeld, selectedFighter]);
+
+  const pressTouchKey = (key: "a" | "d" | "s", event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (gameRef.current.phase !== "playing") return;
+    heldTouchKeys.current.set(event.pointerId, key);
+    if (key === "s") guard();
+    else if (!isCombatKeyHeld(key === "a" ? "d" : "a")) movePlayer(key === "a" ? -1 : 1, 0.6);
+  };
+
+  const releaseTouchKey = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const key = heldTouchKeys.current.get(event.pointerId);
+    if (!key) return;
+    heldTouchKeys.current.delete(event.pointerId);
+    releaseCombatKey(key);
+  };
 
   useEffect(() => {
     const urls = storyImagePreloadUrls({
@@ -8228,17 +8275,11 @@ export default function Home() {
     const onKeyUp = (event: KeyboardEvent) => {
       const key = event.key.toLowerCase();
       delete keysPressed.current[key];
-      if((selectedFighter==="kierkegaard"||selectedFighter==="felipe-cyborg"||selectedFighter==="sidarta"||selectedFighter==="confucius")&&(key==="a"||key==="d")&&!keysPressed.current.a&&!keysPressed.current.d){
-        setPlayerAction(action=>action==="advance"||action==="retreat"?"idle":action);
-      }
-      if (key === "s") {
-        guardRef.current = false;
-        setPlayerGuarding(false);
-        setPlayerAction(action => action === "guard" ? "idle" : action);
-      }
+      releaseCombatKey(key);
     };
     const clearInput = () => {
       keysPressed.current = {};
+      heldTouchKeys.current.clear();
       jumpRequested.current = false;
       inputBuffer.current.clear();
       guardRef.current = false;
@@ -8268,6 +8309,7 @@ export default function Home() {
     performMove,
     phase,
     previewFighter,
+    releaseCombatKey,
     selectedFighter,
     selectionStep,
     undoPlayerSelection,
@@ -8281,6 +8323,7 @@ export default function Home() {
     if (phase !== "playing") {
       watchedUntil.current={player:0,enemy:0};docileUntil.current={player:0,enemy:0};setWatched({player:false,enemy:false});setDocile({player:false,enemy:false});
       keysPressed.current = {};
+      heldTouchKeys.current.clear();
       inputBuffer.current.clear();
       jumpRequested.current = false;
       combatClock.current.jobs = [];
@@ -8336,8 +8379,8 @@ export default function Home() {
         if (!frozen) {
           inputBuffer.current.consume(now, performMove);
           if (jumpRequested.current) { jumpRequested.current = false; jump(); }
-          if (keysPressed.current.s) guard();
-          const direction = Number(!!keysPressed.current.d) - Number(!!keysPressed.current.a);
+          if (isCombatKeyHeld("s")) guard();
+          const direction = Number(isCombatKeyHeld("d")) - Number(isCombatKeyHeld("a"));
           if (direction) movePlayer(direction as -1 | 1, dt * .022);
         }
       }
@@ -8345,7 +8388,7 @@ export default function Home() {
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [phase, performMove, jump, guard, movePlayer, selectedFighter, selectedOpponent]);
+  }, [phase, performMove, jump, guard, movePlayer, isCombatKeyHeld, selectedFighter, selectedOpponent]);
 
   useEffect(() => {
     if (phase !== "mode-select" && phase !== "select") return;
@@ -9040,7 +9083,9 @@ export default function Home() {
             >
               <span style={{ width: `${playerCoherence}%` }} />
             </div>
-            {logos >= 100 && !silenced.player && phase === "playing" && <span className="special-ready-indicator" role="status">[L] e [U] PRONTOS!</span>}
+            {logos >= 100 && !silenced.player && phase === "playing" && <span className="special-ready-indicator" role="status">
+              <span className="combat-key-label">[L] e [U] </span>ESPECIAIS PRONTOS!
+            </span>}
             <div className="logos-row">
               <span>{playerMeta.meter}</span>
               <div className={`bar logos-bar ${logos >= 100 ? "ready" : ""}`}>
@@ -11736,30 +11781,24 @@ export default function Home() {
       </section>
 
       {phase !== "intro" && phase !== "mode-select" && (
-      <section className={`control-deck ${phase === "playing" ? "is-playing" : "is-inactive"}`}>
+      <section className={`control-deck ${phase === "playing" ? "is-playing" : "is-inactive"}`} aria-label="Controles do combate"
+        onContextMenu={(event) => event.preventDefault()}>
         <div className="movement-controls" aria-label="Movimentação">
           <span className="control-title">MOVIMENTO</span>
           <div className="button-row">
-            <button type="button" onClick={() => movePlayer(-1)}>
-              <kbd>A</kbd>
-              <span>RECUAR</span>
-            </button>
-            <button type="button" onClick={jump}>
-              <kbd>W</kbd>
-              <span>SALTAR</span>
-            </button>
-            <button
-              type="button"
+            <CombatButton shortcut="A" label="Recuar" touchLabel="Recuar"
+              disabled={phase !== "playing"} onActivate={() => movePlayer(-1)}
+              onTouchPress={(event) => pressTouchKey("a", event)} onTouchRelease={releaseTouchKey} />
+            <CombatButton shortcut="W" label="Saltar" touchLabel="Saltar"
+              disabled={phase !== "playing"} onActivate={jump}
+              onTouchPress={() => { jumpRequested.current = true; }} />
+            <CombatButton shortcut="S" label="Defender" touchLabel="Defesa"
               className={playerGuarding ? "guard-active" : ""}
-              onClick={guard}
-            >
-              <kbd>S</kbd>
-              <span>DEFENDER</span>
-            </button>
-            <button type="button" onClick={() => movePlayer(1)}>
-              <kbd>D</kbd>
-              <span>AVANÇAR</span>
-            </button>
+              disabled={phase !== "playing"} onActivate={guard}
+              onTouchPress={(event) => pressTouchKey("s", event)} onTouchRelease={releaseTouchKey} />
+            <CombatButton shortcut="D" label="Avançar" touchLabel="Avançar"
+              disabled={phase !== "playing"} onActivate={() => movePlayer(1)}
+              onTouchPress={(event) => pressTouchKey("d", event)} onTouchRelease={releaseTouchKey} />
           </div>
         </div>
 
@@ -11775,21 +11814,22 @@ export default function Home() {
                 moveName === "especial" || moveName === "transcender";
               const locked = isSpecial && (logos < 100 || silenced.player);
               return (
-                <button
-                  type="button"
+                <CombatButton
                   key={moveName}
+                  shortcut={move.key}
+                  label={move.label}
+                  touchLabel={TOUCH_MOVE_LABELS[moveName]}
                   className={isSpecial ? `special-button ${!locked && phase === "playing" ? "special-ready-button" : ""}` : ""}
-                  onClick={() => queueMove(moveName)}
+                  onActivate={() => queueMove(moveName)}
+                  onTouchPress={() => queueMove(moveName)}
                   disabled={phase !== "playing" || locked}
                 >
-                  <kbd>{move.key}</kbd>
-                  <span>{move.label}</span>
                   {isSpecial && (
                     <i>
                       {locked ? `100% ${playerMeta.meter}` : "PRONTO"}
                     </i>
                   )}
-                </button>
+                </CombatButton>
               );
             })}
           </div>

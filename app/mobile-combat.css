@@ -1,0 +1,197 @@
+.control-deck .button-row button > .combat-touch-label {
+  display: none;
+}
+
+.control-deck .button-row button {
+  touch-action: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+@media (pointer: coarse), (hover: none) and (max-width: 1024px) {
+  .game-shell:is(.phase-playing, .phase-finishing) {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px)
+      env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+  }
+
+  .game-shell:is(.phase-playing, .phase-finishing) > .game-header {
+    flex: 0 0 auto;
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-height: 46px;
+    gap: 8px;
+    padding-inline: 12px;
+  }
+
+  .game-shell:is(.phase-playing, .phase-finishing) .brand-lockup {
+    gap: 10px;
+  }
+
+  .game-shell:is(.phase-playing, .phase-finishing) .brand-mark {
+    width: 23px;
+    height: 23px;
+    font-size: 15px;
+  }
+
+  .game-shell:is(.phase-playing, .phase-finishing) .brand-lockup h1 {
+    font-size: clamp(14px, 4vw, 20px);
+  }
+
+  .game-shell:is(.phase-playing, .phase-finishing) :is(.brand-lockup p, .prototype-badge),
+  .game-shell:is(.phase-playing, .phase-finishing) > :is(.concept-panel, footer),
+  .game-shell .control-deck.is-inactive,
+  .combat-key-label {
+    display: none;
+  }
+
+  .game-shell > .battle-frame:is(.phase-playing, .phase-finishing) {
+    --grand-field-top: 74px;
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    border-inline: 0;
+  }
+
+  .battle-frame:is(.phase-playing, .phase-finishing) > .hud {
+    grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1fr);
+    gap: 8px;
+    padding: 7px 10px;
+  }
+
+  .battle-frame:is(.phase-playing, .phase-finishing) .fighter-heading h2 {
+    font-size: clamp(13px, 3.7vw, 18px);
+    letter-spacing: .03em;
+  }
+
+  .battle-frame:is(.phase-playing, .phase-finishing) :is(.portrait, .school) {
+    display: none;
+  }
+
+  .battle-frame:is(.phase-playing, .phase-finishing) .round-clock > span:first-child {
+    white-space: normal;
+    text-align: center;
+  }
+
+  .battle-frame:is(.phase-playing, .phase-finishing) .round-clock strong {
+    font-size: 32px;
+  }
+
+  .battle-frame:is(.phase-playing, .phase-finishing) > .battlefield {
+    top: var(--grand-field-top);
+  }
+
+  .game-shell > .control-deck.is-playing {
+    position: static;
+    z-index: auto;
+    flex: 0 0 auto;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    gap: 8px;
+    padding: 8px;
+    border: 0;
+    border-top: 1px solid rgba(217, 164, 65, .45);
+    background: #0c0f16;
+    backdrop-filter: none;
+  }
+
+  .control-deck.is-playing :is(.movement-controls, .attack-controls) {
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .control-deck.is-playing .control-title,
+  .control-deck.is-playing .button-row button > :not(.combat-touch-label) {
+    display: none;
+  }
+
+  .control-deck.is-playing .button-row {
+    display: grid;
+    gap: 4px;
+  }
+
+  .control-deck.is-playing .movement-controls .button-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .control-deck.is-playing .attack-controls .button-row {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .control-deck.is-playing .attack-controls button {
+    grid-column: span 2;
+  }
+
+  .control-deck.is-playing .attack-controls .special-button {
+    grid-column: span 3;
+    color: var(--gold-light);
+  }
+
+  .control-deck.is-playing .button-row button {
+    display: grid;
+    min-height: 48px;
+    padding: 4px 2px;
+    grid-template-columns: minmax(0, 1fr);
+    place-items: center;
+    border-color: #696177;
+    border-radius: 6px;
+    background: #1b1a28;
+    text-align: center;
+  }
+
+  .control-deck.is-playing .button-row button > .combat-touch-label {
+    display: block;
+    overflow: visible;
+    font-size: clamp(11px, 3.3vw, 15px);
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.1;
+  }
+
+  .control-deck.is-playing .button-row button:active:not(:disabled),
+  .control-deck.is-playing .button-row button.guard-active {
+    border-color: var(--cyan);
+    background: #224057;
+    transform: none;
+  }
+}
+
+@media (pointer: coarse) and (orientation: portrait),
+  (hover: none) and (max-width: 1024px) and (orientation: portrait) {
+  .battle-frame:is(.phase-playing, .phase-finishing):not(.arena-grand-final) .battlefield > .fighter {
+    max-width: 58%;
+  }
+}
+
+@media (pointer: coarse) and (orientation: landscape),
+  (hover: none) and (max-width: 1024px) and (orientation: landscape) {
+  .game-shell > .control-deck.is-playing {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 5fr);
+    gap: clamp(16px, 5vw, 72px);
+    padding-block: 5px;
+  }
+
+  .control-deck.is-playing .movement-controls .button-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .control-deck.is-playing .attack-controls .button-row {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .control-deck.is-playing .attack-controls .button-row button {
+    grid-column: auto;
+  }
+
+  .control-deck.is-playing .button-row button {
+    min-height: 44px;
+  }
+
+  .control-deck.is-playing .button-row button > .combat-touch-label {
+    font-size: clamp(10px, 1.85vw, 15px);
+  }
+}

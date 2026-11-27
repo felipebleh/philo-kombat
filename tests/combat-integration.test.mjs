@@ -24,7 +24,7 @@ let source=await readFile(new URL("../app/page.tsx",import.meta.url),"utf8");
 // state host. No combat logic is copied into the tests.
 const start=source.indexOf('export default function Home()');
 const stop=source.indexOf('\n  const opponentFighter = selectedOpponent;', start);
-source=source.slice(0,stop)+`\n return {resetGame,performMove,movePlayer,jump,guard,impactFeedback,queueMove,gameRef,combatClock,inputBuffer,keysPressed,playerActionLock,enemyActionLock,enemyGuardRef,roundResolved,pactUntil,bindSovereignPact};\n}\n globalThis.controller = Home();`;
+source=source.slice(0,stop)+`\n return {resetGame,performMove,movePlayer,jump,guard,impactFeedback,queueMove,pressTouchKey,releaseTouchKey,gameRef,combatClock,inputBuffer,keysPressed,playerActionLock,enemyActionLock,enemyGuardRef,roundResolved,pactUntil,bindSovereignPact};\n}\n globalThis.controller = Home();`;
 const ast=ts.createSourceFile("page.tsx",source,ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);
 const imports=ast.statements.filter(ts.isImportDeclaration);
 for(const node of imports.reverse())source=source.slice(0,node.getFullStart())+source.slice(node.end);
@@ -71,11 +71,44 @@ function harness(mode="versus", fighter="plato", opponent="socrates", campaign="
     for(const effect of effects)if(effect.toString().includes('const timer = window.setInterval'))effect();
     for(const value of intervals.values())if(value.f.toString().includes('setTime('))value.f();
   };
-  return{c,state,step,key,position,synchronize,tickRoundTimer,phaseSnapshots,random:value=>context.Math.random=()=>value,randomSequence:values=>{let i=0;context.Math.random=()=>values[Math.min(i++,values.length-1)];},cpuInterval:()=>[...intervals.values()].find(value=>value.f.toString().includes("enemyAggression.current"))?.delay,cpuStep:()=>{for(const value of intervals.values())if(value.f.toString().includes("enemyAggression.current"))value.f();}};
+  return{c,state,step,key,position,synchronize,tickRoundTimer,phaseSnapshots,blur:()=>listeners.get("blur")?.(),random:value=>context.Math.random=()=>value,randomSequence:values=>{let i=0;context.Math.random=()=>values[Math.min(i++,values.length-1)];},cpuInterval:()=>[...intervals.values()].find(value=>value.f.toString().includes("enemyAggression.current"))?.delay,cpuStep:()=>{for(const value of intervals.values())if(value.f.toString().includes("enemyAggression.current"))value.f();}};
 }
 test("actual controller handles held movement and stops after keyup, independently of browser repeat",()=>{
   const h=harness();h.key("d");h.step(200);assert.ok(h.state.get("playerPosition")>21);
   h.key("d","keyup");const position=h.state.get("playerPosition");h.step(200);assert.equal(h.state.get("playerPosition"),position);
+});
+
+test("touch movement repeats while held and shares the attack buffer in Versus and História", () => {
+  for (const mode of ["versus", "story"]) {
+    const h = harness(mode);
+    h.position(20, 48);
+    h.c.pressTouchKey("d", { pointerId: 1 });
+    h.step(140);
+    assert.ok(h.state.get("playerPosition") > 22);
+    h.c.queueMove("dialetica");
+    h.step(300);
+    assert.ok(h.state.get("enemyCoherence") < 100);
+    h.c.releaseTouchKey({ pointerId: 1 });
+    const position = h.state.get("playerPosition");
+    h.step(300);
+    assert.equal(h.state.get("playerPosition"), position);
+  }
+});
+
+test("defense stays held until the last input releases and clears if the window loses focus", () => {
+  const h = harness();
+  h.c.pressTouchKey("s", { pointerId: 1 });
+  h.key("s");
+  h.c.releaseTouchKey({ pointerId: 1 });
+  h.step(700);
+  assert.equal(h.state.get("playerGuarding"), true);
+  h.key("s", "keyup");
+  assert.equal(h.state.get("playerGuarding"), false);
+
+  h.c.pressTouchKey("s", { pointerId: 2 });
+  h.blur();
+  h.step(40);
+  assert.equal(h.state.get("playerGuarding"), false);
 });
 test("buffered next strike runs after recovery in Versus and História",()=>{
   for(const mode of ["versus","story"]) {
